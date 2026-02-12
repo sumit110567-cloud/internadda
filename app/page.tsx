@@ -36,7 +36,7 @@ const featuredInternships = [
     skills: ['Python', 'Django', 'PostgreSQL'],
     applicants: 131,
     isRecommended: true,
-    image: '/internship1.jpg'
+    image: '/python.jpg'
   },
   {
     id: '2',
@@ -48,7 +48,7 @@ const featuredInternships = [
     skills: ['React', 'Next.js', 'Tailwind'],
     applicants: 150,
     isRecommended: true,
-    image: '/internship2.jpg'
+    image: '/react.jpg'
   },
   {
     id: '3',
@@ -60,7 +60,7 @@ const featuredInternships = [
     skills: ['Python', 'Pandas', 'Matplotlib'],
     applicants: 130,
     isRecommended: true,
-    image: '/internship3.jpg'
+    image: '/datascience.jpg'
   },
 ]
 
@@ -81,7 +81,7 @@ const trustMetrics = [
   },
   {
     icon: Award,
-    title: 'AICTE APPROVED',
+    title: 'Verified Internship',
     value: 'Since 2020',
     color: 'text-amber-600',
     bg: 'bg-amber-50'
@@ -96,18 +96,16 @@ const trustMetrics = [
 ]
 
 const partners = [
-  { name: 'IIT Delhi', logo: '🎓' },
-  { name: 'BITS Pilani', logo: '🔬' },
-  { name: 'NASSCOM', logo: '🏢' },
-  { name: 'Microsoft', logo: '💻' },
-  { name: 'Google', logo: '🌐' },
-  { name: 'Amazon', logo: '📦' },
+  { name: 'Delhi University', logo: '🎓' },
+  { name: 'LAREX', logo: '🔬' },
+  { name: 'Tracxn', logo: '🌐' },
+  { name: 'Arjuna-AI', logo: '💻' },
 ]
 
 const globalPartners = [
-  { name: 'Tracxn', quote: '"Most trusted internship platform in India."', logo: '📊' },
-  { name: 'YourStory', quote: '"Transparent, student-focused ecosystem."', logo: '📰' },
-  { name: 'NASSCOM', quote: '"Bridging industry-academia gap effectively."', logo: '🏢' },
+  { name: 'Tracxn', quote: '"Most trusted internship platform in India."', logo: '🌐' },
+  { name: 'LAREX', quote: '"Transparent, student-focused ecosystem."', logo: '🌐' },
+  { name: 'Arjuna-AI', quote: '"Bridging industry-academia gap effectively."', logo: '🌐' },
 ]
 
 const collaborationSlides = ['/slide1.jpg', '/slide2.jpg', '/slide3.jpg', '/slide4.jpg', '/slide5.jpg', '/slide6.jpg'];
@@ -133,16 +131,9 @@ export default function Home() {
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm">
               <div className="flex items-center gap-2">
                 <CheckCircle size={14} className="text-[#FFD700]" />
-                <span>AICTE APPROVED</span>
+                <span>Global Recognition</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Award size={14} className="text-[#FFD700]" />
-                <span>NAAC A++</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield size={14} className="text-[#FFD700]" />
-                <span>ISO 21001:2018</span>
-              </div>
+
               <div className="flex items-center gap-2">
                 <GraduationCap size={14} className="text-[#FFD700]" />
                 <span>MSME REGISTERED</span>
@@ -171,7 +162,7 @@ export default function Home() {
                 </h1>
                 
                 <p className="text-lg text-gray-300 mb-8">
-                  7,200+ students placed • 500+ verified companies • Direct interviews
+                  7,200+ students placed • 500+ verified companies • AI interviews
                 </p>
 
                 <div className="flex flex-wrap gap-4 mb-8">
