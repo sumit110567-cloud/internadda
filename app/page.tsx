@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Users, CheckCircle, Shield, Clock, GraduationCap, Award, Zap, Star, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-// Import client components for interactivity
 import { HeroVisual, AnimatedSection, AnimatedCard } from './page-client-components'
 
 const featuredInternships = [
@@ -47,7 +46,6 @@ const featuredInternships = [
   },
 ]
 
-// SEO: Generate JSON-LD JobPosting data
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -77,72 +75,68 @@ const jsonLd = {
   }))
 }
 
+// 1. UPDATED INTERNSHIP CARD (Slightly shorter & more compact)
 const InternshipCard = ({ title, company, stipend, location, skills, applicants, otherCompaniesCount, image, companyLogos }: any) => (
-  <article className="bg-white rounded-[2.5rem] border border-blue-50 shadow-xl overflow-hidden w-full max-w-[420px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
-    <div className="relative h-56 w-full bg-gray-100 overflow-hidden">
+  <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
+    <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
       <Image 
         src={image} 
         alt={`${title} at ${company}`} 
         fill 
-        sizes="(max-width: 768px) 100vw, 420px"
+        sizes="(max-width: 768px) 100vw, 380px"
         className="object-cover group-hover:scale-105 transition-transform duration-500"
       />
-      <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/20">
-        <span className="text-orange-500 text-xs" aria-hidden="true">🔥</span>
-        <span className="text-white text-[10px] font-bold tracking-tight">{applicants} Applied</span>
+      <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
+        <span className="text-orange-500 text-[10px]" aria-hidden="true">🔥</span>
+        <span className="text-white text-[9px] font-bold tracking-tight">{applicants} Applied</span>
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
     </div>
 
-    <div className="px-8 pb-8 pt-2 flex flex-col items-center text-center">
-      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+    <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center">
+      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
         HIRING AT {company} & OTHERS
       </p>
 
-      <div className="flex items-center justify-center gap-3 mb-6">
-        <div className="flex -space-x-3">
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <div className="flex -space-x-2">
           {companyLogos.map((logo: string, idx: number) => (
-            <div key={idx} className="relative w-9 h-9 rounded-full border-2 border-white bg-white shadow-sm overflow-hidden">
+            <div key={idx} className="relative w-7 h-7 rounded-full border-2 border-white bg-white shadow-sm overflow-hidden">
               <Image src={logo} alt="Partner Logo" fill className="object-cover" />
             </div>
           ))}
         </div>
-        <span className="text-blue-600 text-[13px] font-bold">+{otherCompaniesCount} more companies</span>
+        <span className="text-blue-600 text-[11px] font-bold">+{otherCompaniesCount} more</span>
       </div>
 
-      <h3 className="text-2xl font-extrabold text-[#0A2647] mb-6 leading-snug group-hover:text-blue-700 transition-colors">
+      <h3 className="text-xl font-extrabold text-[#0A2647] mb-4 leading-tight group-hover:text-blue-700 transition-colors">
         {title}
       </h3>
 
-      <div className="grid grid-cols-2 w-full border-y border-gray-100 py-5 mb-6">
+      <div className="grid grid-cols-2 w-full border-y border-gray-50 py-3 mb-4">
         <div className="border-r border-gray-100 flex flex-col items-center">
-          <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Stipend</p>
-          <p className="text-blue-600 font-extrabold text-base">{stipend}</p>
+          <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Stipend</p>
+          <p className="text-blue-600 font-extrabold text-sm">{stipend}</p>
         </div>
         <div className="flex flex-col items-center">
-          <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Location</p>
-          <p className="text-gray-700 font-extrabold text-base">{location}</p>
+          <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Location</p>
+          <p className="text-gray-700 font-extrabold text-sm">{location}</p>
         </div>
       </div>
 
-      <div className="w-full mb-8">
-        <p className="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Skills Required</p>
-        <div className="flex flex-wrap justify-center gap-2">
+      <div className="w-full mb-6">
+        <div className="flex flex-wrap justify-center gap-1.5">
           {skills.map((skill: string) => (
-            <span key={skill} className="bg-gray-50 border border-gray-100 px-4 py-1.5 rounded-xl text-xs font-bold text-gray-600">
+            <span key={skill} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
               {skill}
             </span>
           ))}
         </div>
       </div>
 
-      <Button className="w-full bg-[#0A2647] hover:bg-[#144272] text-white py-8 rounded-[1.25rem] font-extrabold text-lg shadow-lg shadow-blue-900/10 transition-all active:scale-95">
+      <Button className="w-full bg-[#0A2647] hover:bg-[#144272] text-white py-6 rounded-xl font-extrabold text-base shadow-lg shadow-blue-900/10 transition-all active:scale-95">
         Apply Now
       </Button>
-      
-      <p className="text-[10px] text-gray-400 font-semibold mt-5 uppercase tracking-widest">
-         Ending Soon <span className="mx-1" aria-hidden="true">•</span> AI Interviews
-      </p>
     </div>
   </article>
 )
@@ -166,7 +160,6 @@ export default function Home() {
 
   return (
     <>
-      {/* SEO: Structured Data Injection */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -194,7 +187,6 @@ export default function Home() {
         <section className="relative bg-gradient-to-br from-[#0A2647] to-[#144272] overflow-hidden">
           <div className="max-w-[1400px] mx-auto px-4 lg:px-8 py-12 md:py-20">
             <div className="grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left Content */}
               <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
                 <Badge className="bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/20 px-4 py-1.5 rounded-full mb-6 w-fit text-xs font-semibold tracking-wide">
                   India's #1 Internship Platform
@@ -238,8 +230,6 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-
-              {/* Right Visual: Optimization - Added priority for LCP */}
               <HeroVisual />
             </div>
 
@@ -338,14 +328,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final Premium CTA */}
+        {/* 2. UPDATED FINAL CTA (Centered for mobile, left-aligned for desktop) */}
         <section className="py-24 flex flex-col items-center">
           <div className="max-w-[1400px] w-full px-4 lg:px-8">
             <div className="bg-[#0A2647] rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-500/10 blur-[100px] pointer-events-none" />
               
               <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="text-left">
+                <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
                   <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
                     Ready to build your <br />
                     <span className="text-[#FFD700]">Dream Career?</span>
