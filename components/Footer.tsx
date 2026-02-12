@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link'
-import { Mail, Linkedin, YouTube, Instagram, ShieldCheck, MapPin } from 'lucide-react'
+import { Mail, Linkedin, Youtube, Instagram, ShieldCheck, MapPin } from 'lucide-react'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
@@ -54,7 +54,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-4">
               {[
-                { Icon: YouTube, href: "https://www.youtube.com/@theinternadda" },
+                { Icon: Youtube, href: "https://www.youtube.com/@theinternadda" },
                 { Icon: Linkedin, href: "https://www.linkedin.com/company/internadda-india" },
                 { Icon: Instagram, href: "https://www.instagram.com/internadda.india/#" },
                 { Icon: Mail, href: "mailto:suppoert@internadda.com" }
