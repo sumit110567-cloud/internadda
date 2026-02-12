@@ -28,7 +28,7 @@ const teamMembers = [
     role: 'Co-Founder & PR Head',
     image: '/vikash.jpg',
     bio: 'Brand Communication expert leading partnerships, outreach, and brand positioning.',
-    expertise: ['Public Relations', 'Brand Strategy', 'Partnerships']
+    expertise: ['Public Relations', 'Strategy', 'Partnerships']
   },
   {
     name: 'Sumit Pandey',
@@ -48,9 +48,9 @@ const teamMembers = [
 
 const milestones = [
   { year: '2020', title: 'The Vision', desc: 'Started with a mission to solve the internship crisis in India.' },
-  { year: '2021', title: 'WhatsApp Growth', desc: 'Distributed curated roles via WhatsApp, reaching 5,000+ students.' },
+  { year: '2021', title: 'WhatsApp Growth', desc: 'Distributed curated roles via WhatsApp, reaching 1,000+ students.' },
   { year: '2022', title: 'Building Phase', desc: 'Developed the core InternAdda platform for automated matching.' },
-  { year: '2023', title: 'Startup Network', desc: 'Partnered with 200+ high-growth tech startups across India.' },
+  { year: '2023', title: 'Startup Network', desc: 'Partnered with 100+ high-growth tech startups across India.' },
   { year: '2024', title: 'Going Live', desc: 'Official platform launch with dedicated dashboard for students.' },
   { year: '2025', title: 'MSME Gold Standard', desc: 'Official MSME Registration & Global Recognition.' },
 ]
@@ -189,7 +189,10 @@ export default function AboutPage() {
                   </Button>
                 </Link>
                 <Link href="/contact">
-                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 px-10 py-7 text-lg rounded-2xl font-extrabold w-full sm:w-auto">
+                  <Button 
+                    variant="outline" 
+                    className="border-white/40 text-white hover:bg-white hover:text-[#0A2647] px-10 py-7 text-lg rounded-2xl font-extrabold w-full sm:w-auto bg-transparent transition-colors"
+                  >
                     Partner with Us
                   </Button>
                 </Link>
