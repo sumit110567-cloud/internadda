@@ -1,5 +1,5 @@
-import { IconicLoader } from '@/components/IconicLoader'
+import LoadingScreen from '@/components/LoadingScreen'
 
 export default function Loading() {
-  return <IconicLoader />
+  return <LoadingScreen />
 }
