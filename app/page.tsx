@@ -134,8 +134,8 @@ export default function Home() {
                 </Badge>
                 
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.15] mb-4">
-                  Launch Your Career with <br className="hidden md:block" />
-                  <span className="text-[#FFD700]">Verified Internships</span>
+                  India's Largest Dedicated <br className="hidden md:block" />
+                  <span className="text-[#FFD700]">Internship Ecosystem.</span>
                 </h1>
                 
                 <p className="text-base md:text-lg text-gray-300 mb-8 max-w-xl font-light">
