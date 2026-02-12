@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { InternshipCard } from '@/components/InternshipCard'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowRight, Users, CheckCircle, Shield, Clock, GraduationCap, Award } from 'lucide-react'
+import { ArrowRight, Users, CheckCircle, Shield, Clock, GraduationCap, Award, Zap, Star, Briefcase, TrendingUp } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -142,7 +142,6 @@ export default function Home() {
                   Bridging the gap between ambitious students and 500+ verified industry leaders.
                 </p>
 
-                {/* Mobile: Row Layout | Desktop: Start aligned */}
                 <div className="flex flex-row gap-3 mb-10 w-full sm:w-auto justify-center lg:justify-start">
                   <Link href="/internships" className="flex-1 sm:flex-none">
                     <Button className="w-full bg-[#FFD700] text-[#0A2647] hover:bg-[#FFD700]/90 font-bold px-4 md:px-8 py-5 md:py-6 text-sm md:text-base rounded-lg transition-all shadow-lg active:scale-95">
@@ -156,7 +155,6 @@ export default function Home() {
                   </Link>
                 </div>
 
-                {/* Student Avatars Circle Group */}
                 <div className="flex items-center gap-3 justify-center">
                   <div className="flex -space-x-3">
                     {studentAvatars.map((src, i) => (
@@ -174,7 +172,7 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* Right Visual - Reduced height for better flow */}
+              {/* Right Visual */}
               <motion.div
                 className="relative h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden border border-white/5 shadow-2xl"
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -207,7 +205,7 @@ export default function Home() {
               className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 md:mt-16 pt-8 border-t border-white/10 text-center"
               variants={staggerContainer}
               initial="initial"
-              animate="whileInView"
+              whileInView="whileInView"
             >
               {trustMetrics.map((metric) => {
                 const Icon = metric.icon
@@ -238,12 +236,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Featured Internships */}
+        {/* Featured Internships - Fully Center Aligned */}
         <section className="py-16 md:py-24 bg-white">
           <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
-            <motion.div className="text-center mb-12 md:mb-16" {...fadeInUp}>
+            <motion.div className="text-center mb-12 md:mb-16 flex flex-col items-center" {...fadeInUp}>
               <Badge className="bg-[#0A2647]/5 text-[#0A2647] px-4 py-1 rounded-full mb-4 text-xs font-bold border-none">
-                PREMIUM LISTINGS
+                Recommended Listings
               </Badge>
               <h2 className="text-3xl md:text-5xl font-extrabold text-[#0A2647] mb-4 tracking-tight">
                 Top Internships This Week
@@ -254,14 +252,14 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 justify-items-center"
               variants={staggerContainer}
               initial="initial"
               whileInView="whileInView"
               viewport={{ once: true }}
             >
               {featuredInternships.map((internship) => (
-                <motion.div key={internship.id} variants={fadeInUp}>
+                <motion.div key={internship.id} variants={fadeInUp} className="w-full flex justify-center">
                   <InternshipCard {...internship} />
                 </motion.div>
               ))}
@@ -278,35 +276,39 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Quality Assurance */}
+        {/* The Gold Standard of Trust - Enhanced & Center Aligned */}
         <section className="py-16 md:py-24 bg-gray-50/50">
-          <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
-            <motion.div className="text-center mb-12 md:mb-16" {...fadeInUp}>
-              <h2 className="text-2xl md:text-4xl font-extrabold text-[#0A2647] tracking-tight">
+          <div className="max-w-[1200px] mx-auto px-4 lg:px-8">
+            <motion.div className="text-center mb-16 flex flex-col items-center" {...fadeInUp}>
+              <div className="w-12 h-1 bg-[#FFD700] mb-6 rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0A2647] tracking-tight mb-4">
                 The Gold Standard of Trust
               </h2>
+              <p className="text-gray-500 max-w-xl font-light">
+                We don't just list jobs; we curate careers. Every listing on InternAdda passes through our high-integrity verification engine.
+              </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: Shield, title: 'Employer Audit', description: 'Rigorous 3-step verification process for every company.', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                { icon: CheckCircle, title: 'Direct Access', description: 'No middle-men. Your profile goes straight to decision makers.', color: 'text-blue-600', bg: 'bg-blue-50' },
-                { icon: Award, title: 'Smart Credentials', description: 'Blockchain-backed certificates valid globally.', color: 'text-amber-600', bg: 'bg-amber-50' }
+                { icon: Shield, title: 'Verified Employers', description: 'Rigorous 3-step audit of company credentials, GST, and past intern feedback.', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                { icon: Zap, title: 'Priority Access', description: 'No middlemen. Your applications go directly to hiring managers for faster results.', color: 'text-blue-600', bg: 'bg-blue-50' },
+                { icon: Star, title: 'Smart Credentials', description: 'Showcase your achievements with blockchain-backed, industry-recognized certificates.', color: 'text-amber-600', bg: 'bg-amber-50' }
               ].map((item, idx) => {
                 const Icon = item.icon
                 return (
                   <motion.div
                     key={idx}
-                    className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group"
+                    className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center flex flex-col items-center"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                     viewport={{ once: true }}
                   >
-                    <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                      <Icon className={item.color} size={24} />
+                    <div className={`w-16 h-16 ${item.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                      <Icon className={item.color} size={32} />
                     </div>
-                    <h3 className="font-bold text-xl text-[#0A2647] mb-2">{item.title}</h3>
+                    <h3 className="font-bold text-xl text-[#0A2647] mb-3">{item.title}</h3>
                     <p className="text-gray-500 leading-relaxed text-sm md:text-base font-light">{item.description}</p>
                   </motion.div>
                 )
@@ -349,32 +351,89 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-20 md:py-32 bg-[#0A2647] relative overflow-hidden">
-          <div className="max-w-[1400px] mx-auto px-4 text-center relative z-10">
-            <motion.div {...fadeInUp} className="flex flex-col items-center">
-              <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
-                Ready to Level Up?
-              </h2>
-              <p className="text-lg text-gray-300 mb-12 max-w-2xl font-light">
-                Join 7,200+ students and start your professional journey with InternAdda.
-              </p>
-              <div className="flex flex-row gap-4 justify-center w-full max-w-md">
-                <Link href="/internships" className="flex-1">
-                  <Button className="w-full bg-[#FFD700] text-[#0A2647] hover:bg-[#FFD700]/95 font-extrabold px-6 py-6 text-base rounded-xl transition-all shadow-xl active:scale-95">
-                    Browse
-                  </Button>
-                </Link>
-                <Link href="/about" className="flex-1">
-                  <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/10 px-6 py-6 text-base rounded-xl bg-transparent transition-all active:scale-95">
-                    Contact
-                  </Button>
-                </Link>
+        {/* Final CTA - Enhanced & Modernized */}
+        <section className="py-24 md:py-32 relative overflow-hidden">
+          <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
+            <div className="bg-[#0A2647] rounded-[2rem] md:rounded-[4rem] p-8 md:p-20 relative overflow-hidden shadow-2xl border border-white/10">
+              {/* Background Accents */}
+              <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-500/10 to-transparent pointer-events-none" />
+              
+              <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                <motion.div 
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  className="text-left"
+                >
+                  <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                    Ready to launch your <br />
+                    <span className="text-[#FFD700]">Dream Career?</span>
+                  </h2>
+                  <p className="text-lg text-blue-100/80 mb-8 max-w-lg font-light leading-relaxed">
+                    Join 7,200+ students already scaling their careers. Don't just look for a job—find your future with InternAdda.
+                  </p>
+                  
+                  <ul className="space-y-4 mb-10">
+                    {[
+                      'Access 500+ Verified Industry Roles',
+                      'Direct Applications to Decision Makers',
+                      'Globally Recognized Skill Certificates'
+                    ].map((text, i) => (
+                      <li key={i} className="flex items-center gap-3 text-white/90 font-medium">
+                        <CheckCircle size={18} className="text-[#FFD700]" />
+                        {text}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link href="/internships" className="sm:w-auto">
+                      <Button className="w-full sm:w-auto bg-[#FFD700] text-[#0A2647] hover:bg-white hover:text-[#0A2647] font-extrabold px-10 py-7 text-lg rounded-2xl transition-all shadow-xl active:scale-95 flex items-center gap-2">
+                        Get Started Now <ArrowRight size={20} />
+                      </Button>
+                    </Link>
+                    <Link href="/about" className="sm:w-auto">
+                      <Button variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10 px-10 py-7 text-lg rounded-2xl bg-transparent transition-all">
+                        Contact Support
+                      </Button>
+                    </Link>
+                  </div>
+                </motion.div>
+
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  className="hidden lg:block relative"
+                >
+                  <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-3xl">
+                    <div className="flex items-center gap-4 mb-6">
+                       <div className="w-12 h-12 bg-[#FFD700] rounded-full flex items-center justify-center text-[#0A2647]">
+                          <Briefcase size={24} />
+                       </div>
+                       <div>
+                         <p className="text-white font-bold">New Role Posted</p>
+                         <p className="text-white/60 text-sm">Just now</p>
+                       </div>
+                    </div>
+                    <div className="space-y-3">
+                       <div className="h-4 bg-white/10 rounded w-full" />
+                       <div className="h-4 bg-white/10 rounded w-5/6" />
+                       <div className="h-4 bg-white/10 rounded w-4/6" />
+                    </div>
+                  </div>
+                  {/* Floating Live Indicator */}
+                  <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3">
+                     <div className="bg-green-100 p-2 rounded-lg text-green-600 animate-pulse">
+                        <TrendingUp size={20} />
+                     </div>
+                     <div>
+                        <p className="text-xs text-gray-500 font-bold uppercase">Success Rate</p>
+                        <p className="text-[#0A2647] font-extrabold text-xl">94%</p>
+                     </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </div>
-          {/* Decorative Background Glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
         </section>
       </main>
       <Footer />
