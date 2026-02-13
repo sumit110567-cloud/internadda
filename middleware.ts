@@ -1,67 +1,44 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
-  
-  // --- LAYER 1: TOKEN BYPASS (Sabse Pehle) ---
-  // Agar token hai toh direct entry do, login mat pucho
-  const token = searchParams.get('token')
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+  const { pathname, searchParams } = req.nextUrl;
+  const token = searchParams.get('token');
+
+  // --- LAYER 1: TOKEN BYPASS (STRICT 60s WINDOW) ---
   if (pathname.startsWith('/test') && token) {
     try {
-      const [timestampStr] = token.split('_')
-      const tokenTime = parseInt(timestampStr)
-      const currentTime = Math.floor(Date.now() / 1000)
+      const [timestampStr] = token.split('_');
+      const tokenTime = parseInt(timestampStr);
+      const currentTime = Math.floor(Date.now() / 1000);
 
-      // Token 5 minute tak valid rakhte hain (safe side)
-      if (currentTime - tokenTime < 300) {
-        return NextResponse.next()
+      // Link expires in 60 seconds for maximum security
+      if (currentTime - tokenTime < 60) {
+        return res;
       }
     } catch (e) {
-      console.error("Token verification failed")
+      console.error("Middleware token validation failed");
     }
   }
 
-  // --- LAYER 2: NORMAL SESSION CHECK ---
-  let response = NextResponse.next({
-    request: { headers: request.headers },
-  })
+  // --- LAYER 2: SESSION CHECK ---
+  const { data: { session } } = await supabase.auth.getSession();
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) { return request.cookies.get(name)?.value },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options })
-          response = NextResponse.next({ request: { headers: request.headers } })
-          response.cookies.set({ name, value, ...options })
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: '', ...options })
-          response = NextResponse.next({ request: { headers: request.headers } })
-          response.cookies.set({ name, value: '', ...options })
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabase.auth.getSession()
-
-  // --- LAYER 3: LOGIN PROTECTION ---
-  if (pathname.startsWith('/test')) {
+  if (pathname.startsWith('/test') || pathname.startsWith('/apply')) {
     if (!session) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/auth/signin'
-      redirectUrl.searchParams.set('returnTo', pathname)
-      return NextResponse.redirect(redirectUrl)
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = '/auth/signin';
+      redirectUrl.searchParams.set('returnTo', pathname);
+      return NextResponse.redirect(redirectUrl);
     }
   }
 
-  return response
+  return res;
 }
 
 export const config = {
-  matcher: ['/test/:path*'],
-}
+  matcher: ['/test/:path*', '/apply/:path*'],
+};
