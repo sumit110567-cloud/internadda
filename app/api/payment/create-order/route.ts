@@ -1,9 +1,7 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// ✅ Admin client (disable auth session handling)
+// Admin client (NO SESSION LOGIC)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -17,48 +15,25 @@ const supabaseAdmin = createClient(
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = cookies()
+    // 🔥 1. Get Authorization header
+    const authHeader = req.headers.get('authorization')
 
-    // ✅ FIXED: Proper cookie adapter (get + set + remove)
-    const supabaseAuth = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value
-          },
-          set(name: string, value: string, options: any) {
-            cookieStore.set({ name, value, ...options })
-          },
-          remove(name: string, options: any) {
-            cookieStore.set({ name, value: '', ...options })
-          }
-        }
-      }
-    )
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-    // ✅ Safe auth verification
+    const token = authHeader.replace('Bearer ', '')
+
+    // 🔥 2. Verify JWT manually
     const { data: { user }, error: authError } =
-      await supabaseAuth.auth.getUser()
+      await supabaseAdmin.auth.getUser(token)
 
     if (authError || !user) {
-      console.error('Auth verification failed:', authError)
-      return NextResponse.json(
-        { error: 'Authentication Failed' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
     }
 
     const body = await req.json()
-    const { amount, testId, userId, customerEmail, customerName } = body
-
-    if (user.id !== userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized: User ID mismatch' },
-        { status: 403 }
-      )
-    }
+    const { amount, testId, customerEmail, customerName } = body
 
     if (!testId || !amount) {
       return NextResponse.json(
@@ -106,7 +81,6 @@ export async function POST(req: Request) {
     const data = await cfResponse.json()
 
     if (!cfResponse.ok) {
-      console.error('Cashfree API Error:', data)
       return NextResponse.json(
         { error: data.message || 'Cashfree Order Failed' },
         { status: 400 }
@@ -125,12 +99,8 @@ export async function POST(req: Request) {
       })
 
     if (dbError) {
-      console.error('Supabase DB Insert Error:', dbError)
       return NextResponse.json(
-        {
-          error: 'Failed to initialize order in database',
-          details: dbError.message
-        },
+        { error: dbError.message },
         { status: 500 }
       )
     }
@@ -139,11 +109,8 @@ export async function POST(req: Request) {
       payment_session_id: data.payment_session_id
     })
 
-  } catch (error: any) {
-    console.error(
-      'Unexpected Crash in create-order route:',
-      error
-    )
+  } catch (error) {
+    console.error('Create Order Crash:', error)
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
