@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: { session } } = await supabase.auth.getSession()
 
-  // Protect the /test route
+  // Gatekeeper: Protect the assessment route
   if (request.nextUrl.pathname.startsWith('/test')) {
     if (!session) {
       return NextResponse.redirect(new URL('/auth/signin', request.url))
