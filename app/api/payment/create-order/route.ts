@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const { amount, testId, userId, customerEmail, customerName } = body;
 
     // 1. Backend Validation
+    // Ensure userId is present as it is a required foreign key (UUID) in your schema
     if (!userId || !testId || !amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
@@ -35,13 +36,13 @@ export async function POST(req: Request) {
         order_amount: parseFloat(amount),
         order_currency: "INR",
         customer_details: {
-          customer_id: userId, // Ensure this is the Supabase UUID
+          customer_id: userId, // Must be the exact Supabase UUID string
           customer_name: customerName || "Student",
-          customer_email: customerEmail,
+          customer_email: customerEmail || "no-email@internadda.com",
           customer_phone: "9999999999" 
         },
         order_meta: {
-          // Direct redirect to the test page after payment
+          // Redirect URL must be accessible to authenticated users
           return_url: `${req.headers.get('origin')}/test/${testId}`
         }
       })
@@ -55,17 +56,18 @@ export async function POST(req: Request) {
     }
 
     // 3. Persist Order to Supabase Database
+    // Aligned with your CREATE TABLE schema: user_id (uuid), cf_order_id (text), etc.
     const { error: dbError } = await supabase.from('orders').insert({
       cf_order_id: data.order_id,
-      user_id: userId,          // Must be the UUID from auth.users
+      user_id: userId,          // Foreign key to auth.users(id)
       test_id: String(testId),
-      amount: parseFloat(amount),
+      amount: parseFloat(amount), // Matches DECIMAL type
       payment_session_id: data.payment_session_id,
       status: 'PENDING'
     });
 
     if (dbError) {
-      // Log full error for server-side debugging
+      // Detailed logging for debugging schema mismatches
       console.error('Supabase DB Insert Error:', {
         message: dbError.message,
         details: dbError.details,
@@ -78,7 +80,7 @@ export async function POST(req: Request) {
       }, { status: 500 });
     }
 
-    // 4. Return the session ID to the frontend to trigger the checkout
+    // 4. Return the session ID to trigger the Cashfree SDK checkout
     return NextResponse.json({ payment_session_id: data.payment_session_id });
 
   } catch (error: any) {
