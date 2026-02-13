@@ -4,6 +4,24 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   
+  // 1. DYNAMIC TOKEN CHECK
+  const token = searchParams.get('token')
+  if (pathname.startsWith('/test') && token) {
+    try {
+      // Token format: "timestamp_randomString" (e.g., "1700000000_abc123")
+      const [timestampStr] = token.split('_')
+      const tokenTime = parseInt(timestampStr)
+      const currentTime = Math.floor(Date.now() / 1000)
+
+      // Agar token 120 seconds (2 min) se purana nahi hai, toh allow karo
+      if (currentTime - tokenTime < 120) {
+        return NextResponse.next()
+      }
+    } catch (e) {
+      console.error("Token verification failed")
+    }
+  }
+
   let response = NextResponse.next({
     request: { headers: request.headers },
   })
@@ -13,51 +31,30 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
+        get(name: string) { return request.cookies.get(name)?.value },
         set(name: string, value: string, options: CookieOptions) {
           request.cookies.set({ name, value, ...options })
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          })
+          response = NextResponse.next({ request: { headers: request.headers } })
           response.cookies.set({ name, value, ...options })
         },
         remove(name: string, options: CookieOptions) {
           request.cookies.set({ name, value: '', ...options })
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          })
+          response = NextResponse.next({ request: { headers: request.headers } })
           response.cookies.set({ name, value: '', ...options })
         },
       },
     }
   )
 
-  // Session check ko handle karne ke liye safe method
   const { data: { session } } = await supabase.auth.getSession()
 
-  // --- LOGIC START ---
-  
   if (pathname.startsWith('/test')) {
-    // Agar user logged in hai, toh aage badhne do
-    if (session) {
-      return response
+    if (!session) {
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = '/auth/signin'
+      redirectUrl.searchParams.set('returnTo', pathname)
+      return NextResponse.redirect(redirectUrl)
     }
-
-    // FIX: Agar user just payment karke aaya hai (URL params check)
-    // Agar aapke payment success URL mein koi unique identifier hai toh yahan bypass de sakte hain
-    const isReturningFromPayment = searchParams.get('status') === 'success'
-    
-    if (isReturningFromPayment) {
-        return response // Bypass login if just paid
-    }
-
-    // Default: Redirect to signin
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/auth/signin'
-    redirectUrl.searchParams.set('returnTo', pathname)
-    return NextResponse.redirect(redirectUrl)
   }
 
   return response
