@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { CheckCircle2, ShieldCheck, Zap, Star, School, GraduationCap, Lock, Ticket, Tag } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, Zap, Star, School, GraduationCap, Lock, Ticket, Tag, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
@@ -43,14 +43,14 @@ export default function ApplyPage() {
   const [finalPrice, setFinalPrice] = useState(199)
 
   useEffect(() => {
-    // Auth Check: Agar loading khatam ho gayi aur user nahi hai, tabhi redirect karein
-    if (!loading && !user) {
-      const currentPath = window.location.pathname
-      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(currentPath)}`)
-    }
+    // 1. Only find the internship data
     const data = MOCK_INTERNSHIPS.find(i => i.id === id)
     setInternship(data)
-  }, [user, loading, id, router])
+
+    // 2. We remove the manual redirect logic from here. 
+    // Your middleware.ts handles the redirect before this page even reaches the client.
+    // Manual window.location checks here often cause "flicker" redirects even when logged in.
+  }, [id])
 
   const handleApplyCoupon = () => {
     const code = couponInput.toUpperCase().trim()
@@ -76,16 +76,15 @@ export default function ApplyPage() {
       const origin = window.location.origin;
       const returnUrl = `${origin}/test/${id}`;
 
-      // Backend API call with corrected parameter mapping
       const response = await fetch(`${origin}/api/payment/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: finalPrice,
-          userId: user?.id, // Ensuring userId is passed for backend 'user_id' mapping
+          userId: user?.id,
           customerName: user?.user_metadata?.full_name || 'Student',
           customerEmail: user?.email,
-          testId: id, // Mapping internshipId to testId for backend consistency
+          testId: id,
           college: college,
           education: education,
           couponCode: appliedCoupon?.code || null,
@@ -104,7 +103,6 @@ export default function ApplyPage() {
         mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? "production" : "sandbox" 
       });
       
-      // Initializing Cashfree checkout with direct redirect to returnUrl
       await cashfree.checkout({
         paymentSessionId: result.payment_session_id,
         redirectTarget: "_self" 
@@ -118,7 +116,24 @@ export default function ApplyPage() {
     }
   }
 
-  if (loading || !internship) return <div className="h-screen flex items-center justify-center">Loading...</div>
+  /**
+   * FIX: Added a centralized loading state. 
+   * This prevents the component from rendering any UI (including redirect logic)
+   * while Supabase is still initializing the user session on the client.
+   */
+  if (loading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50 gap-4">
+        <Loader2 className="h-10 w-10 text-[#0A2647] animate-spin" />
+        <p className="text-[#0A2647] font-bold animate-pulse">Verifying Session...</p>
+      </div>
+    )
+  }
+
+  // If loading is done and middleware somehow let an unauthenticated user through
+  if (!user) return null;
+
+  if (!internship) return <div className="h-screen flex items-center justify-center font-bold text-[#0A2647]">Internship details not found.</div>
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4">
