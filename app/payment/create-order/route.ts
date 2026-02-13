@@ -1,4 +1,11 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase with Service Role Key to allow backend order creation
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(req: Request) {
   try {
@@ -9,11 +16,6 @@ export async function POST(req: Request) {
     const baseUrl = isProduction 
       ? 'https://api.cashfree.com/pg/orders' 
       : 'https://sandbox.cashfree.com/pg/orders';
-
-    // Temporary Token Generation (5 minutes validity)
-    const timestamp = Math.floor(Date.now() / 1000);
-    const randomString = Math.random().toString(36).substring(7);
-    const secureToken = `${timestamp}_${randomString}`;
 
     const response = await fetch(baseUrl, {
       method: 'POST',
@@ -33,8 +35,8 @@ export async function POST(req: Request) {
           customer_phone: "9999999999" 
         },
         order_meta: {
-          // Success ke baad direct test page par bypass token ke sath redirect
-          return_url: `${req.headers.get('origin')}/test/${internshipId || '1'}?token=${secureToken}`
+          // CLEAN REDIRECT: Tokens removed. Access will be verified via database status.
+          return_url: `${req.headers.get('origin')}/test/${internshipId || '1'}`
         }
       })
     });
@@ -42,8 +44,24 @@ export async function POST(req: Request) {
     const data = await response.json();
     if (!response.ok) return NextResponse.json({ error: data.message || 'Order Failed' }, { status: response.status });
 
+    // CRITICAL: Store the order in Supabase so the webhook can update it later
+    const { error: dbError } = await supabase.from('orders').insert({
+      cf_order_id: data.order_id,
+      user_id: customerId,
+      test_id: internshipId || '1',
+      amount: amount,
+      status: 'PENDING',
+      payment_session_id: data.payment_session_id
+    });
+
+    if (dbError) {
+      console.error('Database Error:', dbError);
+      return NextResponse.json({ error: 'Failed to initialize order in database' }, { status: 500 });
+    }
+
     return NextResponse.json({ payment_session_id: data.payment_session_id });
   } catch (error) {
+    console.error('Order Creation Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
