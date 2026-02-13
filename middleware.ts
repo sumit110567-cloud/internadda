@@ -4,11 +4,10 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
   
-  // 1. DYNAMIC TOKEN CHECK
+  // --- LAYER 1: DYNAMIC TOKEN BYPASS (Sabse Pehle) ---
   const token = searchParams.get('token')
   if (pathname.startsWith('/test') && token) {
     try {
-      // Token format: "timestamp_randomString" (e.g., "1700000000_abc123")
       const [timestampStr] = token.split('_')
       const tokenTime = parseInt(timestampStr)
       const currentTime = Math.floor(Date.now() / 1000)
@@ -22,6 +21,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // --- LAYER 2: NORMAL SESSION CHECK ---
   let response = NextResponse.next({
     request: { headers: request.headers },
   })
@@ -48,6 +48,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: { session } } = await supabase.auth.getSession()
 
+  // --- LAYER 3: PROTECTION ---
   if (pathname.startsWith('/test')) {
     if (!session) {
       const redirectUrl = request.nextUrl.clone()
