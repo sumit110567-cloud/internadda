@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowRight, Users, CheckCircle, Shield, Clock, GraduationCap, Award, Zap, Star, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-// 1. Import the upgraded global component
-import { InternshipCard } from '@/components/InternshipCard' 
-import { HeroVisual, AnimatedSection, AnimatedCard } from './page-client-components'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
+import { HeroVisual } from './page-client-components'
 
 const featuredInternships = [
   {
@@ -18,10 +18,8 @@ const featuredInternships = [
     company: 'Arjuna AI Solutions',
     stipend: '₹2,000 - ₹8,000',
     location: 'Remote',
-    duration: '3 Months',
     skills: ['Python', 'Django', 'PostgreSQL'],
     applicants: 131,
-    isRecommended: true,
     image: '/python.jpg',
     otherCompaniesCount: 36,
     companyLogos: ['/company1.jpg', '/company2.jpg', '/company3.jpg']
@@ -32,10 +30,8 @@ const featuredInternships = [
     company: 'InternAdda Enterprises',
     stipend: '₹2,500 - ₹5,000',
     location: 'Remote',
-    duration: '2 Months',
     skills: ['React', 'Next.js', 'Tailwind'],
     applicants: 150,
-    isRecommended: true,
     image: '/react.jpg',
     otherCompaniesCount: 21,
     companyLogos: ['/company4.jpg', '/company5.jpg', '/company1.jpg']
@@ -46,10 +42,8 @@ const featuredInternships = [
     company: 'Larex Systems',
     stipend: '₹3,000 - ₹7,000',
     location: 'Remote',
-    duration: '6 Months',
     skills: ['Python', 'Pandas', 'Matplotlib'],
     applicants: 130,
-    isRecommended: true,
     image: '/datascience.jpg',
     otherCompaniesCount: 21,
     companyLogos: ['/company2.jpg', '/company3.jpg', '/company4.jpg']
@@ -83,6 +77,92 @@ const jsonLd = {
       }
     }
   }))
+}
+
+const InternshipCard = ({ id, title, company, stipend, location, skills, applicants, otherCompaniesCount, image, companyLogos }: any) => {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  const handleApply = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!user) {
+      // Redirect to signin if not authenticated
+      router.push(`/auth/signin?callbackUrl=/apply/${id}`)
+      return
+    }
+    // Navigate to personalized apply page
+    router.push(`/apply/${id}`)
+  }
+
+  return (
+    <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
+      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+        <Image 
+          src={image} 
+          alt={`${title} at ${company}`} 
+          fill 
+          sizes="(max-width: 768px) 100vw, 380px"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 z-10">
+          <span className="text-orange-500 text-[10px]" aria-hidden="true">🔥</span>
+          <span className="text-white text-[9px] font-bold tracking-tight">{applicants} Applied</span>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent pointer-events-none" />
+      </div>
+
+      <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center relative z-10">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+          HIRING AT {company} & OTHERS
+        </p>
+
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="flex -space-x-2">
+            {companyLogos.map((logo: string, idx: number) => (
+              <div key={idx} className="relative w-7 h-7 rounded-full border-2 border-white bg-white shadow-sm overflow-hidden">
+                <Image src={logo} alt="Partner Logo" fill className="object-cover" />
+              </div>
+            ))}
+          </div>
+          <span className="text-blue-600 text-[11px] font-bold">+{otherCompaniesCount} more</span>
+        </div>
+
+        <h3 className="text-xl font-extrabold text-[#0A2647] mb-4 leading-tight group-hover:text-blue-700 transition-colors">
+          {title}
+        </h3>
+
+        <div className="grid grid-cols-2 w-full border-y border-gray-50 py-3 mb-4">
+          <div className="border-r border-gray-100 flex flex-col items-center">
+            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Stipend</p>
+            <p className="text-blue-600 font-extrabold text-sm">{stipend}</p>
+          </div>
+          <div className="flex flex-col items-center">
+            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Location</p>
+            <p className="text-gray-700 font-extrabold text-sm">{location}</p>
+          </div>
+        </div>
+
+        <div className="w-full mb-6">
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {skills.map((skill: string) => (
+              <span key={skill} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <Button 
+          onClick={handleApply}
+          className="w-full bg-[#0A2647] hover:bg-[#144272] text-white py-6 rounded-xl font-extrabold text-base shadow-lg shadow-blue-900/10 transition-all active:scale-95 relative z-20 cursor-pointer"
+        >
+          {user ? 'Apply Now' : 'Sign In to Apply'}
+        </Button>
+      </div>
+    </article>
+  )
 }
 
 export default function Home() {
@@ -226,7 +306,6 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
               {featuredInternships.map((internship) => (
                 <div key={internship.id} className="w-full flex justify-center">
-                  {/* 2. Using the global component which handles clicks & auth correctly */}
                   <InternshipCard {...internship} />
                 </div>
               ))}
@@ -273,7 +352,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final CTA Section */}
+        {/* FINAL CTA */}
         <section className="py-24 flex flex-col items-center">
           <div className="max-w-[1400px] w-full px-4 lg:px-8">
             <div className="bg-[#0A2647] rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 relative overflow-hidden shadow-2xl">
