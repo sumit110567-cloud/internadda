@@ -208,7 +208,7 @@ export default function ApplyPage() {
                 </label>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="Enter Code (e.g. TECHTITANS)"
+                    placeholder="Enter Code (e.g. FIRST500)"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     className="rounded-xl border-slate-200 uppercase font-bold text-sm"
