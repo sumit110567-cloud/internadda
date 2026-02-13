@@ -27,26 +27,24 @@ const InternshipCard = ({ internship }: { internship: Internship }) => {
   const { user } = useAuth()
   const router = useRouter()
 
-  const handleApply = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+// InternshipCard ke andar handleApply function ko aise update karein:
+const handleApply = (e: React.MouseEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
 
-    if (!user) {
-      // Login page par bhejo agar user authenticated nahi hai
-      router.push(`/auth/signin?callbackUrl=/internships`)
-      return
-    }
-
-    // --- SECURE TOKEN GENERATION ---
-    // Token format: "timestamp_randomString"
-    const timestamp = Math.floor(Date.now() / 1000);
-    const randomString = Math.random().toString(36).substring(7);
-    const secureToken = `${timestamp}_${randomString}`;
-
-    // Test page par redirect karein token ke saath taaki middleware bypass ho jaye
-    router.push(`/test/${internship.id}?token=${secureToken}`)
+  if (!user) {
+    router.push(`/auth/signin?callbackUrl=/internships`)
+    return
   }
 
+  // Token Generate Karo
+  const timestamp = Math.floor(Date.now() / 1000);
+  const randomString = Math.random().toString(36).substring(7);
+  const secureToken = `${timestamp}_${randomString}`;
+
+  // AB REDIRECT KAREIN (Direct Test Page with Token)
+  router.push(`/test/${internship.id}?token=${secureToken}`)
+}
   return (
     <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
       <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
