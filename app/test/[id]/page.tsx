@@ -37,35 +37,40 @@ export default function InternshipAssessment() {
       const params = new URLSearchParams(window.location.search)
       const token = params.get('token')
 
-      // A. ONE-TIME TOKEN BYPASS (Sabse Pehle)
+      // A. ONE-TIME TOKEN BYPASS (High Priority)
       if (token) {
         try {
           const [timestampStr] = token.split('_')
           const tokenTime = parseInt(timestampStr)
           const currentTime = Math.floor(Date.now() / 1000)
 
-          // Agar token 5 mins se kam purana hai toh access do
+          // If token is less than 5 minutes old, grant access immediately
           if (currentTime - tokenTime < 300) {
             setIsAuthorized(true)
             setVerifying(false)
 
-            // 🔥 CLEAN URL: Token ko browser history se turant remove karein
-            // Taaki refresh karne par ya copy karne par link kaam na kare
+            // 🔥 CLEAN URL: Remove token so refresh/sharing doesn't work
             const newUrl = window.location.pathname
             window.history.replaceState({}, '', newUrl)
             
-            // Background update: User profile ko 'paid' mark karein permanent access ke liye
+            // Background update: Sync the database for future sessions
+            // We don't 'await' this so the user can start the test instantly
             if (user) {
-              await supabase.from('profiles').update({ has_paid: true }).eq('id', user.id)
+              supabase.from('profiles')
+                .update({ has_paid: true })
+                .eq('id', user.id)
+                .then(({ error }) => { if (error) console.error("Sync error:", error) })
             }
+            
+            // EXIT: Do not perform any further database checks if token is valid
             return 
           }
         } catch (e) {
-          console.error("Bypass token verification failed")
+          console.error("Token verification failed")
         }
       }
 
-      // B. FALLBACK: Database Check (Agar token nahi hai)
+      // B. FALLBACK: Database Check (Only if NO valid token)
       if (!user) {
         router.push('/auth/signin')
         return
@@ -139,7 +144,6 @@ export default function InternshipAssessment() {
     return <LoadingScreen />
   }
 
-  // Polite & Perfect Access Denied UI
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-[#0A2647] flex items-center justify-center p-6">
@@ -175,7 +179,6 @@ export default function InternshipAssessment() {
     )
   }
 
-  // Success/Fail Screens
   if (isFinished) {
     const percentage = Math.round((score / testData.questions.length) * 100)
     const passed = percentage >= 50
@@ -211,7 +214,6 @@ export default function InternshipAssessment() {
     )
   }
 
-  // Main Test UI
   return (
     <div className="min-h-screen bg-[#0A2647] p-4 md:p-12 font-sans">
       <div className="max-w-4xl mx-auto">
