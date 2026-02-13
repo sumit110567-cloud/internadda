@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { CheckCircle2, ShieldCheck, Zap, Star, School, GraduationCap, Lock, Ticket, Tag, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase' // Ensure supabase client is imported
 
 const MOCK_INTERNSHIPS = [
   { id: '1', title: 'Python Developer Intern', company: 'Arjuna AI Solutions & Others', stipend: '₹2,000 - ₹8,000' },
@@ -43,13 +44,8 @@ export default function ApplyPage() {
   const [finalPrice, setFinalPrice] = useState(199)
 
   useEffect(() => {
-    // 1. Only find the internship data
     const data = MOCK_INTERNSHIPS.find(i => i.id === id)
     setInternship(data)
-
-    // 2. We remove the manual redirect logic from here. 
-    // Your middleware.ts handles the redirect before this page even reaches the client.
-    // Manual window.location checks here often cause "flicker" redirects even when logged in.
   }, [id])
 
   const handleApplyCoupon = () => {
@@ -66,24 +62,36 @@ export default function ApplyPage() {
   }
 
   const handlePayment = async () => {
+    // 1. Mandatory Input Validation
     if (!college || !education) {
       alert("Please fill in your college and education details first.")
       return
     }
 
     setIsProcessing(true)
+
     try {
+      // 2. CRITICAL FIX: Refresh session immediately before the API call
+      // This ensures user?.id is not undefined and the session token is valid
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+      if (sessionError || !session || !session.user) {
+        throw new Error("Authentication Failed: Your session has expired. Please log in again.");
+      }
+
+      const activeUser = session.user;
       const origin = window.location.origin;
       const returnUrl = `${origin}/test/${id}`;
 
+      // 3. Initiate Order Creation
       const response = await fetch(`${origin}/api/payment/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: finalPrice,
-          userId: user?.id,
-          customerName: user?.user_metadata?.full_name || 'Student',
-          customerEmail: user?.email,
+          userId: activeUser.id, // Use the verified ID from the fresh session
+          customerName: activeUser.user_metadata?.full_name || 'Student',
+          customerEmail: activeUser.email,
           testId: id,
           college: college,
           education: education,
@@ -98,6 +106,7 @@ export default function ApplyPage() {
         throw new Error(result.error || "Failed to create order");
       }
 
+      // 4. Load and Trigger Cashfree Checkout
       const { load } = await import('@cashfreepayments/cashfree-js');
       const cashfree = await load({ 
         mode: process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION' ? "production" : "sandbox" 
@@ -109,18 +118,18 @@ export default function ApplyPage() {
       });
 
     } catch (error: any) {
-      console.error("Payment failed:", error);
+      console.error("Payment Process Error:", error);
       alert(error.message || "Unable to initiate payment. Please check your connection.");
+      
+      // If it's an auth error, redirect to sign in
+      if (error.message.includes("Authentication Failed")) {
+        router.push(`/auth/signin?callbackUrl=/apply/${id}`);
+      }
     } finally {
       setIsProcessing(false)
     }
   }
 
-  /**
-   * FIX: Added a centralized loading state. 
-   * This prevents the component from rendering any UI (including redirect logic)
-   * while Supabase is still initializing the user session on the client.
-   */
   if (loading) {
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-slate-50 gap-4">
@@ -130,7 +139,6 @@ export default function ApplyPage() {
     )
   }
 
-  // If loading is done and middleware somehow let an unauthenticated user through
   if (!user) return null;
 
   if (!internship) return <div className="h-screen flex items-center justify-center font-bold text-[#0A2647]">Internship details not found.</div>
@@ -229,7 +237,7 @@ export default function ApplyPage() {
                 </label>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="Enter Code (e.g. FIRST500)"
+                    placeholder="Enter Code (e.g. CAMPUSVIP)"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     className="rounded-xl border-slate-200 uppercase font-bold text-sm"
