@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { Menu, X, LogOut } from 'lucide-react'
+import { Menu, X, LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
@@ -38,7 +38,7 @@ export function Header() {
                 alt="InternAdda Logo" 
                 fill 
                 className="object-cover"
-                priority // Optimization: Immediate load for LCP
+                priority 
                 sizes="40px"
               />
             </div>
@@ -51,7 +51,7 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation - SEO: Semantic nav tag */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 mx-auto" aria-label="Main Navigation">
             {navItems.map((item) => {
               const isActive = pathname === item.href
@@ -76,11 +76,20 @@ export function Header() {
             })}
           </nav>
 
-          {/* CTA Buttons */}
+          {/* CTA & User Profile Section */}
           <div className="hidden md:flex items-center gap-3 flex-shrink-0">
             {user ? (
               <div className="flex items-center gap-4">
-                <span className="text-sm text-muted-foreground hidden lg:inline-block">{user.email}</span>
+                {/* User Info Display: Name & Mobile */}
+                <div className="flex flex-col items-end leading-tight mr-1">
+                  <span className="text-sm font-bold text-foreground">
+                    {user.user_metadata?.full_name || user.user_metadata?.name || "User"}
+                  </span>
+                  <span className="text-[10px] text-primary font-medium">
+                    {user.user_metadata?.phone || user.phone || "No Mobile"}
+                  </span>
+                </div>
+
                 <Button
                   variant="outline"
                   size="sm"
@@ -127,7 +136,6 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  aria-current={isActive ? 'page' : undefined}
                   className={cn(
                     "block px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200",
                     isActive 
@@ -140,27 +148,34 @@ export function Header() {
                 </Link>
               )
             })}
-            <div className="flex gap-2 pt-4 border-t border-border">
+            
+            <div className="flex flex-col gap-2 pt-4 border-t border-border px-3">
               {user ? (
-                <Button
-                  onClick={handleSignOut}
-                  className="flex-1 border border-primary text-primary bg-transparent hover:bg-primary/10"
-                >
-                  Sign Out
-                </Button>
-              ) : (
                 <>
+                  <div className="flex flex-col mb-2">
+                    <span className="text-sm font-bold">{user.user_metadata?.full_name || "User"}</span>
+                    <span className="text-xs text-muted-foreground">{user.user_metadata?.phone || user.phone}</span>
+                  </div>
+                  <Button
+                    onClick={handleSignOut}
+                    className="w-full border border-primary text-primary bg-transparent hover:bg-primary/10"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <div className="flex gap-2">
                   <Link href="/auth/signin" className="flex-1" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent">
+                    <Button variant="outline" size="sm" className="w-full border-primary text-primary bg-transparent">
                       Sign In
                     </Button>
                   </Link>
                   <Link href="/auth/signup" className="flex-1" onClick={() => setIsOpen(false)}>
-                    <Button size="sm" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button size="sm" className="w-full bg-primary text-primary-foreground">
                       Get Started
                     </Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </nav>
