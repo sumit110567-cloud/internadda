@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { User, Mail, Phone, GraduationCap, MapPin, Camera, Save, CheckCircle, ShieldCheck } from 'lucide-react'
+import { User, Mail, Phone, GraduationCap, Save, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -87,15 +87,14 @@ export default function ProfileSettings() {
                   <div className="w-32 h-32 md:w-48 md:h-48 rounded-[2.5rem] bg-[#0A2647] flex items-center justify-center text-5xl font-black text-[#FFD700] shadow-2xl overflow-hidden border-4 border-slate-50">
                     {formData.full_name?.[0] || 'L'}
                   </div>
-                  <button className="absolute bottom-2 right-2 p-3 bg-white rounded-2xl shadow-xl text-[#0A2647] hover:bg-slate-50 transition-all border border-slate-100">
-                    <Camera size={20} />
-                  </button>
+                  {/* Camera button removed as requested */}
                 </div>
                 <div className="text-center">
                   <div className="flex items-center gap-2 text-emerald-600 font-black text-[10px] uppercase tracking-widest bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 mb-2">
                     <ShieldCheck size={14} /> Verified Student
                   </div>
-                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Member since 2025</p>
+                  {/* Membership updated to 2026 */}
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Member since 2026</p>
                 </div>
               </div>
 
