@@ -1,16 +1,19 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { 
+  Briefcase, Award, Clock, Star, 
+  Zap, ShieldCheck, ArrowRight 
+} from 'lucide-react'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
-import { motion } from 'framer-motion'
-import { Briefcase, Award, Clock, Star, Zap, ShieldCheck, ArrowRight } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-// FIX: Added missing Link import to resolve build error
-import Link from 'next/link' 
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button' // FIX: Added missing import
+import { cn } from '@/lib/utils' // FIX: Added missing import
 
 export default function StudentDashboard() {
   const { user } = useAuth()
@@ -20,7 +23,6 @@ export default function StudentDashboard() {
   useEffect(() => {
     async function fetchRealStats() {
       if (!user) return
-      
       try {
         const [apps, certs, orders] = await Promise.all([
           supabase.from('user_test_attempts').select('score', { count: 'exact' }).eq('user_id', user.id),
@@ -29,7 +31,6 @@ export default function StudentDashboard() {
         ])
 
         const totalScore = apps.data?.reduce((acc, curr) => acc + curr.score, 0) || 0
-        // Calculate real percentage based on total marks of 20 per test
         const average = apps.data?.length ? Math.round((totalScore / (apps.data.length * 20)) * 100) : 0
 
         setStats({
@@ -39,7 +40,7 @@ export default function StudentDashboard() {
           pending: orders.count || 0
         })
       } catch (error) {
-        console.error("Error fetching dashboard stats:", error)
+        console.error("Dashboard stats error:", error)
       } finally {
         setLoading(false)
       }
@@ -59,7 +60,7 @@ export default function StudentDashboard() {
           <div className="max-w-[1400px] mx-auto relative z-10">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               <div className="flex flex-wrap items-center gap-3">
-                <Badge className="bg-blue-500/20 text-blue-300 border-none px-4 py-1.5 rounded-full font-black uppercase tracking-widest text-[9px]">Portal Active</Badge>
+                <Badge className="bg-blue-500/20 text-blue-300 border-none px-4 py-1 rounded-full font-black uppercase tracking-widest text-[9px]">Portal Active</Badge>
                 <div className="flex items-center gap-1.5 text-emerald-400 text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-500/20">
                   <ShieldCheck size={12} /> Verified identity
                 </div>
@@ -67,8 +68,8 @@ export default function StudentDashboard() {
               <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter">
                 Welcome, <span className="text-yellow-400">{userName}.</span>
               </h1>
-              <p className="text-blue-100/60 font-medium max-w-2xl leading-relaxed text-lg">
-                India's Gold Standard Internship Ecosystem. Access your {stats.applications} application{stats.applications !== 1 ? 's' : ''} and verified credentials below.
+              <p className="text-blue-100/60 font-medium max-w-2xl text-lg leading-relaxed">
+                Your InternAdda Command Center. Managing {stats.applications} active assessment{stats.applications !== 1 ? 's' : ''} with MSME-certified verification.
               </p>
             </motion.div>
           </div>
@@ -100,26 +101,24 @@ export default function StudentDashboard() {
           </div>
         </section>
 
-        {/* Career Optimization Banner */}
+        {/* Minimal Premium Banner */}
         <section className="py-20 px-6">
-          <div className="max-w-[1400px] mx-auto bg-white rounded-[4rem] p-12 border border-slate-100 shadow-sm relative overflow-hidden group">
-             <div className="flex flex-col md:flex-row justify-between items-center gap-10 relative z-10">
+          <div className="max-w-[1400px] mx-auto bg-white rounded-[4rem] p-12 border border-slate-100 shadow-sm relative overflow-hidden">
+             <div className="flex flex-col md:flex-row justify-between items-center gap-10">
                <div className="space-y-4 text-center md:text-left">
-                  <h2 className="text-3xl font-black text-[#0A2647] tracking-tighter leading-none">Your Professional Roadmap.</h2>
+                  <h2 className="text-3xl font-black text-[#0A2647] tracking-tighter leading-none">Elevate Your Career.</h2>
                   <p className="text-slate-500 font-medium max-w-lg leading-relaxed">
-                    InternAdda bridges you to 500+ verified industry leaders. Complete your Assessments and verify your profile to unlock direct HR interviews for premium internships.
+                    Bridge the gap to 500+ verified industry leaders. Complete your Assessments and verify your profile to unlock direct HR interviews.
                   </p>
                </div>
                <div className="flex flex-col sm:flex-row gap-4">
                   <Link href="/internships">
-                    <Button className="bg-[#0A2647] hover:bg-blue-900 text-white font-black px-12 py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.2em] shadow-2xl transition-all">
-                      Browse Internships <ArrowRight size={16} className="ml-2" />
+                    <Button className="bg-[#0A2647] hover:bg-blue-900 text-white font-black px-12 py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.2em] shadow-2xl">
+                      Browse Internships <ArrowRight className="ml-2" size={16} />
                     </Button>
                   </Link>
                   <Link href="/profile">
-                    <Button variant="outline" className="border-slate-200 text-[#0A2647] font-black px-12 py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 transition-all">
-                      Update Profile
-                    </Button>
+                    <Button variant="outline" className="border-slate-200 text-[#0A2647] font-black px-12 py-8 rounded-[2rem] text-[11px] uppercase tracking-[0.2em]">Update Profile</Button>
                   </Link>
                </div>
              </div>
