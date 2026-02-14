@@ -47,12 +47,20 @@ export function Header() {
     router.push('/')
   }
 
+  // ✅ Home Added First
   const navItems = [
+    { label: 'Home', href: '/' },
     { label: 'Internships', href: '/internships' },
     { label: 'Courses', href: '/courses' },
     { label: 'About', href: '/about' },
     { label: 'Journal', href: '/blog' },
   ]
+
+  // ✅ Proper active logic (especially for Home)
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname.startsWith(href)
+  }
 
   return (
     <header className={cn(
@@ -87,7 +95,9 @@ export function Header() {
                 href={item.href} 
                 className={cn(
                   "text-[12px] font-black uppercase tracking-widest transition-all",
-                  pathname === item.href ? "text-blue-600" : "text-slate-500 hover:text-[#0A2647]"
+                  isActive(item.href)
+                    ? "text-blue-600"
+                    : "text-slate-500 hover:text-[#0A2647]"
                 )}
               >
                 {item.label}
@@ -170,7 +180,6 @@ export function Header() {
               </Link>
             )}
 
-            {/* Mobile Hamburger */}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-3 bg-slate-50 rounded-2xl text-[#0A2647] lg:hidden active:scale-90 transition-transform"
@@ -199,13 +208,15 @@ export function Header() {
                     href={item.href} 
                     className={cn(
                       "px-6 py-4 rounded-2xl text-lg font-black transition-all flex items-center justify-between",
-                      pathname === item.href ? "bg-blue-50 text-blue-600" : "text-[#0A2647] hover:bg-slate-50"
+                      isActive(item.href)
+                        ? "bg-blue-50 text-blue-600"
+                        : "text-[#0A2647] hover:bg-slate-50"
                     )}
                   >
                     {item.label}
                     <Zap size={18} className={cn(
                       "transition-opacity", 
-                      pathname === item.href ? "opacity-100" : "opacity-0"
+                      isActive(item.href) ? "opacity-100" : "opacity-0"
                     )} />
                   </Link>
                 ))}
