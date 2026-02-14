@@ -2,27 +2,35 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 
 export async function POST(req: Request) {
-  const supabase = createClient()
-  const { testId } = await req.json()
+  try {
+    const supabase = await createClient()
+    const { testId } = await req.json()
 
-  // Get the actual authenticated user from the session, don't trust the request body
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // 1. Get the secure user session from cookies
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (authError || !user) {
-    return NextResponse.json({ authorized: false, message: "Not authenticated" }, { status: 401 })
+    if (authError || !user) {
+      return NextResponse.json({ authorized: false, message: "Not authenticated" }, { status: 401 })
+    }
+
+    // 2. Check the database for a successful 'PAID' order
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('status')
+      .eq('user_id', user.id)
+      .eq('test_id', String(testId))
+      .eq('status', 'PAID')
+      .single()
+
+    if (error || !order) {
+      return NextResponse.json({ authorized: false, message: "Payment not verified" }, { status: 403 })
+    }
+
+    // 3. Access granted
+    return NextResponse.json({ authorized: true })
+    
+  } catch (error) {
+    console.error('Verify API Error:', error)
+    return NextResponse.json({ authorized: false }, { status: 500 })
   }
-
-  const { data: order, error } = await supabase
-    .from('orders')
-    .select('status')
-    .eq('user_id', user.id) // Use the secure ID from auth.getUser()
-    .eq('test_id', testId)
-    .eq('status', 'PAID')
-    .single()
-
-  if (error || !order) {
-    return NextResponse.json({ authorized: false, message: "Payment not verified" }, { status: 403 })
-  }
-
-  return NextResponse.json({ authorized: true })
 }
