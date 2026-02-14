@@ -5,18 +5,19 @@ import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { 
   Menu, X, LogOut, ChevronDown, 
-  LayoutDashboard, CreditCard, ShieldCheck, Zap, User
+  LayoutDashboard, CreditCard, Settings, 
+  ShieldCheck, Sparkles, Zap
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -34,6 +35,11 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = 'unset'
+  }, [isOpen])
+
   useEffect(() => setIsOpen(false), [pathname])
 
   const handleSignOut = async () => {
@@ -42,17 +48,11 @@ export function Header() {
   }
 
   const navItems = [
-    { label: 'Home', href: '/' },
     { label: 'Internships', href: '/internships' },
     { label: 'Courses', href: '/courses' },
     { label: 'About', href: '/about' },
     { label: 'Journal', href: '/blog' },
   ]
-
-  const isActive = (href: string) =>
-    href === '/'
-      ? pathname === '/'
-      : pathname.startsWith(href)
 
   return (
     <header className={cn(
@@ -63,7 +63,7 @@ export function Header() {
     )}>
       <div className="max-w-[1440px] mx-auto px-6 sm:px-10">
         <div className="flex items-center justify-between h-12">
-
+          
           {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group">
             <div className="relative w-9 h-9 overflow-hidden rounded-[1rem] shadow-xl border border-slate-100 transition-transform group-hover:scale-110">
@@ -79,43 +79,23 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => {
-              const active = isActive(item.href)
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="relative px-2 py-1 text-[12px] font-black uppercase tracking-widest transition-all"
-                >
-                  <span
-                    className={cn(
-                      "transition-all duration-300",
-                      active
-                        ? "text-blue-600 drop-shadow-[0_0_6px_rgba(37,99,235,0.6)]"
-                        : "text-slate-500 hover:text-[#0A2647]"
-                    )}
-                  >
-                    {item.label}
-                  </span>
-
-                  {/* Underline Glow */}
-                  <span
-                    className={cn(
-                      "absolute left-0 -bottom-1 h-[2px] w-full rounded-full transition-all duration-300",
-                      active
-                        ? "bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.8)]"
-                        : "bg-transparent"
-                    )}
-                  />
-                </Link>
-              )
-            })}
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-10">
+            {navItems.map((item) => (
+              <Link 
+                key={item.href} 
+                href={item.href} 
+                className={cn(
+                  "text-[12px] font-black uppercase tracking-widest transition-all",
+                  pathname === item.href ? "text-blue-600" : "text-slate-500 hover:text-[#0A2647]"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Right Actions */}
+          {/* Actions */}
           <div className="flex items-center gap-4">
             {user ? (
               <div className="hidden md:block">
@@ -123,10 +103,10 @@ export function Header() {
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl transition-all">
                       <div className="w-9 h-9 rounded-full bg-[#0A2647] flex items-center justify-center text-[#FFD700] font-black shadow-md text-sm uppercase">
-                        {user.user_metadata?.full_name?.[0] || "L"}
+                        {user.user_metadata?.full_name?.[0] || user.email?.[0]}
                       </div>
                       <span className="text-[11px] font-black text-[#0A2647] uppercase tracking-wider">
-                        {user.user_metadata?.full_name?.split(' ')[0] || "Lucky"}
+                        {user.user_metadata?.full_name?.split(' ')[0] || "Student"}
                       </span>
                       <ChevronDown size={14} className="text-slate-400" />
                     </button>
@@ -136,19 +116,14 @@ export function Header() {
                     className="w-64 mt-3 p-2 rounded-[2rem] border-slate-100 shadow-2xl bg-white" 
                     align="end"
                   >
-                    <DropdownMenuLabel className="p-4 bg-slate-50 rounded-[1.5rem] mb-2">
-                       <p className="text-[9px] font-black text-slate-400 uppercase mb-1">DU Candidate</p>
-                       <p className="text-xs font-black text-[#0A2647] truncate">{user.email}</p>
-                    </DropdownMenuLabel>
-
                     <DropdownMenuGroup className="p-1">
                       <DropdownMenuItem 
-                        onClick={() => router.push('/profile')} 
+                        onClick={() => router.push('/dashboard')} 
                         className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center"
                       >
-                        <User size={18} className="text-blue-600" />
+                        <LayoutDashboard size={18} className="text-blue-600" />
                         <span className="font-black text-[#0A2647] text-[11px] uppercase">
-                          Command Center (Profile)
+                          Command Center
                         </span>
                       </DropdownMenuItem>
 
@@ -158,7 +133,17 @@ export function Header() {
                       >
                         <CreditCard size={18} className="text-blue-600" />
                         <span className="font-black text-[#0A2647] text-[11px] uppercase">
-                          Transactions
+                          Transaction Center
+                        </span>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem 
+                        onClick={() => router.push('/profile')} 
+                        className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center"
+                      >
+                        <Settings size={18} className="text-blue-600" />
+                        <span className="font-black text-[#0A2647] text-[11px] uppercase">
+                          Settings
                         </span>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -167,7 +152,7 @@ export function Header() {
 
                     <DropdownMenuItem 
                       onClick={handleSignOut} 
-                      className="p-4 rounded-2xl cursor-pointer bg-red-50 text-red-600 flex gap-3 items-center mt-1"
+                      className="p-4 rounded-2xl cursor-pointer bg-red-50/50 text-red-600 flex gap-3 items-center mt-1"
                     >
                       <LogOut size={18} />
                       <span className="font-black text-[11px] uppercase">
@@ -179,23 +164,75 @@ export function Header() {
               </div>
             ) : (
               <Link href="/auth/signup" className="hidden md:block">
-                <Button className="bg-[#0A2647] text-white font-black rounded-full px-8 py-3 text-[11px] uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:scale-105 transition-all">
+                <Button className="bg-[#0A2647] text-white font-black rounded-full px-8 py-4 text-[11px] uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-blue-900/10">
                   Get Verified
                 </Button>
               </Link>
             )}
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Hamburger */}
             <button 
               onClick={() => setIsOpen(!isOpen)} 
-              className="p-3 bg-slate-50 rounded-2xl lg:hidden active:scale-90 transition-transform"
+              className="p-3 bg-slate-50 rounded-2xl text-[#0A2647] lg:hidden active:scale-90 transition-transform"
             >
               {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
-
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 shadow-2xl overflow-hidden"
+          >
+            <div className="p-6 flex flex-col gap-6">
+
+              <nav className="flex flex-col gap-1">
+                {navItems.map((item) => (
+                  <Link 
+                    key={item.href} 
+                    href={item.href} 
+                    className={cn(
+                      "px-6 py-4 rounded-2xl text-lg font-black transition-all flex items-center justify-between",
+                      pathname === item.href ? "bg-blue-50 text-blue-600" : "text-[#0A2647] hover:bg-slate-50"
+                    )}
+                  >
+                    {item.label}
+                    <Zap size={18} className={cn(
+                      "transition-opacity", 
+                      pathname === item.href ? "opacity-100" : "opacity-0"
+                    )} />
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="pt-6 border-t border-slate-50">
+                {user ? (
+                  <Button 
+                    onClick={handleSignOut} 
+                    variant="outline" 
+                    className="w-full text-red-600 py-6 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] bg-red-50/30 border-red-100"
+                  >
+                    <LogOut className="mr-2" size={16} /> Secure Logout
+                  </Button>
+                ) : (
+                  <Link href="/auth/signup" className="w-full">
+                    <Button className="w-full bg-[#0A2647] py-6 rounded-[2rem] font-black uppercase tracking-widest text-xs">
+                      Join InternAdda
+                    </Button>
+                  </Link>
+                )}
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
