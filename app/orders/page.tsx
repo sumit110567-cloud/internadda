@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { CreditCard, Receipt, ExternalLink, ShieldCheck, CheckCircle, Clock, AlertTriangle } from 'lucide-react'
+import { CreditCard, Receipt, ExternalLink, CheckCircle, Clock, Lock } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { supabase } from '@/lib/supabase'
 import { Badge } from '@/components/ui/badge'
@@ -14,21 +14,24 @@ import Link from 'next/link'
 export default function OrdersPage() {
   const { user } = useAuth()
   const [orders, setOrders] = useState<any[]>([])
+  const [attempts, setAttempts] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchOrders() {
+    async function fetchRealData() {
       if (!user) return
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+      // Fetch orders and previous attempts simultaneously
+      const [{ data: orderData }, { data: attemptData }] = await Promise.all([
+        supabase.from('orders').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('user_test_attempts').select('test_id').eq('user_id', user.id)
+      ])
       
-      if (!error) setOrders(data || [])
+      setOrders(orderData || [])
+      // Map attempted test IDs for quick lookup
+      setAttempts(attemptData?.map(a => String(a.test_id)) || [])
       setLoading(false)
     }
-    fetchOrders()
+    fetchRealData()
   }, [user])
 
   return (
@@ -51,60 +54,48 @@ export default function OrdersPage() {
             {loading ? (
               <div className="p-20 text-center bg-white rounded-[3rem] shadow-xl">
                  <div className="animate-spin w-10 h-10 border-4 border-[#0A2647] border-t-transparent rounded-full mx-auto" />
-                 <p className="mt-4 font-bold text-slate-400 uppercase tracking-widest text-xs">Loading history...</p>
               </div>
             ) : orders.length === 0 ? (
-              <div className="bg-white rounded-[3.5rem] p-16 md:p-24 text-center shadow-xl border border-slate-100">
-                <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-slate-200">
-                   <Receipt size={40} />
-                </div>
+              <div className="bg-white rounded-[3.5rem] p-16 text-center shadow-xl border border-slate-100">
+                <Receipt size={40} className="mx-auto mb-8 text-slate-200" />
                 <h3 className="text-2xl font-black text-[#0A2647] mb-4">No Transactions Found</h3>
-                <p className="text-slate-500 font-medium mb-10 max-w-sm mx-auto">You haven't purchased any internship assessments yet. Ready to start your career?</p>
-                <Link href="/internships">
-                  <Button className="bg-[#0A2647] hover:bg-blue-900 rounded-2xl px-10 py-7 font-black text-base shadow-xl shadow-blue-900/10">
-                    Explore Internships
-                  </Button>
-                </Link>
+                <Link href="/internships"><Button className="bg-[#0A2647] rounded-2xl px-10 py-7 font-black">Explore Internships</Button></Link>
               </div>
             ) : (
               <div className="grid gap-6">
-                {orders.map((order, i) => (
-                  <motion.div 
-                    key={order.id} 
-                    initial={{ opacity: 0, x: -20 }} 
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="bg-white p-6 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all"
-                  >
-                    <div className="flex items-center gap-6">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner ${order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-yellow-50 text-yellow-600'}`}>
-                        <CreditCard size={28} />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Order #{order.id.slice(0, 8)}</p>
-                        <h4 className="text-xl font-black text-[#0A2647]">Assessment Fee: Test ID {order.test_id}</h4>
-                        <div className="flex items-center gap-3 mt-2">
-                          <span className="text-lg font-black text-blue-600">₹{order.amount || '499'}</span>
-                          <span className="text-slate-300">•</span>
-                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{new Date(order.created_at).toLocaleDateString()}</span>
+                {orders.map((order, i) => {
+                  const hasAttempted = attempts.includes(String(order.test_id))
+                  return (
+                    <motion.div key={order.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} className="bg-white p-6 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all">
+                      <div className="flex items-center gap-6">
+                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-yellow-50 text-yellow-600'}`}><CreditCard size={28} /></div>
+                        <div>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">ID #{order.id.slice(0, 8)}</p>
+                          <h4 className="text-xl font-black text-[#0A2647]">Assessment: Test ID {order.test_id}</h4>
+                          <span className="text-xs font-bold text-slate-400 uppercase">{new Date(order.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                      <div className={`px-4 py-2 rounded-full border flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-yellow-50 text-yellow-600 border-yellow-100'}`}>
-                        {order.status === 'PAID' ? <CheckCircle size={14} /> : <Clock size={14} />} {order.status}
+                      <div className="flex items-center gap-4">
+                        <div className={`px-4 py-2 rounded-full border flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-yellow-50 text-yellow-600 border-yellow-100'}`}>
+                          {order.status === 'PAID' ? <CheckCircle size={14} /> : <Clock size={14} />} {order.status}
+                        </div>
+                        {order.status === 'PAID' && (
+                          hasAttempted ? (
+                            <div className="flex items-center gap-2 bg-slate-100 text-slate-400 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border border-slate-200 cursor-not-allowed">
+                              <Lock size={12} /> Test Expired
+                            </div>
+                          ) : (
+                            <Link href={`/test/${order.test_id}`}>
+                              <Button className="bg-[#0A2647] hover:bg-blue-900 rounded-xl font-black text-[10px] uppercase tracking-widest px-6 shadow-lg">
+                                Take Test <ExternalLink size={12} className="ml-1.5" />
+                              </Button>
+                            </Link>
+                          )
+                        )}
                       </div>
-                      {order.status === 'PAID' && (
-                        <Link href={`/test/${order.test_id}`}>
-                          <Button size="sm" className="bg-[#0A2647] hover:bg-blue-900 rounded-xl font-black text-[10px] uppercase tracking-widest px-6 h-10 shadow-lg">
-                            Take Test <ExternalLink size={12} className="ml-1.5" />
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  )
+                })}
               </div>
             )}
           </div>
