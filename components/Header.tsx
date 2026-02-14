@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { 
   Menu, X, LogOut, ChevronDown, 
-  CreditCard, User
+  LayoutDashboard, CreditCard, ShieldCheck, Zap, User
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
@@ -34,7 +34,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu when route changes
   useEffect(() => setIsOpen(false), [pathname])
 
   const handleSignOut = async () => {
@@ -149,7 +148,7 @@ export function Header() {
                       >
                         <User size={18} className="text-blue-600" />
                         <span className="font-black text-[#0A2647] text-[11px] uppercase">
-                          Command Center
+                          Command Center (Profile)
                         </span>
                       </DropdownMenuItem>
 
@@ -194,46 +193,9 @@ export function Header() {
               {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
+
         </div>
       </div>
-
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-2xl p-6 space-y-4 z-50 animate-in slide-in-from-top-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                "block py-3 text-xs font-black uppercase tracking-widest transition-colors",
-                isActive(item.href) ? "text-blue-600" : "text-slate-500"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {!user ? (
-            <Link href="/auth/signup" className="block pt-4">
-              <Button className="w-full bg-[#0A2647] text-white font-black rounded-xl py-6 text-[11px] uppercase tracking-widest">
-                Get Verified
-              </Button>
-            </Link>
-          ) : (
-            <div className="pt-4 grid grid-cols-2 gap-3">
-               <Link href="/profile" className="flex items-center justify-center gap-2 p-4 bg-slate-50 rounded-2xl text-[10px] font-black uppercase text-[#0A2647]">
-                 <User size={14} /> Profile
-               </Link>
-               <button 
-                 onClick={handleSignOut}
-                 className="flex items-center justify-center gap-2 p-4 bg-red-50 rounded-2xl text-[10px] font-black uppercase text-red-600"
-                >
-                 <LogOut size={14} /> Logout
-               </button>
-            </div>
-          )}
-        </div>
-      )}
     </header>
   )
 }
