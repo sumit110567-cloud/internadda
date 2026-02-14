@@ -148,7 +148,7 @@ export function Header() {
                       >
                         <User size={18} className="text-blue-600" />
                         <span className="font-black text-[#0A2647] text-[11px] uppercase">
-                          Command Center (Profile)
+                          Command Center
                         </span>
                       </DropdownMenuItem>
 
