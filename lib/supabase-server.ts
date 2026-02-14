@@ -1,19 +1,31 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-export function createClient() {
-  const cookieStore = cookies()
+export async function createClient() {
+  // 🔥 Await the cookie store to fix "e.get is not a function"
+  const cookieStore = await cookies()
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, // Use service role for admin actions
+    process.env.SUPABASE_SERVICE_ROLE_KEY!, 
     {
       cookies: {
-        get(name: string) { return cookieStore.get(name)?.value },
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
         set(name: string, value: string, options: CookieOptions) {
-          try { cookieStore.set({ name, value, ...options }) } catch (e) {}
+          try {
+            cookieStore.set({ name, value, ...options })
+          } catch (error) {
+            // Handle middleware or server component limitations
+          }
         },
         remove(name: string, options: CookieOptions) {
-          try { cookieStore.set({ name, value: '', ...options }) } catch (e) {}
+          try {
+            cookieStore.set({ name, value: '', ...options })
+          } catch (error) {
+            // Handle middleware or server component limitations
+          }
         },
       },
     }
