@@ -5,13 +5,12 @@ import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { 
   Menu, X, LogOut, ChevronDown, 
-  LayoutDashboard, CreditCard, ShieldCheck, Zap
+  LayoutDashboard, CreditCard, ShieldCheck, Zap, User
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,11 +34,6 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden'
-    else document.body.style.overflow = 'unset'
-  }, [isOpen])
-
   useEffect(() => setIsOpen(false), [pathname])
 
   const handleSignOut = async () => {
@@ -48,39 +42,80 @@ export function Header() {
   }
 
   const navItems = [
+    { label: 'Home', href: '/' },
     { label: 'Internships', href: '/internships' },
     { label: 'Courses', href: '/courses' },
     { label: 'About', href: '/about' },
     { label: 'Journal', href: '/blog' },
   ]
 
+  const isActive = (href: string) =>
+    href === '/'
+      ? pathname === '/'
+      : pathname.startsWith(href)
+
   return (
     <header className={cn(
       "sticky top-0 z-[100] w-full transition-all duration-500",
-      scrolled ? "bg-white/80 backdrop-blur-xl border-b border-slate-200/50 py-3 shadow-sm" : "bg-white py-5"
+      scrolled 
+        ? "bg-white/80 backdrop-blur-xl border-b border-slate-200/50 py-2 shadow-sm" 
+        : "bg-white py-3"
     )}>
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 text-[#0A2647]">
-        <div className="flex items-center justify-between h-14">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-10">
+        <div className="flex items-center justify-between h-12">
+
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="relative w-10 h-10 overflow-hidden rounded-[1rem] shadow-xl border border-slate-100 transition-transform group-hover:scale-110">
+            <div className="relative w-9 h-9 overflow-hidden rounded-[1rem] shadow-xl border border-slate-100 transition-transform group-hover:scale-110">
               <Image src="/logo.jpg" alt="Logo" fill className="object-cover" priority />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tighter leading-none uppercase">
+              <span className="font-black text-lg tracking-tighter text-[#0A2647] leading-none uppercase">
                 Intern<span className="text-blue-600">Adda</span>
               </span>
-              <span className="text-[8px] text-slate-400 font-black uppercase tracking-[0.25em] mt-1">Gold Standard</span>
+              <span className="text-[8px] text-slate-400 font-black uppercase tracking-[0.25em] mt-1">
+                India's Adda for Internships
+              </span>
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-10">
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className={cn("text-[12px] font-black uppercase tracking-widest transition-all", pathname === item.href ? "text-blue-600" : "text-slate-500 hover:text-[#0A2647]")}>
-                {item.label}
-              </Link>
-            ))}
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navItems.map((item) => {
+              const active = isActive(item.href)
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="relative px-2 py-1 text-[12px] font-black uppercase tracking-widest transition-all"
+                >
+                  <span
+                    className={cn(
+                      "transition-all duration-300",
+                      active
+                        ? "text-blue-600 drop-shadow-[0_0_6px_rgba(37,99,235,0.6)]"
+                        : "text-slate-500 hover:text-[#0A2647]"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+
+                  {/* Underline Glow */}
+                  <span
+                    className={cn(
+                      "absolute left-0 -bottom-1 h-[2px] w-full rounded-full transition-all duration-300",
+                      active
+                        ? "bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.8)]"
+                        : "bg-transparent"
+                    )}
+                  />
+                </Link>
+              )
+            })}
           </nav>
 
+          {/* Right Actions */}
           <div className="flex items-center gap-4">
             {user ? (
               <div className="hidden md:block">
@@ -88,77 +123,79 @@ export function Header() {
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-3 p-1.5 pr-4 rounded-full bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-xl transition-all">
                       <div className="w-9 h-9 rounded-full bg-[#0A2647] flex items-center justify-center text-[#FFD700] font-black shadow-md text-sm uppercase">
-                        {user.user_metadata?.full_name?.[0] || user.email?.[0]}
+                        {user.user_metadata?.full_name?.[0] || "L"}
                       </div>
-                      <span className="text-[11px] font-black uppercase tracking-wider">{user.user_metadata?.full_name?.split(' ')[0] || "Student"}</span>
+                      <span className="text-[11px] font-black text-[#0A2647] uppercase tracking-wider">
+                        {user.user_metadata?.full_name?.split(' ')[0] || "Lucky"}
+                      </span>
                       <ChevronDown size={14} className="text-slate-400" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 mt-3 p-2 rounded-[2rem] border-slate-100 shadow-2xl bg-white" align="end">
+
+                  <DropdownMenuContent 
+                    className="w-64 mt-3 p-2 rounded-[2rem] border-slate-100 shadow-2xl bg-white" 
+                    align="end"
+                  >
+                    <DropdownMenuLabel className="p-4 bg-slate-50 rounded-[1.5rem] mb-2">
+                       <p className="text-[9px] font-black text-slate-400 uppercase mb-1">DU Candidate</p>
+                       <p className="text-xs font-black text-[#0A2647] truncate">{user.email}</p>
+                    </DropdownMenuLabel>
+
                     <DropdownMenuGroup className="p-1">
-                      <DropdownMenuItem onClick={() => router.push('/dashboard')} className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center">
-                        <LayoutDashboard size={18} className="text-blue-600" />
-                        <span className="font-black text-[11px] uppercase">Command Center</span>
+                      <DropdownMenuItem 
+                        onClick={() => router.push('/profile')} 
+                        className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center"
+                      >
+                        <User size={18} className="text-blue-600" />
+                        <span className="font-black text-[#0A2647] text-[11px] uppercase">
+                          Command Center (Profile)
+                        </span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => router.push('/orders')} className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center">
+
+                      <DropdownMenuItem 
+                        onClick={() => router.push('/orders')} 
+                        className="p-4 rounded-2xl cursor-pointer hover:bg-blue-50 flex gap-3 items-center"
+                      >
                         <CreditCard size={18} className="text-blue-600" />
-                        <span className="font-black text-[11px] uppercase">Transaction Center</span>
+                        <span className="font-black text-[#0A2647] text-[11px] uppercase">
+                          Transactions
+                        </span>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
+
                     <DropdownMenuSeparator className="bg-slate-50" />
-                    <DropdownMenuItem onClick={handleSignOut} className="p-4 rounded-2xl cursor-pointer bg-red-50/50 text-red-600 flex gap-3 items-center mt-1">
+
+                    <DropdownMenuItem 
+                      onClick={handleSignOut} 
+                      className="p-4 rounded-2xl cursor-pointer bg-red-50 text-red-600 flex gap-3 items-center mt-1"
+                    >
                       <LogOut size={18} />
-                      <span className="font-black text-[11px] uppercase">Secure Logout</span>
+                      <span className="font-black text-[11px] uppercase">
+                        Secure Logout
+                      </span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             ) : (
               <Link href="/auth/signup" className="hidden md:block">
-                <Button className="bg-[#0A2647] text-white font-black rounded-full px-8 py-5 text-[11px] uppercase tracking-widest shadow-xl shadow-blue-900/10">Get Verified</Button>
+                <Button className="bg-[#0A2647] text-white font-black rounded-full px-8 py-3 text-[11px] uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:scale-105 transition-all">
+                  Get Verified
+                </Button>
               </Link>
             )}
-            <button onClick={() => setIsOpen(!isOpen)} className="p-3 bg-slate-50 rounded-2xl lg:hidden active:scale-90 transition-transform">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="p-3 bg-slate-50 rounded-2xl lg:hidden active:scale-90 transition-transform"
+            >
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
+
         </div>
       </div>
-
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 shadow-2xl overflow-hidden">
-            <div className="p-6 flex flex-col gap-6">
-              {user && (
-                <div className="p-6 bg-[#0A2647] rounded-[2.5rem] text-white relative overflow-hidden">
-                  <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center text-2xl font-black text-[#FFD700] border border-white/10">{user.user_metadata?.full_name?.[0] || "L"}</div>
-                    <div><h3 className="font-black text-lg">{user.user_metadata?.full_name || "Candidate"}</h3><p className="text-[10px] font-black text-blue-300 uppercase tracking-widest">Active Member</p></div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mt-6">
-                    <Link href="/dashboard" className="p-4 bg-white/5 rounded-2xl flex flex-col items-center gap-2 transition-all"><LayoutDashboard size={20} className="text-yellow-400" /><span className="text-[8px] font-black uppercase text-white">Portal</span></Link>
-                    <Link href="/orders" className="p-4 bg-white/5 rounded-2xl flex flex-col items-center gap-2 transition-all"><CreditCard size={20} className="text-yellow-400" /><span className="text-[8px] font-black uppercase text-white">History</span></Link>
-                  </div>
-                </div>
-              )}
-              <nav className="flex flex-col gap-1">
-                {navItems.map((item) => (
-                  <Link key={item.href} href={item.href} className={cn("px-6 py-5 rounded-2xl text-lg font-black transition-all flex items-center justify-between", pathname === item.href ? "bg-blue-50 text-blue-600" : "text-[#0A2647] hover:bg-slate-50")}>
-                    {item.label} <Zap size={18} className={cn("transition-opacity", pathname === item.href ? "opacity-100" : "opacity-0")} />
-                  </Link>
-                ))}
-              </nav>
-              <div className="pt-6 border-t border-slate-50">
-                {user ? (
-                  <Button onClick={handleSignOut} variant="outline" className="w-full text-red-600 py-8 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] bg-red-50/30 border-red-100"><LogOut className="mr-2" size={16} /> Secure Logout</Button>
-                ) : (
-                  <Link href="/auth/signup" className="w-full"><Button className="w-full bg-[#0A2647] py-8 rounded-[2rem] font-black uppercase tracking-widest text-xs">Join InternAdda</Button></Link>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   )
 }
