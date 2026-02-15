@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { CreditCard, CheckCircle, Clock, Lock, Receipt } from 'lucide-react'
+import { CreditCard, CheckCircle, Clock, Receipt } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { supabase } from '@/lib/supabase'
 import { Badge } from '@/components/ui/badge'
@@ -15,7 +15,6 @@ import Link from 'next/link'
 export default function OrdersPage() {
   const { user } = useAuth()
   const [orders, setOrders] = useState<any[]>([])
-  const [attempts, setAttempts] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -23,15 +22,14 @@ export default function OrdersPage() {
       if (!user) return
       
       try {
-        const [oResponse, aResponse] = await Promise.all([
-          supabase.from('orders').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-          supabase.from('user_test_attempts').select('test_id').eq('user_id', user.id)
-        ])
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
         
-        setOrders(oResponse.data || [])
-        if (aResponse.data) {
-          setAttempts(aResponse.data.map(a => String(a.test_id)))
-        }
+        if (error) throw error
+        setOrders(data || [])
       } catch (error) {
         console.error("Data fetch error:", error)
       } finally {
@@ -77,59 +75,41 @@ export default function OrdersPage() {
               </div>
             ) : (
               <div className="grid gap-6">
-                {orders.map((order, i) => {
-                  const isAttempted = attempts.includes(String(order.test_id))
-                  
-                  return (
-                    <motion.div 
-                      key={order.id} 
-                      initial={{ opacity: 0, x: -20 }} 
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                      className="bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all"
-                    >
-                      <div className="flex items-center gap-6">
-                        <div className={cn(
-                          "w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner",
-                          order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-yellow-50 text-yellow-600'
-                        )}>
-                          <CreditCard size={28} />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-3 mb-1">
-                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">TXN #{order.id.slice(0, 8)}</p>
-                             {isAttempted && <Badge className="bg-red-50 text-red-600 text-[8px] border-red-100 font-black px-2 py-0">SINGLE-USE EXPIRED</Badge>}
-                          </div>
-                          <h4 className="text-xl font-black tracking-tight">Assessment ID: {order.test_id}</h4>
-                          <p className="text-xs font-bold text-slate-400 mt-1 uppercase">{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-                        </div>
+                {orders.map((order, i) => (
+                  <motion.div 
+                    key={order.id} 
+                    initial={{ opacity: 0, x: -20 }} 
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all"
+                  >
+                    <div className="flex items-center gap-6">
+                      <div className={cn(
+                        "w-16 h-16 rounded-2xl flex items-center justify-center shadow-inner",
+                        order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-yellow-50 text-yellow-600'
+                      )}>
+                        <CreditCard size={28} />
                       </div>
+                      <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">TXN #{order.id.slice(0, 8)}</p>
+                        <h4 className="text-xl font-black tracking-tight">Assessment ID: {order.test_id}</h4>
+                        <p className="text-xs font-bold text-slate-400 mt-1 uppercase">
+                          {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
 
-                      <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className={cn(
-                          "px-5 py-2.5 rounded-full border flex items-center gap-2 text-[10px] font-black uppercase tracking-widest",
-                          order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-yellow-50 text-yellow-600 border-yellow-100'
-                        )}>
-                          {order.status === 'PAID' ? <CheckCircle size={14} /> : <Clock size={14} />} {order.status}
-                        </div>
-                        
-                        {order.status === 'PAID' && (
-                          isAttempted ? (
-                            <div className="flex items-center gap-2 bg-slate-100 text-slate-400 px-8 py-4 rounded-2xl font-black text-[10px] uppercase border border-slate-200 cursor-not-allowed select-none">
-                              <Lock size={14} /> Max Attempt Reached
-                            </div>
-                          ) : (
-                            <Link href={`/test/${order.test_id}`}>
-                              <Button className="bg-[#0A2647] hover:bg-blue-900 text-white rounded-2xl px-10 py-7 font-black text-[10px] uppercase tracking-[0.15em] shadow-2xl">
-                                Start Assessment
-                              </Button>
-                            </Link>
-                          )
-                        )}
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                      <div className={cn(
+                        "px-6 py-3 rounded-full border flex items-center gap-2 text-[10px] font-black uppercase tracking-widest",
+                        order.status === 'PAID' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-yellow-50 text-yellow-600 border-yellow-100'
+                      )}>
+                        {order.status === 'PAID' ? <CheckCircle size={14} /> : <Clock size={14} />} 
+                        {order.status}
                       </div>
-                    </motion.div>
-                  )
-                })}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             )}
           </div>
