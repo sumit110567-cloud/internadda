@@ -19,6 +19,9 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const payload = JSON.parse(rawBody);
 
+    // DEBUG: Log incoming webhook for troubleshooting on the new domain
+    console.log('Webhook Received:', payload.type, 'Order ID:', payload.data?.order?.order_id);
+
     // 2. Verify Cashfree Signature
     const ts = req.headers.get('x-webhook-timestamp');
     const signature = req.headers.get('x-webhook-signature');
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
       .digest('base64');
 
     if (signature !== expectedSignature) {
-      console.error('Webhook Signature Mismatch');
+      console.error('Webhook Signature Mismatch. Check CASHFREE_SECRET_KEY env variable.');
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
@@ -47,20 +50,26 @@ export async function POST(req: Request) {
       const orderId = orderData.order_id;
 
       // 4. Update Database to PAID
-      const { error } = await supabaseAdmin
+      // IMPORTANT: Ensure 'cf_order_id' is the correct column in your 'orders' table
+      const { error, data } = await supabaseAdmin
         .from('orders')
         .update({ 
           status: 'PAID',
           updated_at: new Date().toISOString()
         })
-        .eq('cf_order_id', orderId);
+        .eq('cf_order_id', orderId)
+        .select();
 
       if (error) {
         console.error('Database Update Error:', error.message);
         return NextResponse.json({ error: 'DB Update Failed' }, { status: 500 });
       }
 
-      console.log(`Order ${orderId} successfully updated to PAID`);
+      if (!data || data.length === 0) {
+        console.warn(`Webhook received for order ${orderId}, but no matching record found in database.`);
+      } else {
+        console.log(`Order ${orderId} successfully updated to PAID in database.`);
+      }
     }
 
     return NextResponse.json({ status: 'ok' }, { status: 200 });
