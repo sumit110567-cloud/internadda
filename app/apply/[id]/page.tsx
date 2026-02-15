@@ -263,7 +263,7 @@ export default function ApplyPage() {
                  <div>
                    <h4 className="font-extrabold text-[#0A2647] text-lg">Assessment & Registration</h4>
                    <p className="text-[11px] text-gray-500 max-w-[220px] leading-relaxed">
-                     Includes **Aptitude Test**, **AI Technical Interview**, and **E-Certificate** access.
+                     Includes Aptitude Test, AI Technical Interview, and E-Certificate access.
                    </p>
                  </div>
                  <div className="text-right">
