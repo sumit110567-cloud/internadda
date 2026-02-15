@@ -1,4 +1,3 @@
-
 // app/blog/[slug]/page.tsx
 import { blogs } from '@/data/blogs';
 import { authors } from '@/data/authors';
@@ -13,10 +12,11 @@ import { NewsletterSection } from '@/components/blog/NewsletterSection';
 import { FAQSchema } from '@/components/blog/FAQSchema';
 import { ArticleSchema } from '@/components/blog/ArticleSchema';
 import { BreadcrumbSchema } from '@/components/blog/BreadcrumbSchema';
-import { HeroSection } from '@/components/HeroSection';
-import Image from 'next/image';
 import Link from 'next/link';
-import { formatDate } from '@/lib/utils';
+
+// NOTE: HeroSection must be a server component or a client component 
+// imported into this server component. Ensure '@/components/HeroSection' exists.
+import { HeroSection } from '@/components/HeroSection';
 
 export async function generateStaticParams() {
   return blogs.map(blog => ({ slug: blog.slug }));
@@ -25,6 +25,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const blog = blogs.find(b => b.slug === params.slug);
   if (!blog) return {};
+
+  const author = authors.find(a => a.id === blog.authorId);
 
   return {
     title: blog.meta.title,
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       images: [{ url: blog.featuredImage }],
       type: 'article',
       publishedTime: blog.publishedAt,
-      authors: [authors.find(a => a.id === blog.authorId)?.name || 'Internadda'],
+      authors: [author?.name || 'Internadda'],
       tags: blog.tags,
     },
     twitter: {
@@ -67,10 +69,9 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
   const headings: string[] = [];
   let match;
   while ((match = headingRegex.exec(blog.content)) !== null) {
-    headings.push(match[1].replace(/<[^>]*>/g, '')); // strip inner HTML tags if any
+    headings.push(match[1].replace(/<[^>]*>/g, '')); 
   }
 
-  // Check if blog contains FAQ section
   const hasFAQ = blog.content.includes('Frequently Asked Questions');
 
   return (
@@ -85,7 +86,6 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
       <ReadingProgress />
 
-      {/* Hero Section (unchanged style, but with blog title and image) */}
       <HeroSection
         title={blog.title}
         subtitle={blog.excerpt}
@@ -93,7 +93,6 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
       />
 
       <div className="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
-        {/* Sticky TOC Sidebar (left) */}
         <aside className="lg:w-1/4 order-2 lg:order-1">
           <div className="sticky top-24">
             <TableOfContents headings={headings} />
@@ -108,9 +107,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           </div>
         </aside>
 
-        {/* Main Content */}
         <article className="lg:w-2/4 order-1 lg:order-2 prose prose-lg max-w-none">
-          {/* Add ids to h2 for TOC linking */}
           <div
             dangerouslySetInnerHTML={{
               __html: blog.content.replace(
@@ -134,7 +131,6 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
           <AuthorBox author={author} publishedAt={blog.publishedAt} readingTime={blog.readingTime} />
 
-          {/* Social Share */}
           <div className="flex items-center gap-4 my-6">
             <span className="font-medium">Share:</span>
             <a
@@ -165,7 +161,6 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
           <NewsletterSection />
 
-          {/* Conversion CTA after content */}
           <div className="my-8">
             <ConversionCTA
               title="Explore Free Courses with Certificates"
@@ -176,7 +171,6 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
           </div>
         </article>
 
-        {/* Right Sidebar */}
         <aside className="lg:w-1/4 order-3">
           <div className="sticky top-24 space-y-6">
             <RelatedPosts posts={related} />
@@ -190,11 +184,9 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         </aside>
       </div>
 
-      {/* Comments placeholder */}
       <div className="container mx-auto px-4 py-12 border-t">
         <h3 className="text-2xl font-bold mb-4">Comments</h3>
         <p className="text-gray-500">We'd love to hear your thoughts! Please log in to comment.</p>
-        {/* Placeholder for future Disqus or custom comment system */}
       </div>
     </>
   );
