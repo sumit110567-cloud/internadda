@@ -10,7 +10,7 @@ export function TrustBadges() {
         <Image src="/company2.jpg" alt="LAREX" width={60} height={30} className="opacity-80 hover:opacity-100 transition" />
 
       </div>
-      <p className="text-xs text-gray-400 mt-4">Partnered with top companies for internships</p>
+      <p className="text-xs text-gray-400 mt-4">Global Recognition</p>
     </div>
   );
 }
