@@ -1,15 +1,34 @@
 'use client'
 
+import React from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Users, CheckCircle, Shield, Clock, GraduationCap, Award, Zap, Star, Briefcase } from 'lucide-react'
+import { 
+  ArrowRight, Users, CheckCircle, Shield, Clock, 
+  GraduationCap, Award, Zap, Star, Briefcase, 
+  Sparkles, MousePointer2, TrendingUp 
+} from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { HeroVisual } from './page-client-components'
+
+// SEO & Structured Data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "InternAdda",
+  "url": "https://internadda.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://internadda.com/internships?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
 
 const featuredInternships = [
   {
@@ -50,35 +69,6 @@ const featuredInternships = [
   },
 ]
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "itemListElement": featuredInternships.map((job, index) => ({
-    "@type": "ListItem",
-    "position": index + 1,
-    "item": {
-      "@type": "JobPosting",
-      "title": job.title,
-      "description": `Join ${job.company} as a ${job.title}. Skills required: ${job.skills.join(', ')}. Stipend: ${job.stipend}.`,
-      "hiringOrganization": {
-        "@type": "Organization",
-        "name": job.company,
-        "logo": "https://internadda.com/logo.jpg"
-      },
-      "jobLocationType": "TELECOMMUTE",
-      "baseSalary": {
-        "@type": "MonetaryAmount",
-        "currency": "INR",
-        "value": {
-          "@type": "QuantitativeValue",
-          "value": job.stipend,
-          "unitText": "MONTH"
-        }
-      }
-    }
-  }))
-}
-
 const InternshipCard = ({ id, title, company, stipend, location, skills, applicants, otherCompaniesCount, image, companyLogos }: any) => {
   const { user } = useAuth()
   const router = useRouter()
@@ -86,91 +76,85 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
   const handleApply = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
-    if (!user) {
-      // Redirect to signin if not authenticated
-      router.push(`/auth/signin?callbackUrl=/apply/${id}`)
-      return
-    }
-    // Navigate to personalized apply page
-    router.push(`/apply/${id}`)
+    router.push(user ? `/apply/${id}` : `/auth/signin?callbackUrl=/apply/${id}`)
   }
 
   return (
-    <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
-      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+    <motion.article 
+      whileHover={{ y: -10, transition: { duration: 0.3 } }}
+      className="group relative bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:shadow-[0_40px_80px_rgba(10,38,71,0.1)] overflow-hidden w-full max-w-[380px] flex flex-col transition-all duration-500"
+    >
+      <div className="relative h-52 w-full overflow-hidden">
         <Image 
           src={image} 
-          alt={`${title} at ${company}`} 
+          alt={title} 
           fill 
           sizes="(max-width: 768px) 100vw, 380px"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
         />
-        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 z-10">
-          <span className="text-orange-500 text-[10px]" aria-hidden="true">🔥</span>
-          <span className="text-white text-[9px] font-bold tracking-tight">{applicants} Applied</span>
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl flex items-center gap-2 shadow-sm z-10">
+          <TrendingUp size={14} className="text-orange-500" />
+          <span className="text-[#0A2647] text-[10px] font-bold tracking-tight">{applicants} Applied</span>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-80" />
       </div>
 
-      <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center relative z-10">
-        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
-          HIRING AT {company} & OTHERS
-        </p>
-
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="flex -space-x-2">
+      <div className="px-8 pb-8 pt-2 flex flex-col relative z-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="flex -space-x-3">
             {companyLogos.map((logo: string, idx: number) => (
-              <div key={idx} className="relative w-7 h-7 rounded-full border-2 border-white bg-white shadow-sm overflow-hidden">
-                <Image src={logo} alt="Partner Logo" fill className="object-cover" />
+              <div key={idx} className="relative w-8 h-8 rounded-full border-2 border-white bg-slate-50 shadow-sm overflow-hidden">
+                <Image src={logo} alt="Partner" fill className="object-cover" />
               </div>
             ))}
           </div>
-          <span className="text-blue-600 text-[11px] font-bold">+{otherCompaniesCount} more</span>
+          <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">+{otherCompaniesCount} Companies</span>
         </div>
 
-        <h3 className="text-xl font-extrabold text-[#0A2647] mb-4 leading-tight group-hover:text-blue-700 transition-colors">
+        <h3 className="text-xl font-bold text-[#0A2647] mb-4 leading-tight group-hover:text-blue-600 transition-colors">
           {title}
         </h3>
 
-        <div className="grid grid-cols-2 w-full border-y border-gray-50 py-3 mb-4">
-          <div className="border-r border-gray-100 flex flex-col items-center">
-            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Stipend</p>
-            <p className="text-blue-600 font-extrabold text-sm">{stipend}</p>
+        <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-slate-50/50 rounded-2xl">
+          <div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Stipend</p>
+            <p className="text-[#0A2647] font-bold text-sm">{stipend}</p>
           </div>
-          <div className="flex flex-col items-center">
-            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Location</p>
-            <p className="text-gray-700 font-extrabold text-sm">{location}</p>
+          <div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Type</p>
+            <p className="text-[#0A2647] font-bold text-sm">{location}</p>
           </div>
         </div>
 
-        <div className="w-full mb-6">
-          <div className="flex flex-wrap justify-center gap-1.5">
-            {skills.map((skill: string) => (
-              <span key={skill} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
-                {skill}
-              </span>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2 mb-8">
+          {skills.slice(0, 3).map((skill: string) => (
+            <span key={skill} className="bg-blue-50/50 px-3 py-1 rounded-full text-[10px] font-bold text-blue-700 border border-blue-100">
+              {skill}
+            </span>
+          ))}
         </div>
 
         <Button 
           onClick={handleApply}
-          className="w-full bg-[#0A2647] hover:bg-[#144272] text-white py-6 rounded-xl font-extrabold text-base shadow-lg shadow-blue-900/10 transition-all active:scale-95 relative z-20 cursor-pointer"
+          className="w-full bg-[#0A2647] hover:bg-blue-700 text-white py-7 rounded-2xl font-bold text-base shadow-xl shadow-blue-900/10 active:scale-[0.97] transition-all"
         >
-          {user ? 'Apply Now' : 'Sign In to Apply'}
+          {user ? 'Instant Apply' : 'Get Started'}
         </Button>
       </div>
-    </article>
+    </motion.article>
   )
 }
 
 export default function Home() {
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.98]);
+
   const trustMetrics = [
-    { icon: Shield, title: '100% VERIFIED', value: '500+ Companies' },
-    { icon: Users, title: 'ACTIVE STUDENTS', value: '7,200+' },
-    { icon: Award, title: 'Verified Internship', value: 'Since 2020' },
-    { icon: Clock, title: 'AVG. HIRING', value: '48 Hours' },
+    { icon: Shield, title: 'VERIFIED ROLES', value: '500+', sub: 'Companies' },
+    { icon: Users, title: 'SUCCESS STORIES', value: '7,200+', sub: 'Students' },
+    { icon: Award, title: 'ESTABLISHED', value: '2020', sub: 'Founding Year' },
+    { icon: Clock, title: 'HIRING SPEED', value: '48H', sub: 'Avg. Response' },
   ]
 
   const partners = [
@@ -180,216 +164,283 @@ export default function Home() {
     { name: 'Arjuna-AI', logo: '💻' },
   ]
 
-  const studentAvatars = ['/student1.jpg', '/student2.jpg', '/student3.jpg', '/student4.jpg'];
-
   return (
-    <>
+    <div className="selection:bg-blue-100 selection:text-blue-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
       <Header />
-      <main className="min-h-screen bg-white overflow-x-hidden flex flex-col">
-        {/* Trust Badge Strip */}
-        <div className="bg-[#0A2647] text-white py-2">
-          <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
-            <div className="flex flex-wrap items-center justify-center gap-6 text-[10px] sm:text-xs tracking-widest font-medium uppercase">
-              <div className="flex items-center gap-2">
-                <CheckCircle size={12} className="text-[#FFD700]" />
-                <span>Global Recognition</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <GraduationCap size={12} className="text-[#FFD700]" />
-                <span>MSME REGISTERED</span>
-              </div>
-            </div>
+      
+      <main className="relative min-h-screen bg-white overflow-x-hidden">
+        {/* Modern Animated Background Element */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1000px] pointer-events-none z-0">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/40 blur-[120px] rounded-full" />
+          <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-yellow-100/30 blur-[120px] rounded-full" />
+        </div>
+
+        {/* Floating Trust Strip */}
+        <div className="relative z-30 bg-[#0A2647] backdrop-blur-md border-b border-white/10 py-3">
+          <div className="max-w-[1400px] mx-auto px-4 flex justify-center gap-8 items-center text-[11px] font-bold text-white tracking-[0.1em] uppercase">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+              <CheckCircle size={14} className="text-[#FFD700]" />
+              <span>MSME Registered Entity</span>
+            </motion.div>
+            <div className="h-4 w-px bg-white/20 hidden md:block" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="flex items-center gap-2">
+              <Sparkles size={14} className="text-[#FFD700]" />
+              <span>AI-Powered Matching</span>
+            </motion.div>
           </div>
         </div>
 
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-[#0A2647] to-[#144272] overflow-hidden">
-          <div className="max-w-[1400px] mx-auto px-4 lg:px-8 py-12 md:py-20">
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
-              <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
-                <Badge className="bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/20 px-4 py-1.5 rounded-full mb-6 w-fit text-xs font-semibold tracking-wide">
-                  India's #1 Internship Platform
-                </Badge>
+        <motion.section style={{ opacity, scale }} className="relative pt-16 pb-24 md:pt-24 md:pb-32 overflow-hidden">
+          <div className="max-w-[1400px] mx-auto px-4 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="relative z-10 text-center lg:text-left flex flex-col items-center lg:items-start">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <Badge className="bg-blue-50 text-blue-700 border-blue-100 px-5 py-2 rounded-full mb-8 text-xs font-bold tracking-tight shadow-sm">
+                    ✨ The Gold Standard of Internships
+                  </Badge>
+                </motion.div>
                 
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.15] mb-4">
-                  India's Largest Dedicated <br className="hidden md:block" />
-                  <span className="text-[#FFD700]">Internship Ecosystem.</span>
-                </h1>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="text-4xl md:text-6xl lg:text-7xl font-black text-[#0A2647] leading-[1.05] mb-6 tracking-tighter"
+                >
+                  India's Largest <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-500">
+                    Internship Hub.
+                  </span>
+                </motion.h1>
                 
-                <p className="text-base md:text-lg text-gray-300 mb-8 max-w-xl font-light">
-                  Bridging the gap between ambitious students and 500+ verified industry leaders.
-                </p>
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-lg md:text-xl text-slate-500 mb-10 max-w-xl leading-relaxed font-medium"
+                >
+                  We bridge the gap between high-potential students and 500+ verified industry leaders across India.
+                </motion.p>
 
-                <div className="flex flex-row gap-3 mb-10 w-full sm:w-auto justify-center lg:justify-start">
-                  <Link href="/internships" className="flex-1 sm:flex-none">
-                    <Button className="w-full bg-[#FFD700] text-[#0A2647] hover:bg-[#FFD700]/90 font-bold px-4 md:px-8 py-5 md:py-6 text-sm md:text-base rounded-lg transition-all shadow-lg active:scale-95">
-                      Internships
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="flex flex-col sm:flex-row gap-4 mb-12 w-full sm:w-auto"
+                >
+                  <Link href="/internships" className="w-full sm:w-auto">
+                    <Button className="w-full bg-[#0A2647] text-white hover:bg-blue-800 font-bold px-10 py-8 text-lg rounded-2xl shadow-2xl shadow-blue-900/20 group transition-all">
+                      Find Internships 
+                      <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <Link href="/courses" className="flex-1 sm:flex-none">
-                    <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/10 px-4 md:px-8 py-5 md:py-6 text-sm md:text-base rounded-lg transition-all active:scale-95 bg-transparent">
-                      Courses
+                  <Link href="/courses" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full border-slate-200 text-[#0A2647] hover:bg-slate-50 px-10 py-8 text-lg rounded-2xl font-bold">
+                      Browse Courses
                     </Button>
                   </Link>
-                </div>
+                </motion.div>
 
-                <div className="flex items-center gap-3 justify-center lg:justify-start">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-2 pr-6 rounded-full border border-slate-100 shadow-sm"
+                >
                   <div className="flex -space-x-3">
-                    {studentAvatars.map((src, i) => (
-                      <div key={i} className="relative w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0A2647] overflow-hidden bg-gray-300">
-                        <Image src={src} alt="Student" fill className="object-cover" />
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm">
+                        <Image src={`/student${i}.jpg`} alt="Student" fill className="object-cover" />
                       </div>
                     ))}
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-[#0A2647] bg-[#FFD700] flex items-center justify-center text-[10px] md:text-xs font-bold text-[#0A2647]">
-                      +
-                    </div>
                   </div>
-                  <p className="text-xs md:text-sm text-gray-200">
-                    <span className="font-bold text-white text-sm md:text-base">7,200+</span> students enrolled
+                  <p className="text-sm font-bold text-[#0A2647]">
+                    Join <span className="text-blue-600">7,200+</span> Ambitious Students
                   </p>
-                </div>
+                </motion.div>
               </div>
-              <HeroVisual />
-            </div>
 
-            {/* Trust Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 md:mt-16 pt-8 border-t border-white/10 text-center">
-              {trustMetrics.map((metric) => {
-                const Icon = metric.icon
-                return (
-                  <div key={metric.title} className="text-white flex flex-col items-center">
-                    <Icon className="text-[#FFD700] mb-2 opacity-90" size={24} aria-hidden="true" />
-                    <p className="text-xl md:text-2xl font-bold">{metric.value}</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest font-medium">{metric.title}</p>
-                  </div>
-                )
-              })}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                className="relative"
+              >
+                <div className="absolute inset-0 bg-blue-600/10 blur-[100px] rounded-full animate-pulse" />
+                <HeroVisual />
+              </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* Partner Strip */}
-        <section className="bg-white py-8 border-b border-gray-100 flex justify-center" aria-label="Academic Partners">
-          <div className="max-w-[1400px] w-full mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 lg:gap-20">
-              <p className="w-full text-center lg:w-auto text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 lg:mb-0">Global Recognition </p>
-              {partners.map((partner, idx) => (
-                <div key={idx} className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                  <span className="text-2xl" aria-hidden="true">{partner.logo}</span>
-                  <span className="font-semibold text-gray-600 text-sm md:text-base">{partner.name}</span>
-                </div>
-              ))}
-            </div>
+        {/* Partner Ecosystem (Smooth Auto-scroll Feel) */}
+        <section className="bg-slate-50/50 py-12 border-y border-slate-100">
+          <div className="max-w-[1400px] mx-auto px-4 flex flex-wrap justify-center items-center gap-8 md:gap-20">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Institutional Partners</p>
+            {partners.map((partner) => (
+              <div key={partner.name} className="flex items-center gap-3 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-default group">
+                <span className="text-2xl group-hover:scale-110 transition-transform">{partner.logo}</span>
+                <span className="font-bold text-slate-600 text-sm">{partner.name}</span>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* Internship Listings */}
-        <section className="py-16 md:py-24 bg-white flex flex-col items-center">
+        <section className="py-24 md:py-32 bg-white flex flex-col items-center">
           <div className="max-w-[1400px] w-full px-4 lg:px-8">
-            <div className="text-center mb-16 flex flex-col items-center">
-              <Badge className="bg-[#0A2647]/5 text-[#0A2647] px-4 py-1 rounded-full mb-4 text-xs font-bold border-none">
-                RECOMMENDED
-              </Badge>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-[#0A2647] mb-4 tracking-tight">
-                Top Internships This Week
-              </h2>
-              <p className="text-gray-500 max-w-2xl font-light">
-                Secure your future with positions at India's top tech startups.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-              {featuredInternships.map((internship) => (
-                <div key={internship.id} className="w-full flex justify-center">
-                  <InternshipCard {...internship} />
-                </div>
-              ))}
-            </div>
-
-            <div className="flex justify-center mt-16">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+              <div className="max-w-2xl">
+                <Badge className="bg-orange-50 text-orange-600 border-none mb-4 font-bold">HOT OPPORTUNITIES</Badge>
+                <h2 className="text-4xl md:text-5xl font-black text-[#0A2647] tracking-tight">
+                  Top Internships This Week
+                </h2>
+              </div>
               <Link href="/internships">
-                <Button className="bg-[#0A2647] text-white hover:bg-black px-10 py-7 text-base font-bold rounded-2xl shadow-xl transition-all">
-                  Browse All Internships <ArrowRight className="ml-2" size={20} />
+                <Button variant="ghost" className="text-blue-600 font-bold group">
+                  View All <ArrowRight className="ml-2 group-hover:translate-x-1 transition-all" />
                 </Button>
               </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {featuredInternships.map((internship, idx) => (
+                <motion.div
+                  key={internship.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <InternshipCard {...internship} />
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Gold Standard Section */}
-        <section className="py-20 bg-gray-50/50 flex flex-col items-center">
-          <div className="max-w-[1200px] w-full px-4 lg:px-8">
-            <div className="text-center mb-16 flex flex-col items-center">
-              <div className="w-12 h-1 bg-[#FFD700] mb-6 rounded-full" aria-hidden="true" />
-              <h2 className="text-4xl font-extrabold text-[#0A2647] tracking-tight mb-4">
-                The Gold Standard of Trust
-              </h2>
-              <p className="text-gray-500 max-w-xl font-light">
-                Vetted by industry experts. Trusted by 7,200+ students.
-              </p>
+        {/* Trust Metrics Grid */}
+        <section className="py-20 bg-[#0A2647] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('/grid-white.svg')] opacity-[0.03]" />
+          <div className="max-w-[1400px] mx-auto px-4 relative z-10">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+              {trustMetrics.map((m, i) => (
+                <motion.div 
+                  key={m.title}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="text-center"
+                >
+                  <div className="inline-flex p-4 rounded-2xl bg-white/5 mb-6">
+                    <m.icon className="text-[#FFD700]" size={28} />
+                  </div>
+                  <h4 className="text-4xl font-black text-white mb-2">{m.value}</h4>
+                  <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">{m.title}</p>
+                  <p className="text-blue-300/60 text-xs font-medium">{m.sub}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Value Proposition (3D Tilt Effect Prepped) */}
+        <section className="py-24 md:py-32 bg-slate-50/30">
+          <div className="max-w-[1200px] mx-auto px-4">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-black text-[#0A2647] tracking-tight mb-4">Why Choose InternAdda?</h2>
+              <div className="w-20 h-1.5 bg-[#FFD700] mx-auto rounded-full" />
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: Shield, title: 'Employer Audit', description: 'Every company is vetted for legitimacy and work culture.', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-                { icon: Zap, title: 'Priority Access', description: 'Direct routes to HR. No middle-man delays.', color: 'text-blue-600', bg: 'bg-blue-50' },
-                { icon: Star, title: 'Smart Match', description: 'AI-driven matches based on your specific profile.', color: 'text-amber-600', bg: 'bg-amber-50' }
+                { icon: Shield, title: 'Rigorous Audit', desc: 'Every internship is manually verified for stipend and quality.', color: 'text-emerald-500', bg: 'bg-emerald-50' },
+                { icon: MousePointer2, title: '1-Click Apply', desc: 'Personalized profiles mean you apply in seconds, not hours.', color: 'text-blue-500', bg: 'bg-blue-50' },
+                { icon: Star, title: 'Smart Matching', desc: 'Our AI finds the roles that match your skill level perfectly.', color: 'text-amber-500', bg: 'bg-amber-50' }
               ].map((item, idx) => (
-                <div key={idx} className="bg-white p-10 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
-                  <div className={`w-16 h-16 ${item.bg} rounded-2xl flex items-center justify-center mb-6`}>
-                    <item.icon className={item.color} size={32} aria-hidden="true" />
+                <motion.div 
+                  key={idx}
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100"
+                >
+                  <div className={`w-16 h-16 ${item.bg} rounded-2xl flex items-center justify-center mb-8`}>
+                    <item.icon className={item.color} size={32} />
                   </div>
-                  <h3 className="font-bold text-xl text-[#0A2647] mb-3">{item.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{item.description}</p>
-                </div>
+                  <h3 className="text-xl font-bold text-[#0A2647] mb-4">{item.title}</h3>
+                  <p className="text-slate-500 leading-relaxed text-sm">{item.desc}</p>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section className="py-24 flex flex-col items-center">
-          <div className="max-w-[1400px] w-full px-4 lg:px-8">
-            <div className="bg-[#0A2647] rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-500/10 blur-[100px] pointer-events-none" />
-              
-              <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="text-center lg:text-left flex flex-col items-center lg:items-start">
-                  <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                    Ready to build your <br />
-                    <span className="text-[#FFD700]">Dream Career?</span>
-                  </h2>
-                  <p className="text-lg text-blue-100/80 mb-8 max-w-lg font-light">
-                    Join the InternAdda ecosystem and start applying to verified roles today.
-                  </p>
-                  <Link href="/internships">
-                    <Button className="bg-[#FFD700] text-[#0A2647] hover:bg-white px-10 py-7 text-lg rounded-2xl font-extrabold shadow-xl">
-                      Apply Today <ArrowRight className="ml-2" />
+        {/* High Conversion CTA */}
+        <section className="py-24 px-4">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            className="max-w-[1400px] mx-auto bg-gradient-to-br from-[#0A2647] to-[#144272] rounded-[4rem] p-12 md:p-24 relative overflow-hidden shadow-[0_50px_100px_rgba(10,38,71,0.3)]"
+          >
+            <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-500/10 blur-[120px]" />
+            <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight">
+                  Start your <br />
+                  <span className="text-[#FFD700]">Global Career</span> today.
+                </h2>
+                <p className="text-xl text-blue-100/70 mb-10 font-medium">
+                  Join 7,200+ students already building their future with InternAdda.
+                </p>
+                <div className="flex flex-wrap gap-6">
+                  <Link href="/auth/signup">
+                    <Button className="bg-[#FFD700] text-[#0A2647] hover:bg-white px-10 py-8 text-xl rounded-2xl font-black shadow-2xl transition-all">
+                      Create Account
                     </Button>
                   </Link>
+                  <div className="flex items-center gap-4 text-white/60">
+                    <div className="flex -space-x-2">
+                      {[1,2,3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-white/20 border border-white/10" />)}
+                    </div>
+                    <span className="text-sm font-bold tracking-tight">94% Placement Success</span>
+                  </div>
                 </div>
-                <div className="hidden lg:block">
-                  <div className="bg-white/5 backdrop-blur-md border border-white/10 p-10 rounded-[2rem] flex items-center gap-6">
-                    <div className="w-16 h-16 bg-[#FFD700] rounded-full flex items-center justify-center text-[#0A2647]">
-                      <Briefcase size={32} aria-hidden="true" />
+              </div>
+              <div className="hidden lg:block relative">
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[3rem] shadow-2xl">
+                  <div className="flex items-center gap-6 mb-8">
+                    <div className="w-14 h-14 bg-[#FFD700] rounded-2xl flex items-center justify-center text-[#0A2647]">
+                      <Briefcase size={28} />
                     </div>
                     <div>
-                      <p className="text-white text-xl font-bold">94% Success Rate</p>
-                      <p className="text-white/60">Across DU & National Colleges</p>
+                      <p className="text-white font-black text-xl">Verified Opportunity</p>
+                      <p className="text-white/40 text-xs font-bold uppercase tracking-widest">Available Now</p>
                     </div>
+                  </div>
+                  <div className="space-y-4">
+                    {[1,2,3].map(i => (
+                      <div key={i} className="h-4 bg-white/5 rounded-full w-full" />
+                    ))}
+                    <div className="h-4 bg-white/5 rounded-full w-[60%]" />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </main>
+      
       <Footer />
-    </>
+    </div>
   )
 }
