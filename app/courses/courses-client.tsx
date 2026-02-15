@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Clock, Users, Star, BookOpen, CheckCircle, GraduationCap, ArrowRight } from 'lucide-react'
+import { Search, Clock, Users, Star, CheckCircle, GraduationCap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 
@@ -82,14 +81,13 @@ const CourseCard = ({ course }: { course: Course }) => (
 
 export default function CoursesClient({ initialCourses }: { initialCourses: Course[] }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const categories = ['All', ...Array.from(new Set(initialCourses.map(c => c.category)))]
-  const [activeCategory, setActiveCategory] = useState('All')
 
+  // Filtered logic updated: removed activeCategory dependency
   const filteredCourses = initialCourses.filter(course => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         course.topics.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
-    const matchesCategory = activeCategory === 'All' || course.category === activeCategory
-    return matchesSearch && matchesCategory
+    return (
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      course.topics.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
   })
 
   return (
@@ -106,7 +104,7 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
       <section className="w-full bg-gradient-to-br from-[#0A2647] to-[#144272] py-16 px-4">
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
           <Badge className="bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/20 px-4 py-1.5 rounded-full mb-6">
-            InternAdda Academy
+            Internadda Elite Academy
           </Badge>
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Master New Skills</h1>
           <p className="text-gray-300 mb-8 max-w-xl">
@@ -114,7 +112,7 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
             Now available for <span className="text-[#FFD700] font-bold">Free</span> for all students.
           </p>
           
-          <div className="relative w-full max-w-2xl mb-8">
+          <div className="relative w-full max-w-2xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
             <input
               placeholder="Search by course or skill..."
@@ -123,22 +121,6 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
               className="w-full pl-12 py-6 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 rounded-2xl outline-none transition-all"
             />
           </div>
-
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                  activeCategory === cat 
-                  ? 'bg-[#FFD700] text-[#0A2647]' 
-                  : 'bg-white/5 text-white hover:bg-white/10'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -146,7 +128,7 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
       <section className="py-20 w-full max-w-[1400px] px-4">
         {filteredCourses.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center w-full">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filteredCourses.map((course) => (
                 <motion.div
                   key={course.id}
@@ -154,6 +136,7 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
                   className="w-full flex justify-center"
                 >
                   <CourseCard course={course} />
@@ -163,9 +146,9 @@ export default function CoursesClient({ initialCourses }: { initialCourses: Cour
           </div>
         ) : (
           <div className="text-center py-20">
-            <p className="text-xl text-gray-500">No courses found matching your criteria.</p>
-            <Button variant="link" className="text-blue-600 mt-2" onClick={() => {setSearchTerm(''); setActiveCategory('All');}}>
-              View all courses
+            <p className="text-xl text-gray-500">No courses found matching "{searchTerm}"</p>
+            <Button variant="link" className="text-blue-600 mt-2" onClick={() => setSearchTerm('')}>
+              Clear search
             </Button>
           </div>
         )}
