@@ -13,24 +13,24 @@ export function NewsletterSection() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-600 to-purple-600 text-white p-6 rounded-lg">
-      <h4 className="text-xl font-bold mb-2">Never miss an update</h4>
-      <p className="mb-4 text-blue-100">Get the latest internships and courses directly in your inbox.</p>
+    <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white rounded-3xl p-8 shadow-xl">
+      <h4 className="text-2xl font-bold mb-3">Get weekly insights</h4>
+      <p className="text-blue-100 mb-6">Join 50,000+ students who get the latest internships and career tips.</p>
       {submitted ? (
-        <p className="text-green-200">Thanks for subscribing! Check your email.</p>
+        <p className="text-green-200 font-medium">Thanks! Please check your inbox.</p>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
-            className="w-full px-4 py-2 rounded-lg text-gray-900"
+            className="w-full px-5 py-3 rounded-xl text-gray-900 placeholder-gray-400 border-2 border-white/30 bg-white/90 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <button
             type="submit"
-            className="w-full bg-white text-blue-600 font-semibold py-2 rounded-lg hover:bg-gray-100 transition"
+            className="w-full bg-white text-blue-700 font-semibold py-3 rounded-xl hover:bg-gray-100 transition shadow-md"
           >
             Subscribe
           </button>
