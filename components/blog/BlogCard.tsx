@@ -1,35 +1,41 @@
-// components/blog/BlogCard.tsx
-import Link from 'next/link';
-import Image from 'next/image';
 import { BlogPost } from '@/data/blogs';
+import Image from 'next/image';
+import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 
-export function BlogCard({ blog }: { blog: BlogPost }) {
+export function BlogCard({ blog, priority = false }: { blog: BlogPost; priority?: boolean }) {
   return (
-    <Link href={`/blog/${blog.slug}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300">
-      <div className="relative h-52 w-full overflow-hidden">
-        <Image 
-          src={blog.featuredImage} 
-          alt={blog.title} 
-          fill 
-          className="object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        <div className="absolute top-4 left-4 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-          {blog.categoryId.toUpperCase()}
+    <article className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-transparent">
+      <Link href={`/blog/${blog.slug}`} className="block">
+        <div className="relative h-48 w-full overflow-hidden">
+          <Image
+            src={blog.featuredImage}
+            alt={blog.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            priority={priority}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
         </div>
-      </div>
-      <div className="p-6">
-        <p className="text-gray-400 text-xs font-medium mb-2">{formatDate(blog.publishedAt)} • {blog.readingTime} min read</p>
-        <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 mb-3">
-          {blog.title}
-        </h3>
-        <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-          {blog.excerpt}
-        </p>
-        <div className="flex items-center text-blue-600 font-bold text-sm">
-          Read Article <span className="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+        <div className="p-6">
+          <div className="flex items-center text-sm text-gray-500 mb-3">
+            <time dateTime={blog.publishedAt}>{formatDate(blog.publishedAt)}</time>
+            <span className="mx-2">•</span>
+            <span>{blog.readingTime} min read</span>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+            {blog.title}
+          </h3>
+          <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">{blog.excerpt}</p>
+          <span className="inline-flex items-center text-blue-600 font-medium group-hover:text-blue-700">
+            Read More
+            <svg className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </article>
   );
 }
