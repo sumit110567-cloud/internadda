@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
@@ -30,7 +30,7 @@ const featuredInternships = [
     id: '1',
     title: 'Senior Python Developer',
     company: 'Arjuna AI Solutions',
-    stipend: '₹50,000 - ₹80,000',
+    stipend: '₹5,000 - ₹8,000',
     location: 'Remote',
     skills: ['Python', 'Django', 'PostgreSQL', 'AWS'],
     applicants: 45,
@@ -43,7 +43,7 @@ const featuredInternships = [
     id: '2',
     title: 'Full Stack Engineer',
     company: 'TechCorp India',
-    stipend: '₹60,000 - ₹90,000',
+    stipend: '₹4,000 - ₹7,000',
     location: 'Hybrid',
     skills: ['React', 'Node.js', 'TypeScript', 'MongoDB'],
     applicants: 32,
@@ -56,7 +56,7 @@ const featuredInternships = [
     id: '3',
     title: 'Data Scientist',
     company: 'Analytics Pro',
-    stipend: '₹70,000 - ₹1,00,000',
+    stipend: '₹4,000 - ₹10,000',
     location: 'Remote',
     skills: ['Python', 'TensorFlow', 'SQL', 'PyTorch'],
     applicants: 28,
@@ -125,25 +125,36 @@ const FadeUp = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   </motion.div>
 )
 
-// ---------- Counter Component ----------
+// ---------- Counter Component (fixed IntersectionObserver) ----------
 const Counter = ({ value, label, suffix = '' }: { value: number; label: string; suffix?: string }) => {
-  const ref = React.useRef(null)
-  const inView = useInView(ref, { once: true })
+  const ref = useRef<HTMLDivElement>(null)
+  const [hasTriggered, setHasTriggered] = useState(false)
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    if (inView) {
-      let start = 0
-      const duration = 2000
-      const step = (timestamp: number) => {
-        if (!start) start = timestamp
-        const progress = Math.min((timestamp - start) / duration, 1)
-        setCount(Math.floor(progress * value))
-        if (progress < 1) requestAnimationFrame(step)
-      }
-      requestAnimationFrame(step)
-    }
-  }, [inView, value])
+    if (!ref.current || hasTriggered) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasTriggered) {
+          setHasTriggered(true)
+          let start: number
+          const duration = 2000
+          const step = (timestamp: number) => {
+            if (!start) start = timestamp
+            const progress = Math.min((timestamp - start) / duration, 1)
+            setCount(Math.floor(progress * value))
+            if (progress < 1) {
+              requestAnimationFrame(step)
+            }
+          }
+          requestAnimationFrame(step)
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [hasTriggered, value])
 
   return (
     <div ref={ref} className="text-center">
