@@ -237,31 +237,11 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
         
         {/* Premium Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg"
-          >
-            <span className="text-xs font-bold text-blue-600">⚡ Premium</span>
-          </motion.div>
+        <div className="absolute top-4 left-4 flex gap-2">  
           
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 px-3 py-1.5 rounded-full shadow-lg"
-          >
             <span className="text-xs font-bold text-white">Featured</span>
-          </motion.div>
         </div>
         
-        {/* Match Score */}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full shadow-lg">
-          <span className="text-xs font-bold text-emerald-600">{matchScore}% Match</span>
-        </div>
-      </div>
 
       {/* Content */}
       <div className="px-6 pb-6 pt-2">
@@ -480,22 +460,22 @@ export default function Home() {
 
   const successStories = [
     {
-      name: 'Priya Sharma',
-      role: 'SDE at Google',
+      name: 'Rahul Sharma',
+      role: 'SDE at Internadda',
       image: '/student1.jpg',
-      quote: 'The personalized mentorship and skill assessments helped me crack my dream job.'
+      quote: 'The personalized mentorship and skill assessments helped me crack my first job.'
     },
     {
-      name: 'Rahul Verma',
-      role: 'Data Scientist at Microsoft',
+      name: 'siddhant chaturvedi',
+      role: 'Researcher at LAREX',
       image: '/student2.jpg',
       quote: 'Found opportunities I never knew existed. The platform is a game-changer!'
     },
     {
       name: 'Anjali Patel',
-      role: 'Product Manager at Amazon',
+      role: 'Ai Developer Manager at Arjuna-Ai',
       image: '/student3.jpg',
-      quote: 'From intern to full-time - the journey was seamless with InternAdda.'
+      quote: 'From intern to full-time - the journey was seamless with Internadda.'
     },
   ]
 
@@ -531,11 +511,7 @@ export default function Home() {
               <CheckCircle size={14} className="text-emerald-400" />
               <span>MSME Registered</span>
             </div>
-            <div className="w-px h-4 bg-slate-700" />
-            <div className="flex items-center gap-2">
-              <Shield size={14} className="text-emerald-400" />
-              <span>ISO 27001 Certified</span>
-            </div>
+
             <div className="w-px h-4 bg-slate-700 hidden md:block" />
             <div className="items-center gap-2 hidden md:flex">
               <Sparkles size={14} className="text-emerald-400" />
@@ -570,9 +546,9 @@ export default function Home() {
                   transition={{ duration: 0.5, delay: 0.1 }}
                   className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4"
                 >
-                  Launch Your Career with{' '}
+                  India's Largest Dedicated{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                    Premium Internships
+                    Internship Ecosystem.
                   </span>
                 </motion.h1>
                 
@@ -582,7 +558,7 @@ export default function Home() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="text-lg text-slate-600 mb-8 max-w-xl mx-auto lg:mx-0"
                 >
-                  Connect with 500+ verified companies. Get personalized matches, skill assessments, and mentorship from industry experts.
+                  Connect with 200+ verified companies. Get personalized matches, skill assessments, and mentorship from industry experts.
                 </motion.p>
 
                 {/* CTA Buttons */}
@@ -598,9 +574,9 @@ export default function Home() {
                       <ArrowRight className="ml-2" size={18} />
                     </Button>
                   </Link>
-                  <Link href="/hire">
+                  <Link href="/courses">
                     <Button variant="outline" className="w-full sm:w-auto border-slate-200 text-slate-700 hover:bg-slate-50 px-8 py-6 text-base rounded-xl">
-                      For Employers
+                      Explore Courses
                     </Button>
                   </Link>
                 </motion.div>
@@ -641,8 +617,8 @@ export default function Home() {
                   className="flex gap-6 mt-8 justify-center lg:justify-start"
                 >
                   <div>
-                    <div className="text-lg font-bold text-slate-900">94%</div>
-                    <div className="text-xs text-slate-500">Placement Rate</div>
+                    <div className="text-lg font-bold text-slate-900">500+</div>
+                    <div className="text-xs text-slate-500">Active Roles</div>
                   </div>
                   <div className="w-px h-8 bg-slate-200" />
                   <div>
@@ -651,7 +627,7 @@ export default function Home() {
                   </div>
                   <div className="w-px h-8 bg-slate-200" />
                   <div>
-                    <div className="text-lg font-bold text-slate-900">500+</div>
+                    <div className="text-lg font-bold text-slate-900">200+</div>
                     <div className="text-xs text-slate-500">Companies</div>
                   </div>
                 </motion.div>
@@ -679,7 +655,7 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400">Featured</p>
-                        <p className="text-sm font-semibold">Google Internship</p>
+                        <p className="text-sm font-semibold">AI-Powered Matching</p>
                       </div>
                     </div>
                   </motion.div>
@@ -695,7 +671,7 @@ export default function Home() {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400">New Match</p>
-                        <p className="text-sm font-semibold">Microsoft</p>
+                        <p className="text-sm font-semibold">Global Community</p>
                       </div>
                     </div>
                   </motion.div>
@@ -706,36 +682,39 @@ export default function Home() {
         </motion.section>
 
         {/* Partner Logos */}
-        <section className="py-12 border-y border-slate-100 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-4">
-            <p className="text-center text-xs font-medium text-slate-400 uppercase tracking-wider mb-6">
-              Trusted by Industry Leaders
-            </p>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-8 items-center">
-              {partners.map((partner, idx) => (
-                <motion.div
-                  key={partner.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="flex justify-center grayscale hover:grayscale-0 transition-all"
-                >
-                  <div className="h-8 w-24 bg-slate-200 rounded animate-pulse" />
-                </motion.div>
-              ))}
-            </div>
+      <section className="py-14 border-y border-slate-100 bg-slate-50/50">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="text-center text-xs font-semibold text-slate-500 uppercase tracking-widest mb-8">
+            Globally Recognized By Leading Institutions & Platforms
+          </p>
+      
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 items-center text-center">
+            
+            {["University of Delhi", "Tracxn", "LAREX", "Arjuna-AI"].map((name, idx) => (
+              <motion.div
+                key={name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="text-slate-700 font-semibold text-sm md:text-base tracking-wide hover:text-black transition-colors"
+              >
+                {name}
+              </motion.div>
+            ))}
+      
           </div>
-        </section>
+        </div>
+      </section>
 
         {/* Stats Section */}
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <Counter value={500} label="Active Companies" suffix="+" />
+              <Counter value={200} label="Active Companies" suffix="+" />
               <Counter value={7200} label="Students Placed" suffix="+" />
-              <Counter value={2500} label="Live Internships" suffix="+" />
-              <Counter value={94} label="Success Rate" suffix="%" />
+              <Counter value={500} label="Live Internships" suffix="+" />
+              <Counter value={6500} label="Avg. Stipend" suffix="+" />
             </div>
           </div>
         </section>
@@ -882,7 +861,7 @@ export default function Home() {
                 </Link>
                 
                 <Link href="/internships">
-                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-800 px-8 py-6 text-base rounded-xl">
+                  <Button variant="outline" className="border-slate-600 text-white hover:bg-slate-100 px-8 py-6 text-base rounded-xl">
                     Browse Internships
                   </Button>
                 </Link>
