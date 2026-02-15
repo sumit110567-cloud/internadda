@@ -23,7 +23,8 @@ export function HeroSection({ title, subtitle, image }: HeroSectionProps) {
             </p>
           </div>
           
-          <div className="relative h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+          {/* Desktop height adjusted from h-96 to h-[320px] for a balanced look */}
+          <div className="relative h-64 md:h-80 lg:h-[320px] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
             <Image
               src={image}
               alt={title}
