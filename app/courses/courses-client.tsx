@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Clock, Users, Star, CheckCircle, GraduationCap } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { toast } from "sonner"
 import Image from 'next/image'
 
 interface Course {
@@ -23,66 +24,76 @@ interface Course {
   image: string;
 }
 
-const CourseCard = ({ course }: { course: Course }) => (
-  <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
-    <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-      <Image 
-        src={course.image} 
-        alt={course.title} 
-        fill 
-        className="object-cover group-hover:scale-105 transition-transform duration-500"
-      />
-      <div className="absolute top-3 left-3 bg-[#FFD700] text-[#0A2647] px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-sm">
-        {course.category}
-      </div>
-      <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
-        <Star size={10} className="text-[#FFD700] fill-[#FFD700]" />
-        <span className="text-white text-[10px] font-bold">{course.rating}</span>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
-    </div>
+const CourseCard = ({ course }: { course: Course }) => {
+  const handleEnroll = () => {
+    toast.success(`Welcome to ${course.title}!`, {
+      description: "You have been successfully enrolled. Check your dashboard for details.",
+    });
+  };
 
-    <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center">
-      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">LEVEL: {course.level}</p>
-      
-      <h3 className="text-xl font-extrabold text-[#0A2647] mb-3 leading-tight min-h-[3rem] flex items-center">
-        {course.title}
-      </h3>
-
-      <div className="flex items-center justify-center gap-4 mb-4 text-gray-500">
-        <div className="flex items-center gap-1 text-[11px] font-medium">
-          <Clock size={14} className="text-blue-600" /> {course.duration}
+  return (
+    <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
+      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+        <Image 
+          src={course.image} 
+          alt={course.title} 
+          fill 
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute top-3 left-3 bg-[#FFD700] text-[#0A2647] px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-sm">
+          {course.category}
         </div>
-        <div className="flex items-center gap-1 text-[11px] font-medium">
-          <Users size={14} className="text-blue-600" /> {course.students}+ Students
+        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20">
+          <Star size={10} className="text-[#FFD700] fill-[#FFD700]" />
+          <span className="text-white text-[10px] font-bold">{course.rating}</span>
         </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
       </div>
 
-      <div className="flex flex-wrap justify-center gap-1.5 mb-6">
-        {course.topics.map((topic) => (
-          <span key={topic} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
-            {topic}
-          </span>
-        ))}
-      </div>
+      <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">LEVEL: {course.level}</p>
+        
+        <h3 className="text-xl font-extrabold text-[#0A2647] mb-3 leading-tight min-h-[3rem] flex items-center">
+          {course.title}
+        </h3>
 
-      <div className="w-full pt-4 border-t border-gray-50 flex items-center justify-between">
-        <div className="text-left">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Course Price</p>
-          <p className="text-xl font-black text-emerald-600 tracking-tighter">FREE</p>
+        <div className="flex items-center justify-center gap-4 mb-4 text-gray-500">
+          <div className="flex items-center gap-1 text-[11px] font-medium">
+            <Clock size={14} className="text-blue-600" /> {course.duration}
+          </div>
+          <div className="flex items-center gap-1 text-[11px] font-medium">
+            <Users size={14} className="text-blue-600" /> {course.students}+ Students
+          </div>
         </div>
-        <Button className="bg-[#0A2647] hover:bg-[#144272] text-white px-6 py-5 rounded-xl font-extrabold text-sm shadow-md transition-all active:scale-95">
-          Enroll Now
-        </Button>
+
+        <div className="flex flex-wrap justify-center gap-1.5 mb-6">
+          {course.topics.map((topic) => (
+            <span key={topic} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
+              {topic}
+            </span>
+          ))}
+        </div>
+
+        <div className="w-full pt-4 border-t border-gray-50 flex items-center justify-between">
+          <div className="text-left">
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Course Price</p>
+            <p className="text-xl font-black text-emerald-600 tracking-tighter">FREE</p>
+          </div>
+          <Button 
+            onClick={handleEnroll}
+            className="bg-[#0A2647] hover:bg-[#144272] text-white px-6 py-5 rounded-xl font-extrabold text-sm shadow-md transition-all active:scale-95"
+          >
+            Enroll Now
+          </Button>
+        </div>
       </div>
-    </div>
-  </article>
-)
+    </article>
+  )
+}
 
 export default function CoursesClient({ initialCourses }: { initialCourses: Course[] }) {
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Filtered logic updated: removed activeCategory dependency
   const filteredCourses = initialCourses.filter(course => {
     return (
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
