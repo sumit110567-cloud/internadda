@@ -107,16 +107,21 @@ const InternshipCard = ({ internship, index }: { internship: Internship; index: 
   const [isHovered, setIsHovered] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
 
+  // Early return if internship is undefined
+  if (!internship) return null
+
   const handleApply = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     router.push(user ? `/apply/${internship.id}` : `/auth/signin?callbackUrl=/apply/${internship.id}`)
   }
 
-  // Calculate days ago
-  const daysAgo = Math.floor(
-    (new Date().getTime() - new Date(internship.postedDate).getTime()) / (1000 * 60 * 60 * 24)
-  )
+  // Calculate days ago with safe date handling
+  const daysAgo = internship.postedDate 
+    ? Math.floor(
+        (new Date().getTime() - new Date(internship.postedDate).getTime()) / (1000 * 60 * 60 * 24)
+      )
+    : 0
 
   return (
     <motion.article
@@ -152,53 +157,55 @@ const InternshipCard = ({ internship, index }: { internship: Internship; index: 
         {/* Header */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex-shrink-0">
-            <Image
-              src={internship.image}
-              alt={internship.company}
-              fill
-              className="object-cover"
-              sizes="64px"
-            />
+            {internship.image && (
+              <Image
+                src={internship.image}
+                alt={internship.company || 'Company'}
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-slate-900 mb-1 group-hover:text-blue-600 transition-colors line-clamp-1">
-              {internship.title}
+              {internship.title || 'Untitled Position'}
             </h3>
             <div className="flex items-center gap-2 text-sm text-slate-500">
               <Building2 size={14} className="flex-shrink-0" />
-              <span className="truncate">{internship.company}</span>
+              <span className="truncate">{internship.company || 'Unknown Company'}</span>
             </div>
           </div>
         </div>
 
         {/* Description */}
         <p className="text-sm text-slate-600 mb-4 line-clamp-2">
-          {internship.description}
+          {internship.description || 'No description available'}
         </p>
 
         {/* Details Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="flex items-center gap-2 text-sm">
             <MapPin size={14} className="text-slate-400 flex-shrink-0" />
-            <span className="text-slate-600 truncate">{internship.location}</span>
+            <span className="text-slate-600 truncate">{internship.location || 'Remote'}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <IndianRupee size={14} className="text-slate-400 flex-shrink-0" />
-            <span className="text-slate-600 truncate">{internship.stipend}</span>
+            <span className="text-slate-600 truncate">{internship.stipend || 'Unpaid'}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Clock size={14} className="text-slate-400 flex-shrink-0" />
-            <span className="text-slate-600 truncate">{internship.duration}</span>
+            <span className="text-slate-600 truncate">{internship.duration || 'Flexible'}</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Users size={14} className="text-slate-400 flex-shrink-0" />
-            <span className="text-slate-600 truncate">{internship.applicants} applied</span>
+            <span className="text-slate-600 truncate">{internship.applicants || 0} applied</span>
           </div>
         </div>
 
         {/* Skills */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {internship.skills.slice(0, 4).map((skill) => (
+          {(internship.skills || []).slice(0, 4).map((skill) => (
             <Badge
               key={skill}
               variant="secondary"
@@ -207,9 +214,9 @@ const InternshipCard = ({ internship, index }: { internship: Internship; index: 
               {skill}
             </Badge>
           ))}
-          {internship.skills.length > 4 && (
+          {(internship.skills || []).length > 4 && (
             <Badge variant="outline" className="border-slate-200 text-slate-500">
-              +{internship.skills.length - 4}
+              +{(internship.skills || []).length - 4}
             </Badge>
           )}
         </div>
@@ -218,23 +225,25 @@ const InternshipCard = ({ internship, index }: { internship: Internship; index: 
         <div className="flex items-center justify-between pt-4 border-t border-slate-100">
           <div className="flex items-center gap-2">
             <div className="flex -space-x-2">
-              {internship.companyLogos.slice(0, 3).map((logo, idx) => (
+              {(internship.companyLogos || []).slice(0, 3).map((logo, idx) => (
                 <div
                   key={idx}
                   className="relative w-6 h-6 rounded-full border-2 border-white bg-slate-100 overflow-hidden"
                 >
-                  <Image
-                    src={logo}
-                    alt={`Company ${idx + 1}`}
-                    fill
-                    className="object-cover"
-                    sizes="24px"
-                  />
+                  {logo && (
+                    <Image
+                      src={logo}
+                      alt={`Company ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="24px"
+                    />
+                  )}
                 </div>
               ))}
             </div>
             <span className="text-xs text-slate-400">
-              +{internship.otherCompaniesCount} openings
+              +{internship.otherCompaniesCount || 0} openings
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -263,8 +272,8 @@ const InternshipCard = ({ internship, index }: { internship: Internship; index: 
 }
 
 // Main Component
-export default function InternshipsClient({ initialInternships }: { initialInternships: Internship[] }) {
-  const [internships, setInternships] = useState(initialInternships)
+export default function InternshipsClient({ initialInternships = [] }: { initialInternships?: Internship[] }) {
+  const [internships, setInternships] = useState<Internship[]>(initialInternships || [])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [selectedLocations, setSelectedLocations] = useState<string[]>([])
@@ -274,74 +283,90 @@ export default function InternshipsClient({ initialInternships }: { initialInter
   const [sortBy, setSortBy] = useState<'recent' | 'stipend' | 'applicants'>('recent')
   const [isLoading, setIsLoading] = useState(false)
 
-  // Get unique skills and locations for filters
+  // Get unique skills and locations for filters with safe checks
   const allSkills = useMemo(() => {
+    if (!internships || internships.length === 0) return []
     const skills = new Set<string>()
     internships.forEach(internship => {
-      internship.skills.forEach(skill => skills.add(skill))
+      if (internship?.skills && Array.isArray(internship.skills)) {
+        internship.skills.forEach(skill => skills.add(skill))
+      }
     })
     return Array.from(skills).sort()
   }, [internships])
 
   const allLocations = useMemo(() => {
-    const locations = new Set(internships.map(i => i.location))
+    if (!internships || internships.length === 0) return []
+    const locations = new Set(
+      internships
+        .map(i => i?.location)
+        .filter(location => location && typeof location === 'string')
+    )
     return Array.from(locations).sort()
   }, [internships])
 
-  // Filter internships
+  // Filter internships with safe checks
   const filteredInternships = useMemo(() => {
+    if (!internships || internships.length === 0) return []
+    
     return internships.filter(internship => {
+      if (!internship) return false
+
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
         const matchesSearch = 
-          internship.title.toLowerCase().includes(query) ||
-          internship.company.toLowerCase().includes(query) ||
-          internship.description.toLowerCase().includes(query) ||
-          internship.skills.some(skill => skill.toLowerCase().includes(query))
+          (internship.title?.toLowerCase().includes(query) || false) ||
+          (internship.company?.toLowerCase().includes(query) || false) ||
+          (internship.description?.toLowerCase().includes(query) || false) ||
+          (internship.skills?.some(skill => skill?.toLowerCase().includes(query)) || false)
         if (!matchesSearch) return false
       }
 
       // Skills filter
-      if (selectedSkills.length > 0) {
+      if (selectedSkills.length > 0 && internship.skills) {
         if (!selectedSkills.some(skill => internship.skills.includes(skill))) {
           return false
         }
       }
 
       // Location filter
-      if (selectedLocations.length > 0) {
+      if (selectedLocations.length > 0 && internship.location) {
         if (!selectedLocations.includes(internship.location)) {
           return false
         }
       }
 
       // Stipend filter
-      const stipendValue = parseInt(internship.stipend.replace(/[^0-9]/g, '')) || 0
-      if (stipendValue < stipendRange[0] || stipendValue > stipendRange[1]) {
-        return false
+      if (internship.stipend) {
+        const stipendValue = parseInt(internship.stipend.replace(/[^0-9]/g, '')) || 0
+        if (stipendValue < stipendRange[0] || stipendValue > stipendRange[1]) {
+          return false
+        }
       }
 
       return true
     }).sort((a, b) => {
       switch (sortBy) {
         case 'stipend':
-          const aStipend = parseInt(a.stipend.replace(/[^0-9]/g, '')) || 0
-          const bStipend = parseInt(b.stipend.replace(/[^0-9]/g, '')) || 0
+          const aStipend = parseInt((a.stipend || '').replace(/[^0-9]/g, '')) || 0
+          const bStipend = parseInt((b.stipend || '').replace(/[^0-9]/g, '')) || 0
           return bStipend - aStipend
         case 'applicants':
-          return b.applicants - a.applicants
+          return (b.applicants || 0) - (a.applicants || 0)
         default:
-          return new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()
+          const aDate = a.postedDate ? new Date(a.postedDate).getTime() : 0
+          const bDate = b.postedDate ? new Date(b.postedDate).getTime() : 0
+          return bDate - aDate
       }
     })
   }, [internships, searchQuery, selectedSkills, selectedLocations, stipendRange, sortBy])
 
-  // Stats
+  // Stats with safe checks
   const stats = {
     total: filteredInternships.length,
-    featured: filteredInternships.filter(i => i.featured).length,
-    totalApplicants: filteredInternships.reduce((acc, i) => acc + i.applicants, 0),
+    featured: filteredInternships.filter(i => i?.featured).length,
+    totalApplicants: filteredInternships.reduce((acc, i) => acc + (i?.applicants || 0), 0),
   }
 
   return (
@@ -654,7 +679,7 @@ export default function InternshipsClient({ initialInternships }: { initialInter
             >
               {filteredInternships.map((internship, index) => (
                 <InternshipCard
-                  key={internship.id}
+                  key={internship?.id || index}
                   internship={internship}
                   index={index}
                 />
@@ -663,7 +688,7 @@ export default function InternshipsClient({ initialInternships }: { initialInter
           )}
 
           {/* Load More */}
-          {filteredInternships.length > 0 && filteredInternships.length < internships.length && (
+          {filteredInternships.length > 0 && filteredInternships.length < (internships?.length || 0) && (
             <div className="text-center mt-8">
               <Button
                 variant="outline"
