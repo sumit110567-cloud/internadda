@@ -24,10 +24,11 @@ export async function generateStaticParams() {
 
 // SEO: Dynamic Metadata for Google Ranking
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const blog = blogs.find((b) => b.slug === params.slug);
+  // decodeURIComponent added to match slugs correctly from URL
+  const slug = decodeURIComponent(params.slug);
+  const blog = blogs.find((b) => b.slug === slug);
+  
   if (!blog) return { title: 'Post Not Found' };
-
-  const author = authors.find((a) => a.id === blog.authorId);
 
   return {
     title: blog.meta.title,
@@ -47,7 +48,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const blog = blogs.find((b) => b.slug === params.slug);
+  // decodeURIComponent ensures the slug matches the one in data/blogs.ts
+  const slug = decodeURIComponent(params.slug);
+  const blog = blogs.find((b) => b.slug === slug);
   
   if (!blog) notFound();
 
