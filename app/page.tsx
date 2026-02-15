@@ -174,10 +174,10 @@ export default function Home() {
   ]
 
   const partners = [
-    { name: 'Delhi University', logo: '🎓' },
-    { name: 'LAREX', logo: '🔬' },
-    { name: 'Tracxn', logo: '🌐' },
-    { name: 'Arjuna-AI', logo: '💻' },
+    { name: 'Delhi University' },
+    { name: 'LAREX'},
+    { name: 'Tracxn'},
+    { name: 'Arjuna-AI'},
   ]
 
   const studentAvatars = ['/student1.jpg', '/student2.jpg', '/student3.jpg', '/student4.jpg'];
