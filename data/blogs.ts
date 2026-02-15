@@ -386,8 +386,8 @@ export const blogs: BlogPost[] = [
   {
     slug: 'internship-certificate-importance-templates',
     title: 'Internship Certificate: Importance and Templates',
-    excerpt: 'Why an internship certificate matters and how to create one if your employer doesn't provide it. Free templates included.',
-    content: `<h2>Why an Internship Certificate is Important</h2><p>A certificate validates your experience, skills, and achievements. It's often required for future job applications and higher studies.</p><h2>What Should a Certificate Include?</h2><p>Company name, your name, duration, role, key responsibilities, and signature of authority.</p><h2>What If Your Employer Doesn't Provide One?</h2><p>Politely request it. If they refuse, you can create your own using a template and ask them to sign it.</p><h2>Free Templates</h2><p>We've created two professional templates (Word and Canva) that you can customize. [Links]</p><h2>FAQs</h2><h3>Is an internship certificate mandatory?</h3><p>Not mandatory but highly recommended for your resume.</p><h3>Can I add my certificate to LinkedIn?</h3><p>Yes, under the "Licenses & Certifications" section.</p>`,
+    excerpt: 'Why an internship certificate matters and how to create one if your employer doesn\'t provide it. Free templates included.',
+    content: `<h2>Why an Internship Certificate is Important</h2><p>A certificate validates your experience, skills, and achievements. It's often required for future job applications and higher studies.</p><h2>What Should a Certificate Include?</h2><p>Company name, your name, duration, role, key responsibilities, and signature of authority.</p><h2>What If Your Employer Doesn\'t Provide One?</h2><p>Politely request it. If they refuse, you can create your own using a template and ask them to sign it.</p><h2>Free Templates</h2><p>We've created two professional templates (Word and Canva) that you can customize. [Links]</p><h2>FAQs</h2><h3>Is an internship certificate mandatory?</h3><p>Not mandatory but highly recommended for your resume.</p><h3>Can I add my certificate to LinkedIn?</h3><p>Yes, under the "Licenses & Certifications" section.</p>`,
     featuredImage: '/images/blog/certificate.jpg',
     publishedAt: '2025-02-03T00:00:00Z',
     authorId: 'raj-kumar',
@@ -396,7 +396,7 @@ export const blogs: BlogPost[] = [
     readingTime: 4,
     meta: {
       title: 'Internship Certificate: Importance and Templates | Internadda',
-      description: 'Learn why an internship certificate matters and download free templates. What to do if your employer doesn't provide one.',
+      description: 'Learn why an internship certificate matters and download free templates. What to do if your employer doesn\'t provide one.',
       keywords: ['internship certificate', 'internship completion certificate', 'certificate template'],
     },
   },
@@ -406,7 +406,7 @@ export const blogs: BlogPost[] = [
     slug: 'remote-internships-vs-office-internships',
     title: 'Remote Internships vs Office Internships: Pros and Cons',
     excerpt: 'Compare remote and in-office internships to decide which suits you better. Flexibility vs. mentorship, and more.',
-    content: `<h2>The Great Debate</h2><p>With the rise of remote work, students now have a choice. Let's weigh the pros and cons.</p><h2>Remote Internship Pros</h2><p>Flexibility, no commute, access to companies anywhere, work-life balance.</p><h2>Remote Internship Cons</h2><p>Less mentorship, requires self-discipline, potential isolation.</p><h2>Office Internship Pros</h2><p>Direct mentorship, networking, company culture immersion.</p><h2>Office Internship Cons</h2><p>Commute, less flexibility, geographic limitation.</p><h2>Which One to Choose?</h2><p>Depends on your learning style, career goals, and personal situation. Some prefer hybrid.</p><h2>FAQs</h2><h3>Are remote internships as valuable?</h3><p>Yes, if you actively engage and learn. Companies value remote experience.</p><h3>Can I switch from remote to office?</h3><p>Sometimes possible – discuss with your manager.</p>`,
+    content: `<h2>The Great Debate</h2><p>With the rise of remote work, students now have a choice. Let\'s weigh the pros and cons.</p><h2>Remote Internship Pros</h2><p>Flexibility, no commute, access to companies anywhere, work-life balance.</p><h2>Remote Internship Cons</h2><p>Less mentorship, requires self-discipline, potential isolation.</p><h2>Office Internship Pros</h2><p>Direct mentorship, networking, company culture immersion.</p><h2>Office Internship Cons</h2><p>Commute, less flexibility, geographic limitation.</p><h2>Which One to Choose?</h2><p>Depends on your learning style, career goals, and personal situation. Some prefer hybrid.</p><h2>FAQs</h2><h3>Are remote internships as valuable?</h3><p>Yes, if you actively engage and learn. Companies value remote experience.</p><h3>Can I switch from remote to office?</h3><p>Sometimes possible – discuss with your manager.</p>`,
     featuredImage: '/images/blog/remote-vs-office.jpg',
     publishedAt: '2025-02-04T00:00:00Z',
     authorId: 'priya-sharma',
