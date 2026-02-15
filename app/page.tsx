@@ -213,10 +213,8 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
       whileHover={{ y: -8 }}
       className="group relative bg-white rounded-[2rem] border border-slate-200/50 shadow-lg hover:shadow-2xl overflow-hidden w-full max-w-[400px] flex flex-col transition-all duration-500"
     >
-      {/* Premium Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
-      {/* Image Section */}
       <div className="relative h-48 w-full overflow-hidden">
         <motion.div
           whileHover={{ scale: 1.1 }}
@@ -232,20 +230,14 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
             priority={false}
           />
         </motion.div>
-        
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent" />
-        
-        {/* Premium Badges */}
         <div className="absolute top-4 left-4 flex gap-2">  
-          
-            <span className="text-xs font-bold text-white">Featured</span>
+            <span className="text-xs font-bold text-white bg-blue-600 px-2 py-1 rounded">Featured</span>
         </div>
-        
+      </div>
 
-      {/* Content */}
+      {/* Content Section */}
       <div className="px-6 pb-6 pt-2">
-        {/* Company Logos */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex -space-x-2">
             {companyLogos?.map((logo: string, idx: number) => (
@@ -256,31 +248,22 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
                 transition={{ delay: idx * 0.1 }}
                 className="relative w-8 h-8 rounded-full border-2 border-white bg-slate-100 shadow-md overflow-hidden"
               >
-                <Image 
-                  src={logo} 
-                  alt="Partner" 
-                  fill 
-                  className="object-cover"
-                  sizes="32px"
-                />
+                <Image src={logo} alt="Partner" fill className="object-cover" sizes="32px" />
               </motion.div>
             ))}
           </div>
           <span className="text-xs font-medium text-slate-400">+{otherCompaniesCount} openings</span>
         </div>
 
-        {/* Title */}
         <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">
           {title}
         </h3>
 
-        {/* Company */}
         <p className="text-sm text-slate-500 mb-4 flex items-center gap-1">
           <Building2 size={14} className="text-slate-400" />
           {company}
         </p>
 
-        {/* Details Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-slate-50 p-2 rounded-xl">
             <p className="text-xs text-slate-400 mb-1">Stipend</p>
@@ -292,32 +275,21 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
           </div>
         </div>
 
-        {/* Skills */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {skills.slice(0, 3).map((skill: string, idx: number) => (
-            <span
-              key={skill}
-              className="bg-slate-100 px-2.5 py-1 rounded-full text-xs font-medium text-slate-700"
-            >
+          {skills.slice(0, 3).map((skill: string) => (
+            <span key={skill} className="bg-slate-100 px-2.5 py-1 rounded-full text-xs font-medium text-slate-700">
               {skill}
             </span>
           ))}
-          {skills.length > 3 && (
-            <span className="text-xs text-slate-400">+{skills.length - 3}</span>
-          )}
+          {skills.length > 3 && <span className="text-xs text-slate-400">+{skills.length - 3}</span>}
         </div>
 
-        {/* Applicants */}
         <div className="flex items-center gap-2 mb-4 text-xs text-slate-400">
           <Users size={14} />
           <span>{applicants} applicants</span>
         </div>
 
-        {/* Apply Button */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
+        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Button 
             onClick={handleApply}
             className="w-full bg-slate-900 hover:bg-slate-800 text-white py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
@@ -326,7 +298,7 @@ const InternshipCard = ({ id, title, company, stipend, location, skills, applica
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </motion.div>
-      </div>
+      </div> {/* This closing div was missing */}
     </motion.article>
   )
 }
