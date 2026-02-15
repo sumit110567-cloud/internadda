@@ -215,7 +215,7 @@ export const blogs: BlogPost[] = [
   {
     slug: 'how-to-get-google-internship-india',
     title: 'How to Get an Internship at Google India',
-    excerpt: 'Dreaming of interning at Google? Here's the step-by-step process, eligibility, and tips to crack the interview.',
+    excerpt: 'Dreaming of interning at Google? Here\'s the step-by-step process, eligibility, and tips to crack the interview.',
     content: `<h2>Google Internship Overview</h2><p>Google offers internships in engineering, business, marketing, and more. Stipends are generous, and the experience is invaluable.</p><h2>Eligibility</h2><p>Typically for students in their pre-final or final year of undergraduate or postgraduate studies. Strong academic record and relevant skills required.</p><h2>Application Process</h2><p>Apply online through Google's careers page. Include resume, transcripts, and sometimes a cover letter.</p><h2>Interview Rounds</h2><p>Usually 2-3 technical interviews (for tech roles) or case studies (for business). Behavioral questions are also common.</p><h2>Tips from Former Interns</h2><p>Practice coding on LeetCode, have projects to discuss, and show passion for Google's products.</p><h2>FAQs</h2><h3>What is the stipend for Google internships in India?</h3><p>Around ₹1,00,000 per month for tech roles.</p><h3>When do applications open?</h3><p>Usually around August-September for summer internships.</p>`,
     featuredImage: '/images/blog/google-internship.jpg',
     publishedAt: '2025-01-25T00:00:00Z',
