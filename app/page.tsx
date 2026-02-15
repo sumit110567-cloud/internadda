@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,8 @@ import {
   Infinity, Orbit, Workflow, Binary, CandlestickChart,
   Waves, Crosshair, GanttChartSquare, Hexagon,
   MapPin, Clock3, Wifi, WifiOff, Briefcase as BriefcaseIcon,
-  Medal, ThumbsUp, ChevronDown
+  Medal, ThumbsUp, ChevronDown, FileCheck, LayoutGrid,
+  ExternalLink, CheckCircle2
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -105,6 +106,13 @@ const features = [
   { icon: Award, title: 'Certification', desc: 'Earn verifiable credentials' },
 ]
 
+const students = [
+  { name: 'Ravi', img: 'https://iili.io/fmKACQa.md.jpg' },
+  { name: 'Priya', img: 'https://iili.io/fmKMLV2.md.jpg' },
+  { name: 'Amit', img: 'https://iili.io/fmKMQPS.jpg' },
+  { name: 'Neha', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format&fit=crop' }
+]
+
 // ---------- Reusable Motion Components ----------
 const FadeUp = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
   <motion.div
@@ -117,17 +125,17 @@ const FadeUp = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   </motion.div>
 )
 
-// ---------- Counter Component (simplified) ----------
+// ---------- Counter Component ----------
 const Counter = ({ value, label, suffix = '' }: { value: number; label: string; suffix?: string }) => {
   const ref = React.useRef(null)
   const inView = useInView(ref, { once: true })
   const [count, setCount] = useState(0)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (inView) {
       let start = 0
       const duration = 2000
-      const step = timestamp => {
+      const step = (timestamp: number) => {
         if (!start) start = timestamp
         const progress = Math.min((timestamp - start) / duration, 1)
         setCount(Math.floor(progress * value))
@@ -173,6 +181,7 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 export default function Home() {
   const router = useRouter()
   const { user } = useAuth()
+  const [selectedCategory, setSelectedCategory] = useState('All Internships')
 
   const handleApply = (id: string) => {
     router.push(user ? `/apply/${id}` : `/auth/signin?callbackUrl=/apply/${id}`)
@@ -185,65 +194,80 @@ export default function Home() {
         {/* 1️⃣ SEO-Friendly Top Bar + Trust Bar */}
         <div className="bg-slate-50 border-b border-slate-200 py-2 text-xs text-slate-600">
           <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-x-6 gap-y-1">
-            <span className="flex items-center gap-1"><CheckCircle size={14} className="text-blue-700" /> 7,200+ students placed</span>
+            <span className="flex items-center gap-1"><CheckCircle2 size={14} className="text-blue-700" /> 7,200+ students placed</span>
             <span className="flex items-center gap-1"><Medal size={14} className="text-blue-700" /> 12,000+ internships matched</span>
             <span className="flex items-center gap-1"><ThumbsUp size={14} className="text-blue-700" /> 98% satisfaction</span>
           </div>
         </div>
 
         {/* 2️⃣ Hero Section — Full Bleed Visual */}
-        <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 bg-slate-50">
+        <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 bg-white border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left content */}
               <FadeUp>
+                <Badge className="bg-blue-100 text-blue-700 border-blue-200 mb-4 px-3 py-1 text-xs font-semibold">
+                  <CheckCircle2 size={14} className="inline mr-1" /> MSME Registered: UDYAM-MH-08-XXXXXXXX
+                </Badge>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4">
-                  India's Largest Internship <span className="text-violet-600">Ecosystem</span>
+                  India's Largest Dedicated{' '}
+                  <span className="text-violet-600">Internship Ecosystem.</span>
                 </h1>
-                <p className="text-lg text-slate-600 mb-6 max-w-xl">
-                  Get verified opportunities, personalized matches & mentorship from industry experts.
+                <p className="text-base text-slate-500 max-w-xl mb-6 leading-relaxed">
+                  Skip the generic job boards. Access a streamlined pipeline of verified corporate partners.
+                  Focus on skill-based hiring with transparent stipends and direct interviews.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                   <Link href="/internships">
-                    <Button className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white px-8 py-6 text-base rounded-xl shadow-lg">
-                      Explore Internships <ArrowRight className="ml-2 w-5 h-5" />
+                    <Button className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white px-8 py-6 text-base rounded-lg shadow-sm">
+                      Find Internships <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>
                   <Link href="/courses">
-                    <Button variant="outline" className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-100 px-8 py-6 text-base rounded-xl">
-                      Browse Courses
+                    <Button variant="outline" className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-50 px-8 py-6 text-base rounded-lg">
+                      Practice Mode
                     </Button>
                   </Link>
                 </div>
-                {/* Micro badges */}
-                <div className="flex flex-wrap gap-3 text-sm text-slate-600">
-                  <span className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"><Shield size={16} className="text-blue-700" /> Verified</span>
-                  <span className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"><Medal size={16} className="text-blue-700" /> MSME Registered</span>
-                  <span className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"><Clock size={16} className="text-blue-700" /> 24h Avg Response</span>
-                  <span className="flex items-center gap-1 bg-blue-100 px-3 py-1 rounded-full"><Brain size={16} className="text-blue-700" /> AI-Driven Matching</span>
+
+                {/* Social proof */}
+                <div className="flex flex-col items-start gap-4 text-slate-400">
+                  <div className="flex -space-x-2">
+                    {students.map((s, i) => (
+                      <img
+                        key={i}
+                        src={s.img}
+                        alt={s.name}
+                        className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-sm"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${s.name}&background=random`
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">7,000+ Students Placed</p>
                 </div>
-                {/* Small SEO snippet */}
-                <p className="text-sm text-slate-500 mt-6 max-w-xl">
-                  InternAdda helps students find internships with top companies across India. Best matches. Fast responses. Verified opportunities.
-                </p>
               </FadeUp>
 
-              {/* Right visual - simplified 3D gradient graphic */}
-              <FadeUp delay={0.2}>
-                <div className="relative hidden lg:block">
-                  <div className="relative w-full h-96 bg-gradient-to-br from-blue-100 to-violet-100 rounded-3xl overflow-hidden shadow-2xl">
+              {/* Right visual - gradient graphic with floating elements */}
+              <FadeUp delay={0.2} className="hidden lg:block">
+                <div className="relative bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xl aspect-[4/3]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-violet-100">
                     <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-                    <div className="absolute -top-10 -right-10 w-64 h-64 bg-violet-300/30 rounded-full blur-3xl" />
-                    <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-300/30 rounded-full blur-3xl" />
-                    {/* Floating elements */}
-                    <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-white/30 backdrop-blur rounded-2xl rotate-12 flex items-center justify-center shadow-lg border border-white/50">
-                      <Briefcase className="text-violet-600 w-12 h-12" />
-                    </div>
-                    <div className="absolute bottom-1/3 right-1/4 w-32 h-32 bg-white/30 backdrop-blur rounded-2xl -rotate-6 flex items-center justify-center shadow-lg border border-white/50">
-                      <GraduationCap className="text-blue-700 w-12 h-12" />
-                    </div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-gradient-to-tr from-violet-500 to-blue-500 rounded-full opacity-20 blur-2xl" />
                   </div>
+                  <div className="absolute top-4 left-4 z-10">
+                    <span className="px-2 py-1 bg-white/90 backdrop-blur shadow-sm rounded text-[10px] font-bold text-violet-600 uppercase tracking-widest">
+                      Our Collaborations
+                    </span>
+                  </div>
+                  {/* Floating icons */}
+                  <div className="absolute top-1/4 left-1/4 w-24 h-24 bg-white/30 backdrop-blur rounded-xl rotate-12 flex items-center justify-center shadow-lg border border-white/50">
+                    <Briefcase className="text-violet-600 w-10 h-10" />
+                  </div>
+                  <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-white/30 backdrop-blur rounded-xl -rotate-6 flex items-center justify-center shadow-lg border border-white/50">
+                    <GraduationCap className="text-blue-700 w-10 h-10" />
+                  </div>
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-gradient-to-tr from-violet-500 to-blue-500 rounded-full opacity-20 blur-2xl" />
                 </div>
               </FadeUp>
             </div>
@@ -277,27 +301,44 @@ export default function Home() {
         {/* 4️⃣ Featured Internships Grid */}
         <section className="py-16 bg-slate-50">
           <div className="max-w-7xl mx-auto px-6">
-            <FadeUp>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Top Internships Right Now</h2>
-              <p className="text-slate-500 mb-8">Hand-picked opportunities updated daily.</p>
-            </FadeUp>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+              <div className="text-center md:text-left">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Featured Opportunities</h2>
+                <p className="text-sm text-slate-500">Top internships this week • View all for more</p>
+              </div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {['All Internships', 'Tech', 'Marketing', 'Design'].map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                      selectedCategory === cat
+                        ? 'bg-slate-900 text-white border-slate-900'
+                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-400'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredInternships.map((job, idx) => (
                 <FadeUp key={job.id} delay={idx * 0.1}>
                   <motion.article
                     whileHover={{ y: -8 }}
-                    className="bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl overflow-hidden transition-all group"
+                    className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md overflow-hidden transition-all group"
                   >
-                    <div className="relative h-48 w-full overflow-hidden">
+                    <div className="relative h-40 w-full overflow-hidden">
                       <Image src={job.image} alt={job.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 400px" />
                       <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
-                      <Badge className="absolute top-4 left-4 bg-violet-600 text-white border-0">Featured</Badge>
+                      <Badge className="absolute top-4 left-4 bg-violet-600 text-white border-0 text-xs">Featured</Badge>
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">{job.title}</h3>
+                    <div className="p-5">
+                      <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-blue-700 transition-colors">{job.title}</h3>
                       <p className="text-sm text-slate-500 mb-3 flex items-center gap-1"><Building2 size={14} className="text-slate-400" /> {job.company}</p>
-                      <div className="grid grid-cols-2 gap-2 mb-4">
+                      <div className="grid grid-cols-2 gap-2 mb-3">
                         <div className="bg-slate-50 p-2 rounded-lg">
                           <p className="text-xs text-slate-400">Stipend</p>
                           <p className="font-semibold text-sm text-slate-900">{job.stipend}</p>
@@ -314,7 +355,7 @@ export default function Home() {
                       </div>
                       <Button
                         onClick={() => handleApply(job.id)}
-                        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-5 rounded-xl font-semibold"
+                        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-lg font-semibold text-sm"
                       >
                         {user ? 'Apply Now' : 'Get Started'} <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
@@ -322,6 +363,17 @@ export default function Home() {
                   </motion.article>
                 </FadeUp>
               ))}
+            </div>
+
+            <div className="mt-12 flex justify-center">
+              <Link
+                href="/internships"
+                className="group flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 text-slate-900 rounded-lg font-semibold text-sm hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
+              >
+                <LayoutGrid size={16} className="text-violet-600" />
+                View All Internships
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
         </section>
@@ -337,7 +389,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {features.map((feat, idx) => (
                 <FadeUp key={idx} delay={idx * 0.1}>
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 hover:border-violet-200 transition-all group">
+                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 hover:border-violet-200 transition-all group">
                     <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-violet-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <feat.icon className="text-violet-600 w-6 h-6" />
                     </div>
@@ -350,23 +402,50 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 6️⃣ Passive SEO Section */}
-        <section className="py-16 bg-slate-50">
+        {/* 6️⃣ Verification Workflow (inspired by second design) */}
+        <section className="py-16 bg-slate-900 text-white">
           <div className="max-w-7xl mx-auto px-6">
-            <FadeUp>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">What Makes InternAdda Unique?</h2>
-              <div className="prose prose-slate max-w-4xl">
-                <p className="text-slate-600 leading-relaxed">
-                  InternAdda is India's premier internship platform designed to bridge the gap between talented students and forward-thinking companies. 
-                  Unlike traditional job boards, we focus exclusively on internship opportunities, ensuring every listing is verified and tailored to 
-                  skill development. Our AI-driven matching system connects you with roles that align with your career goals, while our mentorship 
-                  network provides guidance from industry experts. With over 12,000 successful matches and a 98% satisfaction rate, InternAdda is 
-                  the trusted partner for students aiming to build a strong professional foundation. Whether you're looking for remote, hybrid, or 
-                  in-office internships, our platform offers a seamless experience from application to offer letter. Join thousands of students who 
-                  have accelerated their careers through InternAdda's ecosystem of opportunities, skill assessments, and placement support.
-                </p>
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-3xl font-bold mb-6">How we ensure quality.</h2>
+                <div className="space-y-6">
+                  {[
+                    { title: 'Manual Employer Audit', desc: 'Every company is verified through MCA/MSME records before listing.', icon: FileCheck },
+                    { title: 'Direct Interview Routing', desc: 'Our platform routes your assessment directly to the decision maker.', icon: Zap },
+                    { title: 'Certificate Ledger', desc: 'Blockchain-ready certificates recognized by 150+ companies.', icon: Award }
+                  ].map((step, i) => (
+                    <div key={i} className="flex gap-4">
+                      <div className="mt-1 text-violet-400"><step.icon size={20} /></div>
+                      <div>
+                        <h4 className="font-bold text-sm uppercase tracking-wider">{step.title}</h4>
+                        <p className="text-slate-400 text-sm mt-1 leading-relaxed">{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </FadeUp>
+
+              <div className="bg-slate-800 rounded-xl border border-slate-700 p-8 text-left">
+                <div className="flex items-center gap-2 mb-6">
+                  <Globe2 size={16} className="text-violet-400" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Global Recognition</span>
+                </div>
+                <p className="text-xl font-medium text-slate-300 leading-relaxed italic">
+                  "InternAdda has built a transparent ecosystem that significantly reduces hiring friction for early-stage startups."
+                </p>
+                <div className="mt-6 flex items-center gap-4">
+                  <img
+                    src="https://s3-symbol-logo.tradingview.com/tracxn-technologies-ltd--600.png"
+                    alt="Tracxn"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-violet-500"
+                  />
+                  <div>
+                    <div className="text-sm font-bold">Tracxn</div>
+                    <div className="text-xs text-slate-500 font-medium">Leading Startup Data Platform</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -380,7 +459,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {successStories.map((story, idx) => (
                 <FadeUp key={idx} delay={idx * 0.2}>
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all relative">
+                  <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all relative">
                     <div className="absolute -top-3 -left-3 text-6xl text-blue-100">"</div>
                     <div className="relative z-10">
                       <div className="flex items-center gap-4 mb-4">
@@ -426,9 +505,9 @@ export default function Home() {
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-              <Counter value={200} label="Active Companies" suffix="+" />
+              <Counter value={300} label="Active Roles" suffix="+" />
               <Counter value={7200} label="Students Placed" suffix="+" />
-              <Counter value={500} label="Live Internships" suffix="+" />
+              <Counter value={150} label="Corporate Partners" suffix="+" />
               <Counter value={98} label="Satisfaction Rate" suffix="%" />
             </div>
 
@@ -446,19 +525,19 @@ export default function Home() {
         </section>
 
         {/* 🔟 Strong Bottom CTA */}
-        <section className="py-20 bg-violet-600">
+        <section className="py-16 bg-violet-600">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <FadeUp>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to launch your career?</h2>
               <p className="text-violet-100 mb-8 text-lg">Join 7,200+ students who found their dream internships.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/auth/signup">
-                  <Button className="bg-white text-violet-700 hover:bg-slate-100 px-8 py-6 text-base rounded-xl shadow-lg font-semibold">
+                  <Button className="bg-white text-violet-700 hover:bg-slate-100 px-8 py-6 text-base rounded-lg shadow-lg font-semibold">
                     Create Free Account <Rocket className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
                 <Link href="/internships">
-                  <Button variant="outline" className="border-white text-white hover:bg-violet-700 px-8 py-6 text-base rounded-xl font-semibold">
+                  <Button variant="outline" className="border-white text-white hover:bg-violet-700 px-8 py-6 text-base rounded-lg font-semibold">
                     Browse Internships
                   </Button>
                 </Link>
