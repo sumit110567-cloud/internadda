@@ -22,7 +22,7 @@ const courses = [
     description: 'Master frontend and backend development with React, Node.js, and databases.',
     topics: ['React', 'Node.js', 'MongoDB'],
     level: 'Intermediate',
-    image: '/python.jpg'
+    image: '/course1.jpg'
   },
   {
     id: 2,
