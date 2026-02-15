@@ -37,7 +37,7 @@ const courses = [
     description: 'Learn data analysis, visualization, and machine learning from scratch.',
     topics: ['Python', 'Pandas', 'Statistics'],
     level: 'Beginner',
-    image: '/datascience.jpg'
+    image: '/course2.jpg'
   },
   {
     id: 3,
@@ -52,7 +52,7 @@ const courses = [
     description: 'Create beautiful and functional user interfaces and experiences.',
     topics: ['Figma', 'Prototyping', 'User Testing'],
     level: 'Beginner',
-    image: '/react.jpg'
+    image: '/course3.jpg'
   },
   {
     id: 4,
@@ -67,7 +67,7 @@ const courses = [
     description: 'Master SEO, social media, and content marketing strategies.',
     topics: ['SEO', 'Social Media', 'Ads'],
     level: 'Intermediate',
-    image: '/python.jpg'
+    image: '/course4.jpg'
   },
   {
     id: 5,
@@ -82,7 +82,7 @@ const courses = [
     description: 'Build iOS and Android apps with React Native and JavaScript.',
     topics: ['React Native', 'APIs', 'Deployment'],
     level: 'Intermediate',
-    image: '/react.jpg'
+    image: '/course5.jpg'
   },
   {
     id: 6,
@@ -97,7 +97,7 @@ const courses = [
     description: 'Learn to use data for strategic business decisions.',
     topics: ['Excel', 'SQL', 'Visualization'],
     level: 'Beginner',
-    image: '/datascience.jpg'
+    image: '/course6.jpg'
   },
 ]
 
