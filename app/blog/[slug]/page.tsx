@@ -12,21 +12,22 @@ import { NewsletterSection } from '@/components/blog/NewsletterSection';
 import { FAQSchema } from '@/components/blog/FAQSchema';
 import { ArticleSchema } from '@/components/blog/ArticleSchema';
 import { BreadcrumbSchema } from '@/components/blog/BreadcrumbSchema';
+import { HeroSection } from '@/components/HeroSection';
 import Link from 'next/link';
 
-// NOTE: HeroSection must be a server component or a client component 
-// imported into this server component. Ensure '@/components/HeroSection' exists.
-import { HeroSection } from '@/components/HeroSection';
-
+// SEO: Static Params generate karne se page pehle hi build ho jayega (Low Latency)
 export async function generateStaticParams() {
-  return blogs.map(blog => ({ slug: blog.slug }));
+  return blogs.map((blog) => ({
+    slug: blog.slug,
+  }));
 }
 
+// SEO: Dynamic Metadata for Google Ranking
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const blog = blogs.find(b => b.slug === params.slug);
-  if (!blog) return {};
+  const blog = blogs.find((b) => b.slug === params.slug);
+  if (!blog) return { title: 'Post Not Found' };
 
-  const author = authors.find(a => a.id === blog.authorId);
+  const author = authors.find((a) => a.id === blog.authorId);
 
   return {
     title: blog.meta.title,
@@ -38,15 +39,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `https://internadda.com/blog/${blog.slug}`,
       images: [{ url: blog.featuredImage }],
       type: 'article',
-      publishedTime: blog.publishedAt,
-      authors: [author?.name || 'Internadda'],
-      tags: blog.tags,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: blog.meta.title,
-      description: blog.meta.description,
-      images: [blog.featuredImage],
     },
     alternates: {
       canonical: `https://internadda.com/blog/${blog.slug}`,
@@ -55,34 +47,34 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const blog = blogs.find(b => b.slug === params.slug);
+  const blog = blogs.find((b) => b.slug === params.slug);
+  
   if (!blog) notFound();
 
-  const author = authors.find(a => a.id === blog.authorId)!;
-  const category = categories.find(c => c.id === blog.categoryId)!;
+  const author = authors.find((a) => a.id === blog.authorId)!;
+  const category = categories.find((c) => c.id === blog.categoryId)!;
   const related = blogs
-    .filter(b => b.categoryId === blog.categoryId && b.slug !== blog.slug)
+    .filter((b) => b.categoryId === blog.categoryId && b.slug !== blog.slug)
     .slice(0, 3);
 
-  // Extract headings for TOC (only h2)
-  const headingRegex = /<h2.*?>(.*?)<\/h2>/g;
+  // TOC ke liye headings extract karna
+  const headingRegex = /<h2>(.*?)<\/h2>/g;
   const headings: string[] = [];
   let match;
   while ((match = headingRegex.exec(blog.content)) !== null) {
-    headings.push(match[1].replace(/<[^>]*>/g, '')); 
+    headings.push(match[1].replace(/<[^>]*>/g, ''));
   }
 
-  const hasFAQ = blog.content.includes('Frequently Asked Questions');
-
   return (
-    <>
+    <div className="min-h-screen bg-white">
+      {/* SEO Schemas */}
       <ArticleSchema blog={blog} author={author} category={category} />
       <BreadcrumbSchema items={[
         { name: 'Home', url: '/' },
         { name: 'Blog', url: '/blog' },
         { name: blog.title, url: `/blog/${blog.slug}` }
       ]} />
-      {hasFAQ && <FAQSchema content={blog.content} />}
+      {blog.content.includes('Frequently Asked Questions') && <FAQSchema content={blog.content} />}
 
       <ReadingProgress />
 
@@ -92,23 +84,24 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         image={blog.featuredImage}
       />
 
-      <div className="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+      <div className="container mx-auto px-4 py-12 flex flex-col lg:flex-row gap-12">
+        {/* Left Sidebar: TOC & CTA */}
         <aside className="lg:w-1/4 order-2 lg:order-1">
-          <div className="sticky top-24">
+          <div className="sticky top-28 space-y-8">
             <TableOfContents headings={headings} />
-            <div className="mt-6">
-              <ConversionCTA
-                title="Apply for Internship Now"
-                buttonText="View Opportunities"
-                link="/internships"
-                variant="sidebar"
-              />
-            </div>
+            <ConversionCTA
+              title="Apply for Internship"
+              buttonText="View All"
+              link="/internships"
+              variant="sidebar"
+            />
           </div>
         </aside>
 
-        <article className="lg:w-2/4 order-1 lg:order-2 prose prose-lg max-w-none">
-          <div
+        {/* Main Content: Article */}
+        <article className="lg:w-2/4 order-1 lg:order-2">
+          <div 
+            className="prose prose-blue prose-lg max-w-none prose-headings:scroll-mt-28"
             dangerouslySetInnerHTML={{
               __html: blog.content.replace(
                 /<h2>(.*?)<\/h2>/g,
@@ -117,77 +110,26 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             }}
           />
 
-          <div className="my-8 flex gap-2 flex-wrap">
+          <div className="mt-10 flex flex-wrap gap-2">
             {blog.tags.map(tag => (
-              <Link
-                key={tag}
-                href={`/blog?search=${encodeURIComponent(tag)}`}
-                className="bg-gray-100 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition"
-              >
+              <Link key={tag} href={`/blog?search=${tag}`} className="text-sm bg-gray-100 px-4 py-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition">
                 #{tag}
               </Link>
             ))}
           </div>
 
+          <hr className="my-12" />
           <AuthorBox author={author} publishedAt={blog.publishedAt} readingTime={blog.readingTime} />
-
-          <div className="flex items-center gap-4 my-6">
-            <span className="font-medium">Share:</span>
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=https://internadda.com/blog/${blog.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-400"
-            >
-              Twitter
-            </a>
-            <a
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=https://internadda.com/blog/${blog.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-600"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=https://internadda.com/blog/${blog.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-blue-800"
-            >
-              Facebook
-            </a>
-          </div>
-
           <NewsletterSection />
-
-          <div className="my-8">
-            <ConversionCTA
-              title="Explore Free Courses with Certificates"
-              buttonText="Browse Courses"
-              link="/free-courses"
-              variant="banner"
-            />
-          </div>
         </article>
 
+        {/* Right Sidebar: Related Posts */}
         <aside className="lg:w-1/4 order-3">
-          <div className="sticky top-24 space-y-6">
+          <div className="sticky top-28">
             <RelatedPosts posts={related} />
-            <ConversionCTA
-              title="Government Internships"
-              buttonText="See List"
-              link="/government-internships"
-              variant="sidebar"
-            />
           </div>
         </aside>
       </div>
-
-      <div className="container mx-auto px-4 py-12 border-t">
-        <h3 className="text-2xl font-bold mb-4">Comments</h3>
-        <p className="text-gray-500">We'd love to hear your thoughts! Please log in to comment.</p>
-      </div>
-    </>
+    </div>
   );
 }
