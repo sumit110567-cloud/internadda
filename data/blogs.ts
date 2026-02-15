@@ -271,7 +271,7 @@ export const blogs: BlogPost[] = [
   // 14. Internship vs Full-Time Job: What's Better?
   {
     slug: 'internship-vs-full-time-job',
-    title: 'Internship vs Full-Time Job: What's Better?',
+    title: 'Internship vs Full-Time Job: What\'s Better?',
     excerpt: 'Should you take an internship or aim for a full-time job after graduation? Compare pros, cons, and career impact.',
     content: `<h2>Understanding the Difference</h2><p>Internships are temporary, learning-focused roles; full-time jobs are permanent positions with responsibilities.</p><h2>Pros of Internships</h2><p>Skill building, exploration, networking, and often a path to full-time employment.</p><h2>Cons of Internships</h2><p>Lower pay, less job security, may not lead to a job.</p><h2>Pros of Full-Time Jobs</h2><p>Stable income, benefits, career progression.</p><h2>Cons of Full-Time Jobs</h2><p>Higher expectations, less flexibility to explore.</p><h2>Which Should You Choose?</h2><p>If you're still exploring, internships are great. If you have clear goals and a job offer, full-time may be better.</p><h2>FAQs</h2><h3>Can I do an internship after graduation?</h3><p>Yes, many companies offer internships for recent graduates as a pathway to full-time.</p><h3>Does an internship count as experience?</h3><p>Absolutely. It's valuable on your resume.</p>`,
     featuredImage: '/images/blog/internship-vs-job.jpg',
@@ -281,7 +281,7 @@ export const blogs: BlogPost[] = [
     tags: ['internship vs job', 'career advice', 'after graduation'],
     readingTime: 5,
     meta: {
-      title: 'Internship vs Full-Time Job: What's Better? | Internadda',
+      title: 'Internship vs Full-Time Job: What\'s Better? | Internadda',
       description: 'Compare internships and full-time jobs – pros, cons, and which is right for your career stage.',
       keywords: ['internship vs job', 'career advice', 'after graduation'],
     },
