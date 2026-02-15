@@ -1,4 +1,3 @@
-'use client'
 
 // app/blog/[slug]/page.tsx
 import { blogs } from '@/data/blogs';
