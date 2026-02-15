@@ -1,82 +1,202 @@
 'use client'
 
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
-import { motion } from 'framer-motion'
-import { Calendar, User, Share2, ArrowLeft, Clock, Bookmark } from 'lucide-react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+// app/blog/[slug]/page.tsx
+import { blogs } from '@/data/blogs';
+import { authors } from '@/data/authors';
+import { categories } from '@/data/categories';
+import { notFound } from 'next/navigation';
+import { ReadingProgress } from '@/components/blog/ReadingProgress';
+import { TableOfContents } from '@/components/blog/TableOfContents';
+import { AuthorBox } from '@/components/blog/AuthorBox';
+import { RelatedPosts } from '@/components/blog/RelatedPosts';
+import { ConversionCTA } from '@/components/blog/ConversionCTA';
+import { NewsletterSection } from '@/components/blog/NewsletterSection';
+import { FAQSchema } from '@/components/blog/FAQSchema';
+import { ArticleSchema } from '@/components/blog/ArticleSchema';
+import { BreadcrumbSchema } from '@/components/blog/BreadcrumbSchema';
+import { HeroSection } from '@/components/HeroSection';
+import Image from 'next/image';
+import Link from 'next/link';
+import { formatDate } from '@/lib/utils';
 
-const blogPostsData: Record<string, any> = {
-  'getting-started-internship': {
-    title: 'Getting Started With Your First Internship',
-    author: 'Rajesh Kumar',
-    date: '2024-02-01',
-    readTime: '5 min read',
-    category: 'Career Tips',
-    excerpt: 'A complete guide to landing and succeeding in your first internship opportunity.',
-    content: `<h2>Introduction</h2><p>Starting your first internship can be both exciting and overwhelming. This guide will help you navigate the journey.</p><h3>Key Tips</h3><p>Research the company and set clear professional goals.</p>`,
-  },
-  'resume-tips-2024': {
-    title: 'Resume Tips That Actually Get You Noticed in 2024',
-    author: 'Priya Singh',
-    date: '2024-01-28',
-    readTime: '7 min read',
-    category: 'Job Search',
-    excerpt: 'Learn what hiring managers look for in resumes and how to stand out from the crowd.',
-    content: `<h2>Mastering Your Resume</h2><p>In 2024, AI-driven ATS systems are the first hurdle. Use keywords from the job description to pass the filter.</p>`,
-  },
-  'interview-questions': {
-    title: 'Top 20 Interview Questions You\'ll Definitely Get Asked',
-    author: 'Aditya Singh',
-    date: '2024-01-25',
-    readTime: '8 min read',
-    category: 'Interview Prep',
-    excerpt: 'Prepare for your interviews with these common questions and expert answers.',
-    content: `<h2>Common Questions</h2><p>Be ready for "Tell me about yourself" and "Why do you want to work here?".</p>`,
-  },
+export async function generateStaticParams() {
+  return blogs.map(blog => ({ slug: blog.slug }));
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = blogPostsData[params.slug]
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const blog = blogs.find(b => b.slug === params.slug);
+  if (!blog) return {};
 
-  if (!post) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0A2647] text-white p-6">
-        <h1 className="text-4xl font-black mb-4">Post Not Found</h1>
-        <Link href="/blog" className="bg-[#FFD700] text-[#0A2647] px-8 py-3 rounded-xl font-bold">Back to Journal</Link>
-      </div>
-    )
+  return {
+    title: blog.meta.title,
+    description: blog.meta.description,
+    keywords: blog.meta.keywords.join(', '),
+    openGraph: {
+      title: blog.meta.title,
+      description: blog.meta.description,
+      url: `https://internadda.com/blog/${blog.slug}`,
+      images: [{ url: blog.featuredImage }],
+      type: 'article',
+      publishedTime: blog.publishedAt,
+      authors: [authors.find(a => a.id === blog.authorId)?.name || 'Internadda'],
+      tags: blog.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.meta.title,
+      description: blog.meta.description,
+      images: [blog.featuredImage],
+    },
+    alternates: {
+      canonical: `https://internadda.com/blog/${blog.slug}`,
+    },
+  };
+}
+
+export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+  const blog = blogs.find(b => b.slug === params.slug);
+  if (!blog) notFound();
+
+  const author = authors.find(a => a.id === blog.authorId)!;
+  const category = categories.find(c => c.id === blog.categoryId)!;
+  const related = blogs
+    .filter(b => b.categoryId === blog.categoryId && b.slug !== blog.slug)
+    .slice(0, 3);
+
+  // Extract headings for TOC (only h2)
+  const headingRegex = /<h2.*?>(.*?)<\/h2>/g;
+  const headings: string[] = [];
+  let match;
+  while ((match = headingRegex.exec(blog.content)) !== null) {
+    headings.push(match[1].replace(/<[^>]*>/g, '')); // strip inner HTML tags if any
   }
+
+  // Check if blog contains FAQ section
+  const hasFAQ = blog.content.includes('Frequently Asked Questions');
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-white">
-        <section className="bg-[#0A2647] pt-24 pb-40 px-4 relative overflow-hidden">
-          <div className="max-w-4xl mx-auto text-center flex flex-col items-center relative z-10">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-              <Link href="/blog" className="text-yellow-400 font-bold text-sm uppercase tracking-widest"><ArrowLeft className="inline mr-2" size={16} /> The Journal</Link>
-              <Badge className="bg-white/10 text-[#FFD700] px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">{post.category}</Badge>
-              <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">{post.title}</h1>
-              <div className="flex items-center justify-center gap-6 pt-10 border-t border-white/5">
-                <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center text-[#0A2647] font-black">{post.author[0]}</div><p className="text-white font-black text-sm">{post.author}</p></div>
-                <div className="flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest"><Calendar size={14} className="text-[#FFD700]" /> {post.date}</div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+      <ArticleSchema blog={blog} author={author} category={category} />
+      <BreadcrumbSchema items={[
+        { name: 'Home', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: blog.title, url: `/blog/${blog.slug}` }
+      ]} />
+      {hasFAQ && <FAQSchema content={blog.content} />}
 
-        <section className="relative -mt-20 px-4 pb-20">
-          <div className="max-w-4xl mx-auto">
-            <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[3.5rem] shadow-2xl p-8 md:p-16 border border-slate-100">
-              <div className="prose prose-blue prose-lg max-w-none prose-headings:text-[#0A2647] prose-headings:font-black prose-p:text-slate-500" dangerouslySetInnerHTML={{ __html: post.content }} />
-            </motion.div>
+      <ReadingProgress />
+
+      {/* Hero Section (unchanged style, but with blog title and image) */}
+      <HeroSection
+        title={blog.title}
+        subtitle={blog.excerpt}
+        image={blog.featuredImage}
+      />
+
+      <div className="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+        {/* Sticky TOC Sidebar (left) */}
+        <aside className="lg:w-1/4 order-2 lg:order-1">
+          <div className="sticky top-24">
+            <TableOfContents headings={headings} />
+            <div className="mt-6">
+              <ConversionCTA
+                title="Apply for Internship Now"
+                buttonText="View Opportunities"
+                link="/internships"
+                variant="sidebar"
+              />
+            </div>
           </div>
-        </section>
-      </main>
-      <Footer />
+        </aside>
+
+        {/* Main Content */}
+        <article className="lg:w-2/4 order-1 lg:order-2 prose prose-lg max-w-none">
+          {/* Add ids to h2 for TOC linking */}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: blog.content.replace(
+                /<h2>(.*?)<\/h2>/g,
+                (_, text) => `<h2 id="${text.toLowerCase().replace(/\s+/g, '-')}">${text}</h2>`
+              )
+            }}
+          />
+
+          <div className="my-8 flex gap-2 flex-wrap">
+            {blog.tags.map(tag => (
+              <Link
+                key={tag}
+                href={`/blog?search=${encodeURIComponent(tag)}`}
+                className="bg-gray-100 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition"
+              >
+                #{tag}
+              </Link>
+            ))}
+          </div>
+
+          <AuthorBox author={author} publishedAt={blog.publishedAt} readingTime={blog.readingTime} />
+
+          {/* Social Share */}
+          <div className="flex items-center gap-4 my-6">
+            <span className="font-medium">Share:</span>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=https://internadda.com/blog/${blog.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-blue-400"
+            >
+              Twitter
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=https://internadda.com/blog/${blog.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-blue-600"
+            >
+              LinkedIn
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=https://internadda.com/blog/${blog.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-blue-800"
+            >
+              Facebook
+            </a>
+          </div>
+
+          <NewsletterSection />
+
+          {/* Conversion CTA after content */}
+          <div className="my-8">
+            <ConversionCTA
+              title="Explore Free Courses with Certificates"
+              buttonText="Browse Courses"
+              link="/free-courses"
+              variant="banner"
+            />
+          </div>
+        </article>
+
+        {/* Right Sidebar */}
+        <aside className="lg:w-1/4 order-3">
+          <div className="sticky top-24 space-y-6">
+            <RelatedPosts posts={related} />
+            <ConversionCTA
+              title="Government Internships"
+              buttonText="See List"
+              link="/government-internships"
+              variant="sidebar"
+            />
+          </div>
+        </aside>
+      </div>
+
+      {/* Comments placeholder */}
+      <div className="container mx-auto px-4 py-12 border-t">
+        <h3 className="text-2xl font-bold mb-4">Comments</h3>
+        <p className="text-gray-500">We'd love to hear your thoughts! Please log in to comment.</p>
+        {/* Placeholder for future Disqus or custom comment system */}
+      </div>
     </>
-  )
+  );
 }
