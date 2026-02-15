@@ -46,7 +46,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { categ
       <HeroSection
         title="Career Insights & Internships"
         subtitle="Expert advice to help you land your dream role in 2025."
-        image="/images/blog-hero.jpg"
+        image="/Tech Comp.png"
       />
 
       {/* Floating search/filter card */}
