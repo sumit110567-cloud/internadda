@@ -16,19 +16,19 @@ export function CategoryFilter({ categories, selected }: { categories: Category[
     } else {
       params.delete('category');
     }
-    params.delete('page'); // reset to page 1
+    params.delete('search');
     router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-3">
       <button
         onClick={() => handleCategoryChange(null)}
         className={cn(
-          'px-4 py-2 rounded-full text-sm font-medium transition',
+          'px-5 py-2 rounded-full text-sm font-medium transition-all border',
           !selected
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+            : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
         )}
       >
         All
@@ -38,10 +38,10 @@ export function CategoryFilter({ categories, selected }: { categories: Category[
           key={cat.slug}
           onClick={() => handleCategoryChange(cat.slug)}
           className={cn(
-            'px-4 py-2 rounded-full text-sm font-medium transition',
+            'px-5 py-2 rounded-full text-sm font-medium transition-all border',
             selected === cat.slug
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+              : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
           )}
         >
           {cat.name}
