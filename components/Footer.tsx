@@ -10,8 +10,8 @@ export function Footer() {
     Company: [
       { label: 'About Us', href: '/about' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Careers', href: '#' },
-      { label: 'Contact', href: '#' },
+      { label: 'Careers', href: '#' }, // Update when career page is ready
+      { label: 'Contact', href: '/about' }, // Pointing to contact section in about
     ],
     Opportunities: [
       { label: 'Internships', href: '/internships' },
@@ -20,27 +20,27 @@ export function Footer() {
       { label: 'Certificate Verify', href: '#' },
     ],
     Support: [
-      { label: 'Help Center', href: '#' },
+      { label: 'Help Center', href: '/help-center' },
       { label: 'Student Guide', href: '/blog' },
-      { label: 'FAQ', href: '#' },
-      { label: 'Community', href: '#' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Community', href: '/community' },
     ],
     Legal: [
-      { label: 'Privacy Policy', href: '#' },
-      { label: 'Terms of Service', href: '#' },
-      { label: 'Cookie Policy', href: '#' },
-      { label: 'Disclaimer', href: '#' },
+      { label: 'Privacy Policy', href: '/privacy-policy' },
+      { label: 'Terms of Service', href: '/terms-of-service' },
+      { label: 'Cookie Policy', href: '/cookie-policy' },
+      { label: 'Disclaimer', href: '/disclaimer' },
     ],
   }
 
   return (
     <footer className="bg-[#0A2647] text-white border-t border-white/10 mt-16">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-8 py-16">
         
         {/* Main Footer Content */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 mb-16">
           
-          {/* Brand Section - Takes full width on tiny screens, 2 cols on mobile, 2 cols on desktop */}
+          {/* Brand Section */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
             <Link href="/" className="flex items-center gap-3 font-bold text-2xl text-white mb-6">
               <div className="w-10 h-10 bg-[#FFD700] rounded-xl flex items-center justify-center text-[#0A2647] font-black shadow-lg">
@@ -57,11 +57,13 @@ export function Footer() {
                 { Icon: Youtube, href: "https://www.youtube.com/@theinternadda" },
                 { Icon: Linkedin, href: "https://www.linkedin.com/company/internadda-india" },
                 { Icon: Instagram, href: "https://www.instagram.com/internadda.india/#" },
-                { Icon: Mail, href: "mailto:suppoert@internadda.com" }
+                { Icon: Mail, href: "mailto:support@internadda.com" }
               ].map((social, i) => (
                 <a
                   key={i}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/5 hover:bg-[#FFD700] hover:text-[#0A2647] rounded-full flex items-center justify-center transition-all duration-300 border border-white/10"
                 >
                   <social.Icon size={18} />
@@ -70,7 +72,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Link Groups - 2-column grid on mobile! */}
+          {/* Link Groups */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category} className="flex flex-col items-center lg:items-start">
               <h3 className="font-bold text-[#FFD700] text-xs uppercase tracking-[0.2em] mb-6">
@@ -124,10 +126,10 @@ export function Footer() {
             © {currentYear} <span className="text-white font-medium">Internadda Enterprises</span>. All rights reserved.
           </p>
           <div className="flex items-center gap-8">
-            <Link href="#" className="text-xs text-blue-100/40 hover:text-white transition-colors">
+            <Link href="/terms-of-service" className="text-xs text-blue-100/40 hover:text-white transition-colors">
               Terms & Conditions
             </Link>
-            <Link href="#" className="text-xs text-blue-100/40 hover:text-white transition-colors">
+            <Link href="/privacy-policy" className="text-xs text-blue-100/40 hover:text-white transition-colors">
               Privacy Policy
             </Link>
           </div>
