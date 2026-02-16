@@ -24,7 +24,7 @@ const MOCK_INTERNSHIPS = [
 
 const COUPONS: Record<string, number> = {
   'CAMPUSVIP': 0.25,
-  'DREAM10': 0.10,
+  'DREAMSTART': 0.10,
   'TECHTITANS': 0.90
 };
 
