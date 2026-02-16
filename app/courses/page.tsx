@@ -1,6 +1,7 @@
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import CoursesClient from './courses-client'
+import { Badge } from '@/components/ui/badge'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -105,7 +106,25 @@ export default function CoursesPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white font-sans overflow-x-hidden">
+        {/* Unified Hero Section */}
+        <section className="relative bg-gradient-to-b from-indigo-50 via-white to-white pt-12 pb-10 md:pt-20 md:pb-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Badge className="bg-indigo-100 text-indigo-700 border-none px-4 py-1.5 rounded-full mb-6 text-xs font-semibold">
+              InternAdda Academy
+            </Badge>
+
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+              Master <span className="text-indigo-600">in-demand skills.</span>
+            </h1>
+
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Premium industry-ready courses designed by experts. 
+              Get certified and stay ahead of the curve—completely <span className="text-indigo-600 font-bold">Free</span>.
+            </p>
+          </div>
+        </section>
+
         <CoursesClient initialCourses={courses} />
       </main>
       <Footer />
