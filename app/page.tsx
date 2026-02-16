@@ -258,9 +258,9 @@ export default function Home() {
                 </Badge>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
-                  Your <span className="text-indigo-600">dream career</span>
+                  India's <span className="text-indigo-600"> Largest Dedicated </span>
                   <br />
-                  starts here.
+                  Internship Ecosystem.
                 </h1>
 
                 <p className="text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 mb-8">
