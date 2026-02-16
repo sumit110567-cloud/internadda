@@ -1,194 +1,157 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, CheckCircle, GraduationCap, ArrowRight } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
+import { Button } from '@/components/ui/button'
+import { Search, MapPin, Briefcase } from 'lucide-react'
 
-interface Internship {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  stipend: string;
-  skills: string[];
-  applicants: number;
-  image: string;
-  otherCompaniesCount: number;
-  companyLogos: string[];
-}
-
-const InternshipCard = ({ internship }: { internship: Internship }) => {
+const InternshipCard = ({
+  id,
+  title,
+  company,
+  stipend,
+  location,
+  skills,
+  applicants,
+  otherCompaniesCount,
+  image,
+  companyLogos,
+}: any) => {
   const { user } = useAuth()
   const router = useRouter()
 
   const handleApply = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-  
-    // CORRECTED: Redirect users to the Application Form page instead of the test.
-    // This ensures they provide their professional details and complete payment.
-    router.push(`/apply/${internship.id}`)
+
+    if (!user) {
+      router.push(`/auth/signin?callbackUrl=/apply/${id}`)
+      return
+    }
+    router.push(`/apply/${id}`)
   }
 
   return (
-    <article className="bg-white rounded-[2rem] border border-blue-50 shadow-lg overflow-hidden w-full max-w-[380px] flex flex-col group transition-all duration-300 hover:shadow-2xl hover:border-blue-200">
-      <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-        <Image 
-          src={internship.image} 
-          alt={internship.title} 
-          fill 
+    <article className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 w-full flex flex-col group">
+      <div className="relative h-44 w-full bg-gray-100 rounded-t-2xl overflow-hidden">
+        <Image
+          src={image}
+          alt={`${title} at ${company}`}
+          fill
+          sizes="(max-width: 768px) 100vw, 360px"
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-white/20 z-10">
-          <span className="text-orange-500 text-[10px]">🔥</span>
-          <span className="text-white text-[9px] font-bold">{internship.applicants} Applied</span>
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+          <span className="text-amber-500 text-xs">⚡</span>
+          <span className="text-gray-700 text-xs font-medium">
+            {applicants} applied
+          </span>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent pointer-events-none" />
       </div>
 
-      <div className="px-6 pb-6 pt-1 flex flex-col items-center text-center relative z-10">
-        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">HIRING AT {internship.company}</p>
-        
-        <div className="flex items-center justify-center gap-2 mb-4">
+      <div className="p-5 text-center">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          {company} + {otherCompaniesCount} others
+        </p>
+
+        <h3 className="text-lg font-bold text-gray-800 mb-3 leading-snug">
+          {title}
+        </h3>
+
+        <div className="flex items-center justify-center gap-4 mb-4">
           <div className="flex -space-x-2">
-            {internship.companyLogos.map((logo, idx) => (
-              <div key={idx} className="relative w-7 h-7 rounded-full border-2 border-white bg-white overflow-hidden shadow-sm">
-                <Image src={logo} alt="logo" fill className="object-cover" />
+            {companyLogos.map((logo: string, idx: number) => (
+              <div
+                key={idx}
+                className="relative w-6 h-6 rounded-full border-2 border-white bg-white shadow-sm overflow-hidden"
+              >
+                <Image src={logo} alt="" fill className="object-cover" />
               </div>
             ))}
           </div>
-          <span className="text-blue-600 text-[11px] font-bold">+{internship.otherCompaniesCount} more</span>
+          <span className="text-xs text-gray-500">+{otherCompaniesCount}</span>
         </div>
 
-        <h3 className="text-xl font-extrabold text-[#0A2647] mb-4 leading-tight">{internship.title}</h3>
-
-        <div className="grid grid-cols-2 w-full border-y border-gray-100 py-3 mb-4">
-          <div className="border-r border-gray-100 flex flex-col items-center">
-            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Stipend</p>
-            <p className="text-blue-600 font-extrabold text-sm">{internship.stipend}</p>
+        <div className="grid grid-cols-2 gap-2 border-t border-b border-gray-50 py-3 mb-4">
+          <div>
+            <p className="text-xs font-medium text-gray-400">Stipend</p>
+            <p className="text-sm font-bold text-gray-800">{stipend}</p>
           </div>
-          <div className="flex flex-col items-center">
-            <p className="text-[9px] font-bold text-gray-400 uppercase mb-0.5">Location</p>
-            <p className="text-gray-700 font-extrabold text-sm">{internship.location}</p>
+          <div>
+            <p className="text-xs font-medium text-gray-400">Location</p>
+            <p className="text-sm font-bold text-gray-800">{location}</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-1.5 mb-6">
-          {internship.skills.map((skill) => (
-            <span key={skill} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-lg text-[10px] font-bold text-gray-600">
+        <div className="flex flex-wrap justify-center gap-1.5 mb-5">
+          {skills.map((skill: string) => (
+            <span
+              key={skill}
+              className="bg-gray-50 px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-100"
+            >
               {skill}
             </span>
           ))}
         </div>
 
-        <Button 
+        <Button
           onClick={handleApply}
-          className="w-full bg-[#0A2647] hover:bg-[#144272] text-white py-6 rounded-xl font-extrabold shadow-lg transition-all active:scale-95 cursor-pointer relative z-20"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-xl font-semibold text-sm shadow-md shadow-indigo-200 transition-all active:scale-95"
         >
-          {user ? 'Apply Now' : 'Sign In to Apply'}
+          {user ? 'Apply Now' : 'Sign in to Apply'}
         </Button>
       </div>
     </article>
   )
 }
 
-export default function InternshipsClient({ initialInternships }: { initialInternships: Internship[] }) {
+export default function InternshipsClient({ initialInternships }: { initialInternships: any[] }) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [visibleCount, setVisibleCount] = useState(6)
 
   const filteredInternships = initialInternships.filter((internship) =>
     internship.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    internship.skills.some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+    internship.skills.some((skill: string) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const displayedInternships = filteredInternships.slice(0, visibleCount)
-
   return (
-    <div className="flex flex-col items-center">
-      {/* Top Banner */}
-      <div className="w-full bg-[#0A2647] text-white py-2">
-        <div className="flex justify-center gap-6 text-[10px] uppercase tracking-widest font-medium">
-          <div className="flex items-center gap-2"><CheckCircle size={12} className="text-[#FFD700]" /> Global Recognition</div>
-          <div className="flex items-center gap-2"><GraduationCap size={12} className="text-[#FFD700]" /> MSME REGISTERED</div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Search Bar Section */}
+      <div className="relative max-w-2xl mx-auto -mt-8 mb-16 z-20">
+        <div className="bg-white p-2 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2">
+          <div className="flex-1 flex items-center px-4 gap-3">
+            <Search className="text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Search by role or skills (e.g. React, Python)..."
+              className="w-full py-3 outline-none text-gray-700 bg-transparent"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <Button className="hidden sm:flex bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6">
+            Search
+          </Button>
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-[#0A2647] to-[#144272] py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
-          <Badge className="bg-[#FFD700]/10 text-[#FFD700] border-[#FFD700]/20 px-4 py-1.5 rounded-full mb-6">
-            India's #1 Internship Platform
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">Browse Internships</h1>
-          <p className="text-gray-300 mb-8">Discover verified opportunities across top tech startups.</p>
-          
-          <div className="relative w-full max-w-2xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
-            <Input
-              placeholder="Search by role, company, or skill..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value)
-                setVisibleCount(6)
-              }}
-              className="pl-12 py-7 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:bg-white/20 rounded-2xl w-full"
-            />
-          </div>
+      {/* Results Grid */}
+      {filteredInternships.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredInternships.map((internship) => (
+            <InternshipCard key={internship.id} {...internship} />
+          ))}
         </div>
-      </section>
-
-      {/* Grid Section */}
-      <section className="py-20 w-full max-w-[1400px] px-4">
-        {displayedInternships.length > 0 ? (
-          <div className="flex flex-col items-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center w-full">
-              <AnimatePresence>
-                {displayedInternships.map((internship) => (
-                  <motion.div
-                    key={internship.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="w-full flex justify-center"
-                  >
-                    <InternshipCard internship={internship} />
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-
-            {/* Load More */}
-            {visibleCount < filteredInternships.length && (
-              <div className="mt-16">
-                <Button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setVisibleCount(prev => prev + 3)
-                  }}
-                  className="bg-[#0A2647] hover:bg-black text-white px-10 py-7 text-base font-bold rounded-2xl shadow-xl transition-all cursor-pointer relative z-20"
-                >
-                  Load More Internships <ArrowRight className="ml-2" size={20} />
-                </Button>
-              </div>
-            )}
+      ) : (
+        <div className="text-center py-20">
+          <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Search className="text-gray-300" size={32} />
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-500">No internships found matching your search.</p>
-            <Button variant="link" className="text-blue-600 mt-2" onClick={() => setSearchTerm('')}>
-              Clear all filters
-            </Button>
-          </div>
-        )}
-      </section>
+          <h3 className="text-xl font-bold text-gray-800">No internships found</h3>
+          <p className="text-gray-500">Try searching for a different role or skill.</p>
+        </div>
+      )}
     </div>
   )
 }
