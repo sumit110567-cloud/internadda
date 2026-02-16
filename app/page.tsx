@@ -230,8 +230,10 @@ export default function Home() {
       {showPromo && (
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 px-4 relative z-50">
           <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-sm sm:text-base">
-            <span className="font-bold">✨ DREAMSTART:</span>
-            <span>Extra 10% off on skill assessment fees.</span>
+            <span className="hidden sm:inline font-mono bg-white/20 px-2 py-0.5 rounded">
+              DREAMSTART
+            </span>
+            <span> ✨ Extra 10% off on skill assessment fees.</span>
             <button
               onClick={() => setShowPromo(false)}
               className="absolute right-2 sm:right-4 p-1 hover:bg-white/20 rounded-full transition"
