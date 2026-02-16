@@ -1,41 +1,99 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export default function FAQPage() {
-  const faqs = [
-    // General
-    { q: "Is InternAdda MSME registered?", a: "Yes, InternAdda is a Udyam Govt. of India registered enterprise (Registration No. UDYAM-xx-xx-xxxxxx)." },
-    { q: "How many students are on the platform?", a: "We currently support over 7,200 active students and have partnered with 150+ colleges across India." },
-    { q: "Is InternAdda a legitimate platform?", a: "Absolutely. We are a registered Indian company with a physical office in Bangalore. We have helped thousands of students get internships and work experience." },
-    { q: "Who can join InternAdda?", a: "Any student (school, college, or recent graduate) can join. We have opportunities for various skill levels and domains." },
-    { q: "Is there any fee to register on InternAdda?", a: "Registration is completely free. You only pay when you apply for certain premium internships or certification programs, which are clearly mentioned." },
+const faqs = [
 
-    // Internship Process
-    { q: "How do I apply for an internship?", a: "Simply create a profile, browse internships, and click 'Apply'. Some internships may require a small fee for processing and certification." },
-    { q: "What is the selection process?", a: "After applying, you may be asked to complete a short assessment or submit a portfolio. The employer then reviews and selects candidates." },
-    { q: "Are internships remote or in-office?", a: "We offer both remote and in-office internships depending on the company's requirements. Each listing clearly mentions the mode." },
-    { q: "What is the typical duration of an internship?", a: "Internships usually range from 1 to 6 months. The exact duration is mentioned in the job description." },
-    { q: "Do interns get a stipend?", a: "Some internships are paid, others are unpaid but offer valuable experience and certification. Stipend details are mentioned in the posting." },
+  // About Internadda (Trust + Authority)
+  { 
+    q: "What is Internadda and is it a legitimate platform?", 
+    a: "Internadda is a Delhi-based MSME-registered Indian startup focused on providing affordable and skill-based internship programs for students across India. We operate with complete transparency, verified certifications, and structured skill assessment processes to ensure real learning and career growth."
+  },
 
-    // Certificates & Benefits
-    { q: "Will I receive a certificate after completing an internship?", a: "Yes, upon successful completion, you will receive a verified digital certificate that can be shared on LinkedIn and resume." },
-    { q: "Are the certificates recognized by companies?", a: "Our certificates are widely recognized by partner companies and can boost your resume. They include a unique ID and QR code for verification." },
-    { q: "Do you offer placement assistance?", a: "Yes, we provide career guidance, resume reviews, and interview preparation tips. Some programs include direct placement support." },
-    { q: "Can I add InternAdda experience to my LinkedIn?", a: "Absolutely! We encourage you to add your internship under 'Experience' and share your certificate." },
+  { 
+    q: "Is Internadda Government registered?", 
+    a: "Yes. Internadda is a Udyam (MSME) registered enterprise under the Government of India. We operate as a legally recognized startup providing internship training and certification programs."
+  },
 
-    // Payments & Refunds
-    { q: "What payment methods do you accept?", a: "We accept UPI, credit/debit cards, net banking, and popular wallets." },
-    { q: "Is there a refund policy?", a: "If you are not satisfied with a paid internship within 7 days of payment, you can request a refund (subject to terms). Please see our refund policy page." },
-    { q: "Do I have to pay for every internship I apply?", a: "No, only some premium internships have an application fee. Most are free to apply." },
+  { 
+    q: "Who is the founder of Internadda?", 
+    a: "Internadda was founded by Lucky Tiwari with the mission of making internships accessible, affordable, and skill-focused for students across India. The platform operates with a transparent partnership structure and student-first approach."
+  },
 
-    // Technical Support
-    { q: "I'm facing issues with my account. What should I do?", a: "Please contact our support team at support@internadda.com or use the chat option on our website. We typically respond within 24 hours." },
-    { q: "How do I reset my password?", a: "Click on 'Forgot Password' on the login page and follow the instructions sent to your email." },
-    { q: "Can I edit my profile after registration?", a: "Yes, you can update your profile information, skills, and resume anytime from your dashboard." },
+  { 
+    q: "How many students trust Internadda?", 
+    a: "Thousands of students across India have enrolled in our internship and skill assessment programs. We continuously collaborate with colleges and growing startups to expand opportunities."
+  },
 
-    // Partnerships & Collaborations
-    { q: "How can my company partner with InternAdda?", a: "We welcome companies to post internships for free. Please visit our 'Partner with Us' page or email partnerships@internadda.com." },
-    { q: "Do you offer college collaborations?", a: "Yes, we partner with colleges to provide internships and training programs. Contact us at college@internadda.com." },
-  ]
+  // Fees Transparency (Very Important for SEO + Trust)
+  { 
+    q: "Is registration on Internadda free?", 
+    a: "Yes. Registration on Internadda is completely free. Students can create a profile, explore internships, and browse opportunities without paying anything."
+  },
+
+  { 
+    q: "Is there any hidden fee on Internadda?", 
+    a: "No. Internadda follows a strict no hidden fee policy. All charges, if applicable, are clearly mentioned before enrollment."
+  },
+
+  { 
+    q: "Why is there a ₹199 fee for some internship programs?", 
+    a: "The ₹199 fee is not a registration charge. It is a Skill Assessment & Certification Fee for selected internship programs. This covers structured evaluation, project review, and generation of a verified digital certificate. We keep it affordable to ensure accessibility for students across India."
+  },
+
+  { 
+    q: "Do I have to pay ₹199 for every internship?", 
+    a: "No. Only specific structured internship programs that include skill assessment and verified certification require a ₹199 fee. Many opportunities remain free to explore."
+  },
+
+  // Internship Process
+  { 
+    q: "How does the Internadda internship process work?", 
+    a: "Students create a profile, select their desired internship domain, complete the structured tasks or assessment, and upon successful completion receive a verified internship certificate."
+  },
+
+  { 
+    q: "Are Internadda internships remote or offline?", 
+    a: "Most Internadda internships are remote and flexible, allowing students across India to participate. Some partner programs may include hybrid or offline opportunities depending on the organization."
+  },
+
+  { 
+    q: "What is the duration of Internadda internships?", 
+    a: "Internship durations typically range from 1 month to 3 months depending on the selected program and skill domain."
+  },
+
+  // Certificates & Career Value
+  { 
+    q: "Will I receive a certificate after completion?", 
+    a: "Yes. Upon successful completion of tasks and assessment, students receive a verified digital internship certificate with unique verification credentials."
+  },
+
+  { 
+    q: "Is the Internadda certificate valid for resume and LinkedIn?", 
+    a: "Yes. Our certificates are designed to be resume-friendly and LinkedIn-ready. Students can add them under Experience or Licenses & Certifications."
+  },
+
+  { 
+    q: "How is Internadda different from free internship portals?", 
+    a: "Unlike random listing portals, Internadda focuses on structured skill-based internships with assessment, evaluation, and certification. Our goal is real skill development, not just application forwarding."
+  },
+
+  // Support & Credibility
+  { 
+    q: "How can I contact Internadda support?", 
+    a: "Students can contact our support team via email or through the official website contact page. We aim to respond within 24 working hours."
+  },
+
+  { 
+    q: "Can colleges collaborate with Internadda?", 
+    a: "Yes. We actively collaborate with colleges and training institutes to provide structured internship and skill programs for students."
+  },
+
+  { 
+    q: "How can companies partner with Internadda?", 
+    a: "Startups and organizations can partner with Internadda to offer internship opportunities or skill-based training programs. Visit our Partner page for collaboration details."
+  },
+
+]
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-20">
