@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import { blogs } from '@/data/blogs';
 import { categories } from '@/data/categories';
-import { HeroSection } from '@/components/HeroSection';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { FeaturedPost } from '@/components/blog/FeaturedPost';
 import { CategoryFilter } from '@/components/blog/CategoryFilter';
@@ -14,6 +13,7 @@ import { ConversionCTA } from '@/components/blog/ConversionCTA';
 import { TrustBadges } from '@/components/blog/TrustBadges';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function BlogPage({ searchParams }: { searchParams: { category?: string; search?: string } }) {
@@ -22,7 +22,6 @@ export default function BlogPage({ searchParams }: { searchParams: { category?: 
   const categorySlug = searchParams.category;
   const searchQuery = searchParams.search?.toLowerCase();
 
-  // Memoized filtering logic for better performance
   const { featuredPost, remainingPosts, popularTags } = useMemo(() => {
     let filtered = blogs;
     
@@ -65,40 +64,68 @@ export default function BlogPage({ searchParams }: { searchParams: { category?: 
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-20">
+      <main className="min-h-screen bg-white font-sans overflow-x-hidden">
         <BlogSchema />
 
-        <HeroSection
-          title="Career Insights & Journal"
-          subtitle="Expert advice and industry trends to help you land your dream role in 2026."
-          image="/Tech Comp.png"
-        />
+        {/* Unified Hero Section - Matches Home & Courses */}
+        <section className="relative bg-gradient-to-b from-indigo-50 via-white to-white pt-12 pb-10 md:pt-20 md:pb-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Badge className="bg-indigo-100 text-indigo-700 border-none px-4 py-1.5 rounded-full mb-6 text-xs font-semibold">
+              Internadda Journal
+            </Badge>
 
-        {/* Floating search/filter card with glassmorphism */}
-        <div className="container mx-auto px-4 -mt-12 relative z-20">
-          <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/40 p-6 md:p-10 mb-16">
-            <div className="flex flex-col md:flex-row gap-8 items-center justify-between">
-              <CategoryFilter categories={categories} selected={categorySlug} />
-              <div className="w-full md:w-auto">
-                <BlogSearch initialQuery={searchQuery} />
-              </div>
-            </div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+              Career <span className="text-indigo-600">Insights & Trends.</span>
+            </h1>
+
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Expert advice, student success stories, and industry trends to help you 
+              land your dream role in 2026.
+            </p>
           </div>
+        </section>
 
-          {/* Featured post section */}
+        {/* Floating Filter Bar - Matches Internship Search Style */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border border-gray-100 mb-16">
+          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+            
+            {/* Desktop Filter: Hidden on mobile, flex on large screens */}
+            <div className="hidden lg:flex items-center w-full lg:w-auto">
+              <CategoryFilter categories={categories} selected={categorySlug} />
+            </div>
+      
+            {/* Search Bar: Full width on mobile, 1/3 width on desktop */}
+            <div className="w-full lg:w-1/3">
+              <BlogSearch initialQuery={searchQuery} />
+            </div>
+      
+            {/* Mobile-only Hint (Optional): If you want to show users they are searching all categories */}
+            <div className="lg:hidden w-full text-center">
+              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+                Searching all categories
+              </p>
+            </div>
+      
+          </div>
+        </div>
+
+          {/* Featured Post */}
           {featuredPost && (
-            <div className="mb-20">
-              <div className="flex items-center gap-2 mb-6">
-                <Sparkles className="text-blue-600" size={20} />
-                <h2 className="text-2xl font-black text-[#0A2647] uppercase tracking-tight">Featured Story</h2>
+            <div className="mb-24">
+              <div className="flex items-center gap-2 mb-8">
+                <div className="p-2 bg-indigo-50 rounded-lg">
+                  <Sparkles className="text-indigo-600" size={20} />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Featured Story</h2>
               </div>
               <FeaturedPost post={featuredPost} />
             </div>
           )}
 
           <div className="flex flex-col lg:flex-row gap-16">
-            {/* Main content area */}
-            <main className="lg:w-2/3">
+            {/* Main Blog Feed */}
+            <div className="lg:w-2/3">
               {displayedPosts.length > 0 ? (
                 <div className="space-y-12">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -107,30 +134,28 @@ export default function BlogPage({ searchParams }: { searchParams: { category?: 
                     ))}
                   </div>
 
-                  {/* Premium Load More Button */}
+                  {/* Unified Button Style */}
                   {hasMore && (
                     <div className="flex justify-center pt-12">
                       <button 
                         onClick={() => setVisibleCount(prev => prev + 6)}
-                        className="group relative px-10 py-5 bg-[#0A2647] text-white rounded-2xl font-black uppercase tracking-widest text-xs shadow-2xl hover:bg-blue-600 transition-all active:scale-95"
+                        className="group flex items-center gap-2 px-10 py-5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95"
                       >
-                        <span className="flex items-center gap-3">
-                          Load More Articles
-                          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                        </span>
+                        Load More Articles
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                       </button>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="bg-slate-50 rounded-[3rem] border border-dashed border-slate-200 py-20 text-center">
-                  <p className="text-slate-400 font-bold uppercase tracking-widest text-sm">No matches found for your search.</p>
+                <div className="bg-gray-50 rounded-3xl border border-dashed border-gray-200 py-20 text-center">
+                  <p className="text-gray-400 font-medium">No matches found for your search.</p>
                 </div>
               )}
-            </main>
+            </div>
 
-            {/* Sidebar with specialized conversion elements */}
-            <aside className="lg:w-1/3 space-y-10">
+            {/* Sidebar */}
+            <aside className="lg:w-1/3 space-y-10 pb-20">
               <div className="sticky top-28 space-y-10">
                 <NewsletterSection />
 
@@ -142,13 +167,13 @@ export default function BlogPage({ searchParams }: { searchParams: { category?: 
                   variant="sidebar"
                 />
 
-                <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 p-8">
-                  <h3 className="font-black text-[#0A2647] uppercase tracking-widest text-xs mb-6">Trending Topics</h3>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                  <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-6">Trending Topics</h3>
                   <div className="flex flex-wrap gap-2">
                     {popularTags.map(tag => (
                       <span
                         key={tag}
-                        className="px-4 py-2 bg-slate-50 text-slate-600 rounded-xl text-[11px] font-black uppercase border border-slate-100 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
+                        className="px-4 py-2 bg-gray-50 text-gray-600 rounded-xl text-xs font-medium border border-gray-100 hover:bg-indigo-50 hover:text-indigo-600 transition-colors cursor-pointer"
                       >
                         #{tag}
                       </span>
@@ -161,7 +186,7 @@ export default function BlogPage({ searchParams }: { searchParams: { category?: 
             </aside>
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );
