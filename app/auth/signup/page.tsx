@@ -157,7 +157,7 @@ export default function SignUpPage() {
                   className="mt-1 w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" 
                 />
                 <label htmlFor="terms" className="text-xs text-gray-500 leading-snug">
-                  I agree to the <Link href="/terms" className="text-indigo-600 font-bold hover:underline">Terms</Link> and <Link href="/privacy" className="text-indigo-600 font-bold hover:underline">Privacy Policy</Link>
+                  I agree to the <Link href="/terms-of-service" className="text-indigo-600 font-bold hover:underline">Terms</Link> and <Link href="/privacy-policy" className="text-indigo-600 font-bold hover:underline">Privacy Policy</Link>
                 </label>
               </div>
 
