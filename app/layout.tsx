@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
 import { cn } from "@/lib/utils"
+import { InternaBot } from "@/components/InternaBot"
 
 /**
  * PRODUCTION FONT OPTIMIZATION
@@ -20,6 +21,7 @@ const poppins = Poppins({
 /**
  * ADVANCED SEO METADATA
  * Synchronized with InternAdda's "Gold Standard" branding.
+ * Icons and verification updated for maximum trust and ranking.
  */
 export const metadata: Metadata = {
   title: 'InternAdda - India\'s Largest Dedicated Internship Ecosystem | MSME Registered',
@@ -35,6 +37,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://internadda.com'),
   alternates: {
     canonical: '/',
+  },
+  verification: {
+    google: 'ADD_YOUR_VERIFICATION_CODE_HERE', // Build trust by verifying ownership in Search Console
   },
   robots: {
     index: true,
@@ -72,10 +77,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' }, // Standard favicon
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' }, // Android icon
     ],
-    apple: '/apple-icon.png',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }, // iOS icon
+    ],
   },
 }
 
@@ -84,8 +91,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0A2647' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' }, // Matches layout background
+    { media: '(prefers-color-scheme: dark)', color: '#0A2647' },  // Matches brand primary color
   ],
 }
 
@@ -150,6 +157,8 @@ export default function RootLayout({
               {children}
             </div>
           </div>
+          {/* INTERNA AI SUPPORT BOT */}
+          <InternaBot />
         </AuthProvider>
         <Analytics />
       </body>
