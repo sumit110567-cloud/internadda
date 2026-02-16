@@ -8,7 +8,8 @@ import { Footer } from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/lib/auth-context'
-import { Mail, Lock, AlertCircle } from 'lucide-react'
+import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -20,7 +21,6 @@ export default function SignInPage() {
   const searchParams = useSearchParams()
   const { signIn } = useAuth()
 
-  // 🔥 Get callback URL from middleware
   const callbackUrl = searchParams.get('callbackUrl') || '/'
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -29,15 +29,9 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
-      // Sign in user
       await signIn(email, password)
-
-      // 🔥 Important for Supabase SSR sync
       router.refresh()
-
-      // 🔥 Replace instead of push (prevents back-loop)
       router.replace(callbackUrl)
-
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign in')
     } finally {
@@ -48,105 +42,110 @@ export default function SignInPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background flex items-center justify-center py-12 px-4">
+      <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white flex items-center justify-center py-16 px-4">
         <div className="w-full max-w-md">
-          <div className="bg-card border border-border rounded-lg p-8 shadow-lg">
+          {/* Main Card */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-xl shadow-indigo-100/50">
             
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-foreground mb-2">
+              <Badge className="bg-indigo-100 text-indigo-700 border-none px-4 py-1 rounded-full mb-4 text-xs font-semibold">
+                Member Access
+              </Badge>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Welcome Back
               </h1>
-              <p className="text-muted-foreground">
-                Sign in to access your internship applications
+              <p className="text-gray-500">
+                Sign in to manage your applications
               </p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-destructive/10 border border-destructive/30 rounded-lg flex items-start gap-3">
-                <AlertCircle className="text-destructive flex-shrink-0 mt-0.5" size={20} />
-                <p className="text-sm text-destructive">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3">
+                <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+                <p className="text-sm text-red-600 font-medium">{error}</p>
               </div>
             )}
 
-            <form onSubmit={handleSignIn} className="space-y-4">
+            <form onSubmit={handleSignIn} className="space-y-5">
               
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">
+                <label className="text-sm font-bold text-gray-700 ml-1">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 text-muted-foreground" size={20} />
+                  <Mail className="absolute left-3 top-3.5 text-gray-400" size={18} />
                   <Input
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="pl-10 h-11"
+                    className="pl-10 h-12 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">
-                  Password
-                </label>
+                <div className="flex justify-between items-center ml-1">
+                  <label className="text-sm font-bold text-gray-700">
+                    Password
+                  </label>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 text-muted-foreground" size={20} />
+                  <Lock className="absolute left-3 top-3.5 text-gray-400" size={18} />
                   <Input
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="pl-10 h-11"
+                    className="pl-10 h-12 border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-              </div>
-
-              <div className="text-right">
-                <Link
-                  href="/auth/forgot-password"
-                  className="text-sm text-primary hover:text-primary/80"
-                >
-                  Forgot password?
-                </Link>
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-white hover:bg-primary/90 h-11 font-semibold"
+                className="w-full bg-indigo-600 text-white hover:bg-indigo-700 h-12 rounded-xl font-bold shadow-lg shadow-indigo-100 transition-all active:scale-[0.98]"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? 'Authenticating...' : 'Sign In to Account'}
               </Button>
             </form>
 
-            <div className="my-6 flex items-center gap-4">
-              <div className="flex-1 h-px bg-border" />
-              <p className="text-sm text-muted-foreground">
-                New to InternAdda?
+            <div className="my-8 flex items-center gap-4">
+              <div className="flex-1 h-px bg-gray-100" />
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                OR
               </p>
-              <div className="flex-1 h-px bg-border" />
+              <div className="flex-1 h-px bg-gray-100" />
             </div>
 
             <Link href="/auth/signup">
               <Button
                 variant="outline"
-                className="w-full h-11 font-semibold bg-transparent"
+                className="w-full h-12 rounded-xl font-bold border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
               >
-                Create an Account
+                Create New Account
+                <ArrowRight size={16} />
               </Button>
             </Link>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          {/* Bottom Links */}
+          <p className="text-center text-sm text-gray-500 mt-8 leading-relaxed">
             By signing in, you agree to our{' '}
-            <Link href="#" className="text-primary hover:text-primary/80">
-              Terms of Service
+            <Link href="/terms" className="text-gray-900 font-semibold hover:underline">
+              Terms
             </Link>{' '}
             and{' '}
-            <Link href="#" className="text-primary hover:text-primary/80">
+            <Link href="/privacy" className="text-gray-900 font-semibold hover:underline">
               Privacy Policy
             </Link>
           </p>
