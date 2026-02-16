@@ -1,4 +1,5 @@
-"use client"
+// components/Footer.tsx
+'use client'
 
 import Link from 'next/link'
 import { Mail, Linkedin, Youtube, Instagram, ShieldCheck, MapPin } from 'lucide-react'
@@ -10,8 +11,8 @@ export function Footer() {
     Company: [
       { label: 'About Us', href: '/about' },
       { label: 'Blog', href: '/blog' },
-      { label: 'Careers', href: '#' }, // Update when career page is ready
-      { label: 'Contact', href: '/about' }, // Pointing to contact section in about
+      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: '/about' },
     ],
     Opportunities: [
       { label: 'Internships', href: '/internships' },
@@ -34,39 +35,36 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#0A2647] text-white border-t border-white/10 mt-16">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-8 py-16">
-        
+    <footer className="bg-gray-50 border-t border-gray-200 mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 mb-16">
-          
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-12 mb-12">
           {/* Brand Section */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <Link href="/" className="flex items-center gap-3 font-bold text-2xl text-white mb-6">
-              <div className="w-10 h-10 bg-[#FFD700] rounded-xl flex items-center justify-center text-[#0A2647] font-black shadow-lg">
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md">
                 I
               </div>
-              <span className="tracking-tight">Internadda</span>
+              <span className="font-bold text-xl text-gray-900">Internadda</span>
             </Link>
-            <p className="text-blue-100/60 text-sm leading-relaxed mb-8 max-w-sm">
-              India's premier ecosystem for student growth. Bridging the gap between 
-              academic learning and professional excellence. Learn • Intern • Earn.
+            <p className="text-gray-500 text-sm leading-relaxed mb-6 max-w-xs">
+              India's premier ecosystem for student growth. Bridging the gap between academic learning and professional excellence.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {[
-                { Icon: Youtube, href: "https://www.youtube.com/@theinternadda" },
-                { Icon: Linkedin, href: "https://www.linkedin.com/company/internadda-india" },
-                { Icon: Instagram, href: "https://www.instagram.com/internadda.india/#" },
-                { Icon: Mail, href: "mailto:support@internadda.com" }
+                { Icon: Youtube, href: 'https://www.youtube.com/@theInternadda' },
+                { Icon: Linkedin, href: 'https://www.linkedin.com/company/Internadda-india' },
+                { Icon: Instagram, href: 'https://www.instagram.com/Internadda.india/#' },
+                { Icon: Mail, href: 'mailto:support@Internadda.com' },
               ].map((social, i) => (
                 <a
                   key={i}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/5 hover:bg-[#FFD700] hover:text-[#0A2647] rounded-full flex items-center justify-center transition-all duration-300 border border-white/10"
+                  className="w-9 h-9 bg-white border border-gray-200 hover:border-indigo-600 hover:text-indigo-600 rounded-full flex items-center justify-center transition-colors text-gray-400"
                 >
-                  <social.Icon size={18} />
+                  <social.Icon size={16} />
                 </a>
               ))}
             </div>
@@ -75,15 +73,15 @@ export function Footer() {
           {/* Link Groups */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category} className="flex flex-col items-center lg:items-start">
-              <h3 className="font-bold text-[#FFD700] text-xs uppercase tracking-[0.2em] mb-6">
+              <h3 className="font-semibold text-gray-900 text-xs uppercase tracking-wider mb-4">
                 {category}
               </h3>
-              <ul className="space-y-4 text-center lg:text-left">
+              <ul className="space-y-3 text-center lg:text-left">
                 {links.map((link, idx) => (
                   <li key={idx}>
                     <Link
                       href={link.href}
-                      className="text-sm text-blue-100/60 hover:text-white transition-colors duration-200"
+                      className="text-sm text-gray-500 hover:text-indigo-600 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -95,42 +93,48 @@ export function Footer() {
         </div>
 
         {/* Trust Badges Bar */}
-        <div className="bg-white/5 rounded-3xl p-6 mb-12 border border-white/10">
-          <div className="flex flex-col md:flex-row items-center justify-around gap-8">
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 mb-10 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center justify-around gap-6">
             <div className="flex items-center gap-3">
-              <ShieldCheck className="text-[#FFD700]" size={24} />
-              <div className="text-center md:text-left">
-                <p className="text-xs font-bold uppercase tracking-widest text-white/40">MSME Registered</p>
-                <p className="text-sm font-medium">Udyam Govt. of India</p>
+              <ShieldCheck className="text-indigo-600" size={22} />
+              <div>
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  MSME Registered
+                </p>
+                <p className="text-sm font-medium text-gray-700">Udyam Govt. of India</p>
               </div>
             </div>
-            <div className="h-px w-12 bg-white/10 hidden md:block" />
+            <div className="hidden md:block w-px h-8 bg-gray-200" />
             <div className="flex items-center gap-3">
-              <MapPin className="text-[#FFD700]" size={24} />
-              <div className="text-center md:text-left">
-                <p className="text-xs font-bold uppercase tracking-widest text-white/40">Headquarters</p>
-                <p className="text-sm font-medium">New Delhi, India</p>
+              <MapPin className="text-indigo-600" size={22} />
+              <div>
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  Headquarters
+                </p>
+                <p className="text-sm font-medium text-gray-700">New Delhi, India</p>
               </div>
             </div>
-            <div className="h-px w-12 bg-white/10 hidden md:block" />
+            <div className="hidden md:block w-px h-8 bg-gray-200" />
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-widest text-white/40">Trusted By</p>
-              <p className="text-sm font-medium">7,200+ Active Students</p>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Trusted By
+              </p>
+              <p className="text-sm font-medium text-gray-700">7,200+ Active Students</p>
             </div>
           </div>
         </div>
 
         {/* Bottom Credits */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-xs text-blue-100/40">
-            © {currentYear} <span className="text-white font-medium">Internadda Enterprises</span>. All rights reserved.
+        <div className="pt-6 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-gray-400">
+            © {currentYear} <span className="font-medium text-gray-600">Internadda Enterprises</span>. All rights reserved.
           </p>
-          <div className="flex items-center gap-8">
-            <Link href="/terms-of-service" className="text-xs text-blue-100/40 hover:text-white transition-colors">
-              Terms & Conditions
+          <div className="flex items-center gap-6">
+            <Link href="/terms-of-service" className="text-xs text-gray-400 hover:text-indigo-600 transition-colors">
+              Terms
             </Link>
-            <Link href="/privacy-policy" className="text-xs text-blue-100/40 hover:text-white transition-colors">
-              Privacy Policy
+            <Link href="/privacy-policy" className="text-xs text-gray-400 hover:text-indigo-600 transition-colors">
+              Privacy
             </Link>
           </div>
         </div>
