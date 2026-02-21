@@ -15,11 +15,22 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function BlogDetailPage({ params }: any) {
-  const slug = params.slug;
+export default function BlogDetailPage({
+  params,
+}: {
+  params?: { slug?: string };
+}) {
+  // SAFE extraction
+  const slug = params?.slug;
+
+  if (!slug) {
+    notFound();
+  }
 
   const blog = blogs.find(
-    (b) => b.slug.trim().toLowerCase() === slug.trim().toLowerCase()
+    (b) =>
+      typeof b.slug === 'string' &&
+      b.slug.toLowerCase() === slug.toLowerCase()
   );
 
   if (!blog) {
@@ -33,7 +44,7 @@ export default function BlogDetailPage({ params }: any) {
     .filter((b) => b.categoryId === blog.categoryId && b.slug !== blog.slug)
     .slice(0, 3);
 
-  // Extract H2 headings
+  // Extract H2 headings safely
   const headingRegex = /<h2>(.*?)<\/h2>/g;
   const headings: string[] = [];
   let match;
@@ -64,7 +75,6 @@ export default function BlogDetailPage({ params }: any) {
 
       <div className="container mx-auto px-4 py-12 flex flex-col lg:flex-row gap-12">
         
-        {/* LEFT SIDEBAR */}
         <aside className="lg:w-1/4 order-2 lg:order-1">
           <div className="sticky top-28 space-y-8">
             <TableOfContents headings={headings} />
@@ -77,7 +87,6 @@ export default function BlogDetailPage({ params }: any) {
           </div>
         </aside>
 
-        {/* MAIN CONTENT */}
         <article className="lg:w-2/4 order-1 lg:order-2">
           <div
             className="prose prose-blue prose-lg max-w-none prose-headings:scroll-mt-28"
@@ -115,7 +124,6 @@ export default function BlogDetailPage({ params }: any) {
           <NewsletterSection />
         </article>
 
-        {/* RIGHT SIDEBAR */}
         <aside className="lg:w-1/4 order-3">
           <div className="sticky top-28">
             <RelatedPosts posts={related} />
