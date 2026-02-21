@@ -574,20 +574,56 @@ export const blogs: BlogPost[] = [
 
   // 30. Internship Cover Letter Guide
   {
-    slug: 'internship-cover-letter-guide',
-    title: 'Internship Cover Letter Guide',
-    excerpt: 'How to write a compelling cover letter for internship applications. Examples and templates.',
-    content: `<h2>Why a Cover Letter Matters</h2><p>A tailored cover letter can set you apart from other applicants. It shows your interest and fit.</p><h2>Structure</h2><p>Header, salutation, introduction, body (why you're interested, what you bring), closing, and signature.</p><h2>What to Include</h2><p>Mention the specific role, company, and why you're excited. Highlight relevant skills and experiences.</p><h2>Example</h2><p>Dear [Hiring Manager], I am excited to apply for the Marketing Intern position at XYZ Corp. As a third-year marketing student with experience in social media management...</p><h2>Tips</h2><p>Keep it to one page, use a professional tone, and proofread.</p><h2>FAQs</h2><h3>Do I always need a cover letter?</h3><p>If the application asks for it, yes. Even if optional, it\'s a good chance to stand out.</p><h3>Can I use the same cover letter for all?</h3><p>No, tailor each one to the specific company and role.</p>`,
-    featuredImage: '/images/blog/cover-letter.jpg',
-    publishedAt: '2025-02-13T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'resume-career',
-    tags: ['internship cover letter', 'cover letter guide', 'how to write cover letter'],
-    readingTime: 4,
-    meta: {
-      title: 'Internship Cover Letter Guide | Internadda',
-      description: 'Learn how to write a compelling cover letter for internship applications. Includes structure, examples, and templates.',
-      keywords: ['internship cover letter', 'cover letter guide', 'how to write cover letter'],
-    },
+  slug: 'internship-cover-letter-guide',
+  title: 'How to Write a Compelling Cover Letter for Internships',
+  excerpt: 'A step-by-step guide to crafting a cover letter that stands out. Includes templates, industry tips, and a checklist for 2025.',
+  featuredImage: '/content.jpg', // Aapke public folder mein available image
+  publishedAt: '2026-02-21T00:00:00Z',
+  authorId: 'priya-sharma', // Lucky Tiwari ka ID
+  categoryId: 'resume-career',
+  tags: ['cover letter', 'internship tips', 'career guide'],
+  readingTime: 6,
+  meta: {
+    title: 'Internship Cover Letter Guide | Internadda',
+    description: 'Learn how to write an internship cover letter that gets noticed by top recruiters.',
+    keywords: ['cover letter', 'internship', 'career guide'],
+  },
+  content: `
+    <div class="space-y-8">
+      <p class="text-lg text-gray-600 leading-relaxed">
+        Aapka cover letter sirf ek document nahi hai, balki aapke professional career ka "First Impression" hai. Internship applications ke bheed mein, ek well-structured letter hi aapko doosre candidates se alag dikhata hai.
+      </p>
+
+      <div class="bg-indigo-50 border-l-4 border-indigo-600 p-6 rounded-r-2xl">
+        <h3 class="font-bold text-indigo-900 mb-2">Lucky's Pro Tip:</h3>
+        <p class="text-indigo-800 italic">"Kabhi bhi 'To Whom It May Concern' mat likhein. Hamesha hiring manager ka naam research karke unhe directly address karein. Ye dikhata hai ki aapne effort dala hai."</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-gray-900">1. Proper Structure Kya Hai?</h2>
+      <ul class="list-disc pl-5 space-y-3 text-gray-600">
+        <li><strong>Header:</strong> Name, Contact Info, aur LinkedIn URL.</li>
+        <li><strong>Salutation:</strong> Professional greeting (e.g., Dear Mr. Sharma).</li>
+        <li><strong>The Hook:</strong> Aap iss role ke liye kyu excited hain?</li>
+        <li><strong>The Body:</strong> Aapke skills aur college projects ki details.</li>
+        <li><strong>The CTA:</strong> Interview ke liye request aur professional closing.</li>
+      </ul>
+
+      <div class="relative h-64 w-full rounded-2xl overflow-hidden my-10 shadow-lg">
+        <img src="/interna.jpg" alt="Professional Workspace" class="object-cover w-full h-full" />
+      </div>
+
+      <h2 class="text-2xl font-bold text-gray-900">2. Free Template for 2025</h2>
+      <div class="bg-gray-50 border border-gray-200 p-8 rounded-3xl font-mono text-sm text-gray-700 shadow-inner">
+        <p>Dear [Hiring Manager Name],</p>
+        <br/>
+        <p>I am excited to apply for the [Position Name] at [Company Name]. As a student at Delhi University, I have developed strong skills in [Skill 1] and [Skill 2]...</p>
+        <br/>
+        <p>Looking forward to discussing how I can contribute to your team.</p>
+        <br/>
+        <p>Sincerely,<br/>[Your Name]</p>
+      </div>
+    </div>
+  `
+}
   },
 ];
