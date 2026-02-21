@@ -624,6 +624,6 @@ export const blogs: BlogPost[] = [
       </div>
     </div>
   `
-}
+},
   },
 ];
