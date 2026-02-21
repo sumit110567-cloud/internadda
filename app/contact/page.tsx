@@ -1,184 +1,187 @@
-'use client'
+"use client"
 
 import React, { useRef, useState } from 'react'
-import emailjs from '@emailjs/browser'
-import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/hooks/use-toast'
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
+import { 
+  ShieldCheck, 
+  Sparkles, 
+  CheckCircle2, 
+  Loader2, 
+  Mail, 
+  MapPin, 
+  Zap, 
+  ArrowLeft,
+  Headset
+} from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
+import emailjs from "@emailjs/browser"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 export default function ContactPage() {
-  const formRef = useRef<HTMLFormElement>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const { toast } = useToast()
+  const form = useRef<HTMLFormElement>(null)
+  const router = useRouter()
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const sendEmail = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-
+    setIsLoading(true)
     try {
-      // Tamare EmailJS mathi aa IDs badlavana rehshe
+      // EmailJS configuration
       await emailjs.sendForm(
-        'service_usgk4bw', 
-        'template_bfh5x2w', 
-        formRef.current!, 
-        'e4W6YbfZEx81sqmN5'
+        "service_hez7mw9",
+        "template_htai0ev",
+        form.current!,
+        "qsf9Wt-yXfBKQ7CD7"
       )
-
-      setIsSuccess(true)
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you shortly.",
-      })
-      formRef.current?.reset()
+      setIsSubmitted(true)
+      // Success ke 3 second baad home par redirect/refresh
+      setTimeout(() => router.push("/"), 3000)
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-      })
+      console.error("Submission failed", error)
+      alert("Something went wrong. Please try again.")
     } finally {
-      setIsSubmitting(false)
+      setIsLoading(false)
     }
   }
 
+  const inputStyles = "h-12 bg-white border border-indigo-100 text-[#0A2647] placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 rounded-xl transition-all text-sm shadow-sm"
+
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-            Get in <span className="text-indigo-600">Touch</span>
+    <div className="min-h-screen bg-[#fcfcfd] flex flex-col md:flex-row relative overflow-hidden font-sans">
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-50 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-50 rounded-full blur-[120px]" />
+      </div>
+
+      {/* Left Panel: Context & Support Info */}
+      <div className="relative w-full md:w-[35%] p-8 md:p-12 flex flex-col justify-between bg-white border-r border-gray-100 shadow-xl z-10">
+        <Link href="/" className="group flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition-all mb-8 w-fit">
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[9px] font-black uppercase tracking-widest">Return Home</span>
+        </Link>
+
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100">
+            <Sparkles className="h-3 w-3 text-indigo-600" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600">Support Desk</span>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-black text-[#0A2647] tracking-tighter leading-[0.9] uppercase">
+            Connect with <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">InternAdda.</span>
           </h1>
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-            Have questions about internships or courses? Our team is here to help you grow your career.
-          </p>
+
+          <div className="space-y-6 pt-4">
+            <ContactInfoItem icon={ShieldCheck} title="Verified Support" desc="Official communication channel for students & partners." />
+            <ContactInfoItem icon={Mail} title="Direct Email" desc="support@internadda.com" />
+            <ContactInfoItem icon={MapPin} title="Headquarters" desc="New Delhi, India - Serving Pan India." />
+          </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Contact Information */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-8"
-          >
-            <div className="bg-indigo-50 p-8 rounded-3xl space-y-6 border border-indigo-100">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 shrink-0">
-                  <Mail size={24} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Email Us</h3>
-                  <p className="text-gray-600">support@internadda.com</p>
-                </div>
+        {/* Trust Badge / MSME Info */}
+        <div className="pt-12 mt-8 border-t border-gray-100 flex items-center gap-4">
+          <div className="h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+            <Headset size={24} />
+          </div>
+          <div className="space-y-0.5">
+            <p className="text-[8px] uppercase tracking-[0.4em] text-gray-500 font-black">MSME Registered Entity</p>
+            <p className="text-[7px] text-indigo-600 font-bold font-mono">CERT_AUTH: UDYAM-IN-001</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel: Premium Contact Form */}
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 relative z-10">
+        <AnimatePresence mode="wait">
+          {!isSubmitted ? (
+            <motion.div 
+              key="form"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)" }}
+              className="w-full max-w-lg bg-white border border-gray-100 p-8 md:p-12 rounded-[2rem] shadow-2xl"
+            >
+              <div className="mb-8 space-y-1">
+                <h2 className="text-2xl font-bold text-[#0A2647] tracking-tight">Send a Message</h2>
+                <p className="text-indigo-600 text-xs font-medium uppercase tracking-widest">Secure Query Portal</p>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 shrink-0">
-                  <MapPin size={24} />
+              <form ref={form} onSubmit={sendEmail} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input name="from_name" placeholder="Full Name" required className={inputStyles} />
+                  <Input name="reply_to" type="email" placeholder="Email Address" required className={inputStyles} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Headquarters</h3>
-                  <p className="text-gray-600">New Delhi, India</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 shrink-0">
-                  <Phone size={24} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 text-lg">Call Support</h3>
-                  <p className="text-gray-600">Available Mon-Sat, 10 AM - 6 PM</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-8 border border-gray-100 rounded-3xl bg-gray-50/50">
-              <h4 className="font-bold text-gray-900 mb-2">MSME Registered Entity</h4>
-              <p className="text-sm text-gray-500 italic">Official Internship Partner for Indian Students.</p>
-            </div>
-          </motion.div>
-
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-indigo-100/50 border border-gray-100"
-          >
-            {isSuccess ? (
-              <div className="text-center py-12 space-y-4">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 mx-auto mb-6">
-                  <CheckCircle2 size={40} />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">Thank You!</h2>
-                <p className="text-gray-500">Your message has been received. We will contact you soon.</p>
+                <Input name="subject" placeholder="Subject (e.g. Internship Help)" required className={inputStyles} />
+                <Textarea 
+                  name="message" 
+                  placeholder="How can we help you today?" 
+                  required 
+                  className="min-h-[120px] bg-white border border-indigo-100 text-[#0A2647] placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 rounded-xl resize-none p-4 text-sm shadow-sm" 
+                />
+                
                 <Button 
-                  onClick={() => setIsSuccess(false)}
-                  className="mt-4 bg-indigo-600 rounded-full"
+                  disabled={isLoading}
+                  className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl uppercase text-[10px] font-black tracking-[0.3em] transition-all shadow-lg shadow-indigo-200 mt-2 relative overflow-hidden group"
                 >
-                  Send another message
-                </Button>
-              </div>
-            ) : (
-              <form ref={formRef} onSubmit={sendEmail} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700 ml-1">Full Name</label>
-                    <Input name="user_name" placeholder="Lucky Tiwari" required className="rounded-xl border-gray-200 focus:ring-indigo-500" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700 ml-1">Email Address</label>
-                    <Input name="user_email" type="email" placeholder="lucky@example.com" required className="rounded-xl border-gray-200 focus:ring-indigo-500" />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700 ml-1">Subject</label>
-                  <Input name="subject" placeholder="Internship Inquiry" required className="rounded-xl border-gray-200 focus:ring-indigo-500" />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700 ml-1">Message</label>
-                  <Textarea 
-                    name="message" 
-                    placeholder="Tell us how we can help you..." 
-                    required 
-                    className="min-h-[150px] rounded-xl border-gray-200 focus:ring-indigo-500"
-                  />
-                </div>
-
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-6 rounded-xl shadow-lg shadow-indigo-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70"
-                >
-                  {isSubmitting ? "Sending..." : (
-                    <span className="flex items-center gap-2">
-                      Send Message <Send size={18} />
-                    </span>
-                  )}
+                  <span className="relative z-10 flex items-center justify-center gap-3">
+                    {isLoading ? <Loader2 className="animate-spin h-4 w-4" /> : (
+                      <>Send Inquiry <Zap className="h-3 w-3 fill-current group-hover:animate-pulse" /></>
+                    )}
+                  </span>
                 </Button>
               </form>
-            )}
-          </motion.div>
-        </div>
-      </main>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="success"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center space-y-6"
+            >
+              <div className="relative mx-auto h-24 w-24">
+                <motion.div 
+                  initial={{ scale: 0 }} 
+                  animate={{ scale: 1 }} 
+                  className="h-full w-full rounded-full bg-green-50 border border-green-100 flex items-center justify-center text-green-600"
+                >
+                  <CheckCircle2 className="h-12 w-12" />
+                </motion.div>
+                <motion.div 
+                  animate={{ rotate: 360 }} 
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-[-8px] border border-dashed border-green-200 rounded-full"
+                />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-3xl font-black text-[#0A2647] tracking-tighter uppercase">Message Sent</h3>
+                <p className="text-gray-500 max-w-[280px] mx-auto text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+                  Our team has received your query. Redirecting to home...
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
 
-      <Footer />
+function ContactInfoItem({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+  return (
+    <div className="flex gap-4 items-start group">
+      <div className="h-10 w-10 shrink-0 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="space-y-0.5">
+        <h4 className="text-[#0A2647] font-bold text-xs tracking-wide uppercase">{title}</h4>
+        <p className="text-gray-500 text-[10px] leading-relaxed font-medium">{desc}</p>
+      </div>
     </div>
   )
 }
