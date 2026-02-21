@@ -31,14 +31,12 @@ export default function ContactPage() {
     setIsLoading(true)
     
     try {
-      // Aapke Upforge reference code ka exact logic
       await emailjs.sendForm(
         "service_hez7mw9",
         "template_htai0ev",
         form.current!,
         "qsf9Wt-yXfBKQ7CD7"
       )
-      
       setIsSubmitted(true)
       // 3 second baad automatic redirect/refresh logic
       setTimeout(() => router.push("/"), 3000)
