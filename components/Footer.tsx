@@ -12,7 +12,7 @@ export function Footer() {
       { label: 'About Us', href: '/about' },
       { label: 'Blog', href: '/blog' },
       { label: 'Careers', href: '#' },
-      { label: 'Contact', href: '/about' },
+      { label: 'Contact', href: '/contact' },
     ],
     Opportunities: [
       { label: 'Internships', href: '/internships' },
