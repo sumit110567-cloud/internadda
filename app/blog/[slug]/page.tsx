@@ -13,77 +13,115 @@ import { BreadcrumbSchema } from '@/components/blog/BreadcrumbSchema';
 import { HeroSection } from '@/components/HeroSection';
 import Link from 'next/link';
 
-export async function generateStaticParams() {
-  return blogs.map((blog) => ({
-    slug: blog.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const slug = decodeURIComponent(params.slug);
-  const blog = blogs.find((b) => b.slug === slug);
-  
-  if (!blog) notFound();
+export default function BlogDetailPage({ params }: any) {
+  const slug = params.slug;
 
-  const author = authors.find((a) => a.id === blog.authorId)!;
-  const category = categories.find((c) => c.id === blog.categoryId)!;
+  const blog = blogs.find(
+    (b) => b.slug.trim().toLowerCase() === slug.trim().toLowerCase()
+  );
+
+  if (!blog) {
+    notFound();
+  }
+
+  const author = authors.find((a) => a.id === blog.authorId);
+  const category = categories.find((c) => c.id === blog.categoryId);
+
   const related = blogs
     .filter((b) => b.categoryId === blog.categoryId && b.slug !== blog.slug)
     .slice(0, 3);
 
+  // Extract H2 headings
   const headingRegex = /<h2>(.*?)<\/h2>/g;
   const headings: string[] = [];
   let match;
+
   while ((match = headingRegex.exec(blog.content)) !== null) {
     headings.push(match[1].replace(/<[^>]*>/g, ''));
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <ArticleSchema blog={blog} author={author} category={category} />
-      <BreadcrumbSchema items={[
-        { name: 'Home', url: '/' },
-        { name: 'Blog', url: '/blog' },
-        { name: blog.title, url: `/blog/${blog.slug}` }
-      ]} />
+      <ArticleSchema blog={blog} author={author!} category={category!} />
+
+      <BreadcrumbSchema
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Blog', url: '/blog' },
+          { name: blog.title, url: `/blog/${blog.slug}` },
+        ]}
+      />
+
       <ReadingProgress />
-      <HeroSection title={blog.title} subtitle={blog.excerpt} image={blog.featuredImage} />
+
+      <HeroSection
+        title={blog.title}
+        subtitle={blog.excerpt}
+        image={blog.featuredImage}
+      />
 
       <div className="container mx-auto px-4 py-12 flex flex-col lg:flex-row gap-12">
+        
+        {/* LEFT SIDEBAR */}
         <aside className="lg:w-1/4 order-2 lg:order-1">
           <div className="sticky top-28 space-y-8">
             <TableOfContents headings={headings} />
-            <ConversionCTA title="Apply for Internship" buttonText="View All" link="/internships" variant="sidebar" />
+            <ConversionCTA
+              title="Apply for Internship"
+              buttonText="View All"
+              link="/internships"
+              variant="sidebar"
+            />
           </div>
         </aside>
 
+        {/* MAIN CONTENT */}
         <article className="lg:w-2/4 order-1 lg:order-2">
-          <div 
+          <div
             className="prose prose-blue prose-lg max-w-none prose-headings:scroll-mt-28"
             dangerouslySetInnerHTML={{
               __html: blog.content.replace(
                 /<h2>(.*?)<\/h2>/g,
-                (_, text) => `<h2 id="${text.toLowerCase().replace(/\s+/g, '-')}">${text}</h2>`
-              )
+                (_, text) =>
+                  `<h2 id="${text
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')}">${text}</h2>`
+              ),
             }}
           />
+
           <div className="mt-10 flex flex-wrap gap-2">
-            {blog.tags.map(tag => (
-              <Link key={tag} href={`/blog?search=${tag}`} className="text-sm bg-gray-100 px-4 py-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition">
+            {blog.tags.map((tag) => (
+              <Link
+                key={tag}
+                href={`/blog?search=${tag}`}
+                className="text-sm bg-gray-100 px-4 py-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition"
+              >
                 #{tag}
               </Link>
             ))}
           </div>
+
           <hr className="my-12" />
-          <AuthorBox author={author} publishedAt={blog.publishedAt} readingTime={blog.readingTime} />
+
+          <AuthorBox
+            author={author!}
+            publishedAt={blog.publishedAt}
+            readingTime={blog.readingTime}
+          />
+
           <NewsletterSection />
         </article>
 
+        {/* RIGHT SIDEBAR */}
         <aside className="lg:w-1/4 order-3">
           <div className="sticky top-28">
             <RelatedPosts posts={related} />
           </div>
         </aside>
+
       </div>
     </div>
   );
