@@ -1,193 +1,242 @@
 'use client'
+// app/blog/page.tsx
 
-import { useState, useMemo } from 'react';
-import { blogs } from '@/data/blogs';
-import { categories } from '@/data/categories';
-import { BlogCard } from '@/components/blog/BlogCard';
-import { FeaturedPost } from '@/components/blog/FeaturedPost';
-import { CategoryFilter } from '@/components/blog/CategoryFilter';
-import { BlogSearch } from '@/components/blog/BlogSearch';
-import { BlogSchema } from '@/components/blog/BlogSchema';
-import { NewsletterSection } from '@/components/blog/NewsletterSection';
-import { ConversionCTA } from '@/components/blog/ConversionCTA';
-import { TrustBadges } from '@/components/blog/TrustBadges';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { useState, useMemo } from 'react'
+import { blogs } from '@/data/blogs'
+import { categories } from '@/data/categories'
+import { BlogCard } from '@/components/blog/BlogCard'
+import { FeaturedPost } from '@/components/blog/FeaturedPost'
+import { CategoryFilter } from '@/components/blog/CategoryFilter'
+import { BlogSearch } from '@/components/blog/BlogSearch'
+import { BlogSchema } from '@/components/blog/BlogSchema'
+import { NewsletterSection } from '@/components/blog/NewsletterSection'
+import { TrustBadges } from '@/components/blog/TrustBadges'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
+import { ArrowRight, Sparkles, Search, X, TrendingUp, BookOpen } from 'lucide-react'
+
+const CONTAINER = "max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8"
 
 export default function BlogPage({ searchParams }: { searchParams: { category?: string; search?: string } }) {
-  const [visibleCount, setVisibleCount] = useState(6);
-  
-  const categorySlug = searchParams.category;
-  const searchQuery = searchParams.search?.toLowerCase();
+  const [visibleCount, setVisibleCount] = useState(6)
+  const [localSearch, setLocalSearch] = useState(searchParams.search ?? '')
+
+  const categorySlug = searchParams.category
+  const searchQuery  = localSearch.toLowerCase()
 
   const { featuredPost, remainingPosts, popularTags } = useMemo(() => {
-    let filtered = blogs;
-    
+    let filtered = blogs
+
     if (categorySlug) {
-      filtered = filtered.filter(b => b.categoryId === categorySlug);
+      filtered = filtered.filter(b => b.categoryId === categorySlug)
     }
-    
+
     if (searchQuery) {
       filtered = filtered.filter(b =>
         b.title.toLowerCase().includes(searchQuery) ||
         b.tags.some(t => t.toLowerCase().includes(searchQuery))
-      );
+      )
     }
 
-    const sorted = [...filtered].sort((a, b) => 
+    const sorted = [...filtered].sort((a, b) =>
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    );
+    )
 
-    const allTags = blogs.flatMap(blog => blog.tags);
-    const tagCounts = allTags.reduce((acc, tag) => {
-      acc[tag] = (acc[tag] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const allTags  = blogs.flatMap(b => b.tags)
+    const tagMap   = allTags.reduce((acc, tag) => { acc[tag] = (acc[tag] ?? 0) + 1; return acc }, {} as Record<string, number>)
+    const tags     = Object.entries(tagMap).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([t]) => t)
 
-    const tags = Object.entries(tagCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-      .map(([tag]) => tag);
+    return { featuredPost: sorted[0], remainingPosts: sorted.slice(1), popularTags: tags }
+  }, [categorySlug, searchQuery])
 
-    return {
-      featuredPost: sorted[0],
-      remainingPosts: sorted.slice(1),
-      popularTags: tags
-    };
-  }, [categorySlug, searchQuery]);
+  const displayedPosts = remainingPosts.slice(0, visibleCount)
+  const hasMore        = visibleCount < remainingPosts.length
 
-  const displayedPosts = remainingPosts.slice(0, visibleCount);
-  const hasMore = visibleCount < remainingPosts.length;
+  const clearFilters = () => {
+    setLocalSearch('')
+    setVisibleCount(6)
+  }
+
+  const isFiltered = !!localSearch || !!categorySlug
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-white font-sans overflow-x-hidden">
+      <main className="min-h-screen bg-white overflow-x-hidden">
         <BlogSchema />
 
-        {/* Unified Hero Section - Matches Home & Courses */}
-        <section className="relative bg-gradient-to-b from-indigo-50 via-white to-white pt-12 pb-10 md:pt-20 md:pb-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <Badge className="bg-indigo-100 text-indigo-700 border-none px-4 py-1.5 rounded-full mb-6 text-xs font-semibold">
-              Internadda Journal
-            </Badge>
+        {/* ════════════════════════════════════════
+            HERO
+        ════════════════════════════════════════ */}
+        <section className="relative bg-white overflow-hidden">
+          <div aria-hidden className="pointer-events-none absolute inset-0 select-none">
+            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[360px] rounded-full"
+              style={{ background: 'radial-gradient(ellipse, rgba(79,70,229,0.06) 0%, transparent 70%)' }} />
+            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.02 }}>
+              <defs><pattern id="bg" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#4f46e5" strokeWidth="0.6" />
+              </pattern></defs>
+              <rect width="100%" height="100%" fill="url(#bg)" />
+            </svg>
+          </div>
 
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-              Career <span className="text-indigo-600">Insights & Trends.</span>
-            </h1>
+          <div className={`relative ${CONTAINER}`}>
+            <div className="flex flex-col items-center text-center pt-12 pb-10 sm:pt-14 sm:pb-12 lg:pt-16 lg:pb-14">
 
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Expert advice, student success stories, and industry trends to help you 
-              land your dream role in 2026.
-            </p>
+              <div className="inline-flex items-center gap-2 border border-indigo-100 bg-indigo-50 rounded-full px-3 py-1.5 mb-5">
+                <BookOpen size={11} className="text-indigo-600" />
+                <span className="text-[10.5px] font-bold text-indigo-700 uppercase tracking-[0.13em]">Internadda Journal</span>
+              </div>
+
+              <h1 className="text-[2rem] sm:text-[2.6rem] xl:text-[3rem] 2xl:text-[3.3rem] font-extrabold text-slate-900 leading-[1.07] tracking-tight mb-4">
+                Career <span style={{ color: '#1a1063' }}>Insights & Trends.</span>
+              </h1>
+
+              <p className="text-slate-500 text-[14px] sm:text-[15px] leading-[1.75] max-w-lg mb-7">
+                Expert advice, student success stories, and industry trends to help you land your dream role in 2026.
+              </p>
+
+              {/* Inline search */}
+              <div className="w-full max-w-md">
+                <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl shadow-sm px-4 py-2.5 focus-within:border-indigo-300 focus-within:shadow-md transition-all">
+                  <Search size={15} className="text-slate-400 flex-shrink-0" />
+                  <input
+                    type="text"
+                    placeholder="Search articles, topics…"
+                    value={localSearch}
+                    onChange={e => { setLocalSearch(e.target.value); setVisibleCount(6) }}
+                    className="flex-1 text-[13.5px] text-slate-700 placeholder:text-slate-400 outline-none bg-transparent"
+                  />
+                  {localSearch && (
+                    <button onClick={clearFilters} className="text-slate-400 hover:text-slate-600 transition-colors">
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Floating Filter Bar - Matches Internship Search Style */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
-        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border border-gray-100 mb-16">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            
-            {/* Desktop Filter: Hidden on mobile, flex on large screens */}
-            <div className="hidden lg:flex items-center w-full lg:w-auto">
+        {/* ════════════════════════════════════════
+            CATEGORY FILTER BAR
+        ════════════════════════════════════════ */}
+        <div className="border-b border-slate-100 bg-white sticky top-[56px] z-30">
+          <div className={CONTAINER}>
+            <div className="flex items-center justify-between gap-4 py-3 overflow-x-auto scrollbar-none">
               <CategoryFilter categories={categories} selected={categorySlug} />
+              {isFiltered && (
+                <button onClick={clearFilters}
+                  className="flex-shrink-0 text-[11.5px] font-semibold text-indigo-600 flex items-center gap-1 hover:text-indigo-800 transition-colors whitespace-nowrap">
+                  <X size={11} /> Clear
+                </button>
+              )}
             </div>
-      
-            {/* Search Bar: Full width on mobile, 1/3 width on desktop */}
-            <div className="w-full lg:w-1/3">
-              <BlogSearch initialQuery={searchQuery} />
-            </div>
-      
-            {/* Mobile-only Hint (Optional): If you want to show users they are searching all categories */}
-            <div className="lg:hidden w-full text-center">
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-                Searching all categories
-              </p>
-            </div>
-      
           </div>
         </div>
 
-          {/* Featured Post */}
-          {featuredPost && (
-            <div className="mb-24">
-              <div className="flex items-center gap-2 mb-8">
-                <div className="p-2 bg-indigo-50 rounded-lg">
-                  <Sparkles className="text-indigo-600" size={20} />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">Featured Story</h2>
+        {/* ════════════════════════════════════════
+            CONTENT
+        ════════════════════════════════════════ */}
+        <div className={`${CONTAINER} py-10 sm:py-12`}>
+
+          {/* Featured post */}
+          {featuredPost && !isFiltered && (
+            <div className="mb-12">
+              <div className="flex items-center gap-2 mb-5">
+                <Sparkles size={14} className="text-indigo-500" />
+                <h2 className="text-[13px] font-bold text-slate-700 uppercase tracking-[0.13em]">Featured Story</h2>
               </div>
               <FeaturedPost post={featuredPost} />
             </div>
           )}
 
-          <div className="flex flex-col lg:flex-row gap-16">
-            {/* Main Blog Feed */}
-            <div className="lg:w-2/3">
+          {/* Two-col layout: feed + sidebar */}
+          <div className="flex flex-col lg:flex-row gap-10 xl:gap-14">
+
+            {/* ── Main feed ── */}
+            <div className="flex-1 min-w-0">
+
+              {/* Results label */}
+              <div className="flex items-center justify-between mb-6">
+                <p className="text-[12.5px] font-medium text-slate-500">
+                  {isFiltered
+                    ? <><span className="font-bold text-slate-800">{remainingPosts.length + (featuredPost ? 1 : 0)}</span> result{remainingPosts.length !== 0 ? 's' : ''} found</>
+                    : <><span className="font-bold text-slate-800">{remainingPosts.length}</span> articles</>
+                  }
+                </p>
+              </div>
+
               {displayedPosts.length > 0 ? (
-                <div className="space-y-12">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-7">
                     {displayedPosts.map((blog, idx) => (
                       <BlogCard key={blog.slug} blog={blog} priority={idx < 2} />
                     ))}
                   </div>
 
-                  {/* Unified Button Style */}
                   {hasMore && (
-                    <div className="flex justify-center pt-12">
-                      <button 
+                    <div className="flex justify-center mt-10">
+                      <button
                         onClick={() => setVisibleCount(prev => prev + 6)}
-                        className="group flex items-center gap-2 px-10 py-5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95"
+                        className="inline-flex items-center gap-2 bg-[#1a1063] hover:bg-indigo-900 text-white text-[13.5px] font-bold px-7 py-3 rounded-xl shadow-sm shadow-indigo-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                       >
-                        Load More Articles
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        Load More Articles <ArrowRight size={14} />
                       </button>
                     </div>
                   )}
-                </div>
+                </>
               ) : (
-                <div className="bg-gray-50 rounded-3xl border border-dashed border-gray-200 py-20 text-center">
-                  <p className="text-gray-400 font-medium">No matches found for your search.</p>
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+                    <Search size={22} className="text-slate-300" />
+                  </div>
+                  <h3 className="text-[14.5px] font-bold text-slate-800 mb-1">No articles found</h3>
+                  <p className="text-[13px] text-slate-500 mb-4">Try a different keyword or browse all categories.</p>
+                  <button onClick={clearFilters}
+                    className="text-[12.5px] font-bold text-indigo-600 border border-indigo-200 bg-indigo-50 px-4 py-2 rounded-lg hover:bg-indigo-100 transition-colors">
+                    Clear filters
+                  </button>
                 </div>
               )}
             </div>
 
-            {/* Sidebar */}
-            <aside className="lg:w-1/3 space-y-10 pb-20">
-              <div className="sticky top-28 space-y-10">
+            {/* ── Sidebar ── */}
+            <aside className="lg:w-72 xl:w-80 flex-shrink-0">
+              <div className="lg:sticky lg:top-28 space-y-5">
+
+                {/* Newsletter */}
                 <NewsletterSection />
 
-                <ConversionCTA
-                  title="Professional Resume Builder"
-                  description="Stand out to 500+ hiring partners with our ATS-optimized templates."
-                  buttonText="Build My Resume"
-                  link="/resume-builder"
-                  variant="sidebar"
-                />
-
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                  <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wider mb-6">Trending Topics</h3>
-                  <div className="flex flex-wrap gap-2">
+                {/* Trending topics */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <TrendingUp size={13} className="text-indigo-500" />
+                    <h3 className="text-[11px] font-bold text-slate-700 uppercase tracking-[0.14em]">Trending Topics</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
                     {popularTags.map(tag => (
-                      <span
+                      <button
                         key={tag}
-                        className="px-4 py-2 bg-gray-50 text-gray-600 rounded-xl text-xs font-medium border border-gray-100 hover:bg-indigo-50 hover:text-indigo-600 transition-colors cursor-pointer"
+                        onClick={() => { setLocalSearch(tag); setVisibleCount(6) }}
+                        className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 border border-slate-200 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all"
                       >
                         #{tag}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </div>
 
+                {/* Trust badges */}
                 <TrustBadges />
+
               </div>
             </aside>
           </div>
         </div>
+
       </main>
       <Footer />
     </>
-  );
+  )
 }
