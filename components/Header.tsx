@@ -1,17 +1,13 @@
 'use client'
 
+// components/Header.tsx
+
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Menu,
-  X,
-  LogOut,
-  ChevronDown,
-  CreditCard,
-  User,
-  Zap,
-  ShieldCheck,
+  Menu, X, LogOut, ChevronDown,
+  CreditCard, User, Zap, ShieldCheck, ArrowRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth-context'
@@ -28,34 +24,46 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const announcementMessages = [
+// ── Announcement ticker ───────────────────────────────────────────────────────
+const ANNOUNCEMENTS = [
   { icon: '✨', text: 'DREAMSTART — Extra 10% off on skill assessment fees', cta: 'Claim Now', href: '/courses' },
   { icon: '⚡', text: '131 students applied to internships today', cta: 'Browse Roles', href: '/internships' },
   { icon: '🚀', text: 'New: Python Developer roles just went live', cta: 'View Now', href: '/internships' },
 ]
 
+// ── Nav items ─────────────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { label: 'Home',        href: '/' },
+  { label: 'Internships', href: '/internships' },
+  { label: 'Courses',     href: '/courses' },
+  { label: 'Journal',     href: '/blog' },
+  { label: 'About',       href: '/about' },
+]
+
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [announcementIndex, setAnnouncementIndex] = useState(0)
-  const [showAnnouncement, setShowAnnouncement] = useState(true)
-  const pathname = usePathname()
-  const router = useRouter()
+  const [mobileOpen,        setMobileOpen]        = useState(false)
+  const [scrolled,          setScrolled]          = useState(false)
+  const [announcementIdx,   setAnnouncementIdx]   = useState(0)
+  const [showAnnouncement,  setShowAnnouncement]  = useState(true)
+
+  const pathname  = usePathname()
+  const router    = useRouter()
   const { user, signOut } = useAuth()
 
+  // Close mobile menu on route change
+  useEffect(() => setMobileOpen(false), [pathname])
+
+  // Scroll shadow
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => setIsOpen(false), [pathname])
-
+  // Rotate announcement
   useEffect(() => {
-    const interval = setInterval(() => {
-      setAnnouncementIndex(i => (i + 1) % announcementMessages.length)
-    }, 4000)
-    return () => clearInterval(interval)
+    const t = setInterval(() => setAnnouncementIdx(i => (i + 1) % ANNOUNCEMENTS.length), 4500)
+    return () => clearInterval(t)
   }, [])
 
   const handleSignOut = async () => {
@@ -63,64 +71,59 @@ export function Header() {
     router.push('/')
   }
 
-  const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Internships', href: '/internships' },
-    { label: 'Courses', href: '/courses' },
-    { label: 'About', href: '/about' },
-    { label: 'Journal', href: '/blog' },
-  ]
-
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href)
 
-  const current = announcementMessages[announcementIndex]
+  const ann = ANNOUNCEMENTS[announcementIdx]
+  const userInitial = (user?.user_metadata?.full_name?.[0] || user?.email?.[0] || 'U').toUpperCase()
+  const userName    = user?.user_metadata?.full_name?.split(' ')[0] || 'Account'
 
   return (
     <div className="sticky top-0 z-[100] w-full">
 
-      {/* ── Announcement Bar ── */}
-      <AnimatePresence>
+      {/* ── Announcement bar ─────────────────────────────────────────────── */}
+      <AnimatePresence initial={false}>
         {showAnnouncement && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="bg-[#1a1063] overflow-hidden"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-center gap-3 py-2 relative">
+              <div className="relative flex items-center justify-center h-9">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={announcementIndex}
-                    initial={{ opacity: 0, y: 6 }}
+                    key={announcementIdx}
+                    initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center gap-2 text-center"
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex items-center gap-2"
                   >
-                    <span className="text-sm">{current.icon}</span>
-                    <span className="text-white/80 text-xs font-medium hidden sm:inline">
-                      {current.text}
+                    <span className="text-sm leading-none">{ann.icon}</span>
+                    <span className="text-white/75 text-[11.5px] font-medium hidden sm:inline tracking-wide">
+                      {ann.text}
                     </span>
-                    <span className="text-white/80 text-xs font-medium sm:hidden">
-                      {current.text.length > 40 ? current.text.slice(0, 40) + '…' : current.text}
+                    <span className="text-white/75 text-[11px] font-medium sm:hidden">
+                      {ann.text.length > 38 ? ann.text.slice(0, 38) + '…' : ann.text}
                     </span>
                     <Link
-                      href={current.href}
-                      className="text-xs font-black text-amber-400 hover:text-amber-300 underline underline-offset-2 transition-colors whitespace-nowrap"
+                      href={ann.href}
+                      className="flex items-center gap-0.5 text-[11.5px] font-bold text-amber-400 hover:text-amber-300 transition-colors"
                     >
-                      {current.cta} →
+                      {ann.cta} <ArrowRight size={10} />
                     </Link>
                   </motion.div>
                 </AnimatePresence>
+
                 <button
                   onClick={() => setShowAnnouncement(false)}
-                  className="absolute right-0 text-white/30 hover:text-white/70 transition-colors p-1"
-                  aria-label="Dismiss"
+                  aria-label="Close announcement"
+                  className="absolute right-0 text-white/30 hover:text-white/60 transition-colors p-1 rounded"
                 >
-                  <X size={13} />
+                  <X size={12} />
                 </button>
               </div>
             </div>
@@ -128,53 +131,54 @@ export function Header() {
         )}
       </AnimatePresence>
 
-      {/* ── Main Header ── */}
+      {/* ── Main header ──────────────────────────────────────────────────── */}
       <header
         className={cn(
-          'w-full transition-all duration-500',
+          'w-full bg-white transition-all duration-300',
           scrolled
-            ? 'bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-sm shadow-indigo-50/50 py-2'
-            : 'bg-white border-b border-gray-100/60 py-3'
+            ? 'shadow-[0_1px_24px_rgba(0,0,0,0.07)] border-b border-gray-100/80'
+            : 'border-b border-gray-100'
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12">
+          <div className="flex items-center justify-between h-[60px]">
 
-            {/* ── Logo ── */}
-            <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-              <div className="relative w-9 h-9 overflow-hidden rounded-xl shadow-md border border-indigo-100 transition-transform group-hover:scale-105">
-                <Image src="/logo.jpg" alt="Internadda" fill className="object-cover" priority />
+            {/* ── Logo ─────────────────────────────────────────────────── */}
+            <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
+              <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-indigo-100 shadow-sm group-hover:shadow-md transition-shadow flex-shrink-0">
+                <Image src="/logo.jpg" alt="InternAdda" fill className="object-cover" priority sizes="32px" />
               </div>
-              <div className="flex flex-col">
-                <span className="font-black text-[17px] tracking-tight text-gray-900 leading-none">
+              <div className="flex flex-col leading-none">
+                <span className="text-[16px] font-black tracking-tight text-gray-900">
                   Intern<span className="text-indigo-600">adda</span>
                 </span>
-                <span className="text-[8px] text-gray-400 font-bold uppercase tracking-[0.15em] mt-0.5">
+                <span className="text-[8.5px] font-semibold text-gray-400 tracking-[0.12em] uppercase mt-0.5">
                   India's Internship Hub
                 </span>
               </div>
             </Link>
 
-            {/* ── Desktop Nav ── */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navItems.map((item) => {
+            {/* ── Desktop nav ──────────────────────────────────────────── */}
+            <nav className="hidden lg:flex items-center gap-0.5" aria-label="Main navigation">
+              {NAV_ITEMS.map((item) => {
                 const active = isActive(item.href)
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'relative px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200',
+                      'relative px-3.5 py-2 rounded-lg text-[12.5px] font-semibold tracking-wide transition-all duration-150',
                       active
-                        ? 'text-indigo-600 bg-indigo-50'
+                        ? 'text-indigo-700 bg-indigo-50/80'
                         : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                     )}
                   >
                     {item.label}
                     {active && (
                       <motion.span
-                        layoutId="nav-pill"
-                        className="absolute inset-0 rounded-xl bg-indigo-50 -z-10"
+                        layoutId="nav-active"
+                        className="absolute inset-0 rounded-lg bg-indigo-50/80 -z-10"
+                        transition={{ type: 'spring', stiffness: 380, damping: 34 }}
                       />
                     )}
                   </Link>
@@ -182,191 +186,214 @@ export function Header() {
               })}
             </nav>
 
-            {/* ── Right Actions ── */}
-            <div className="flex items-center gap-3">
+            {/* ── Right side ───────────────────────────────────────────── */}
+            <div className="flex items-center gap-2.5">
 
-              {/* Trust badge — desktop only */}
+              {/* MSME badge — xl+ only */}
               <div className="hidden xl:flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-full px-3 py-1.5">
-                <ShieldCheck size={12} className="text-emerald-600" />
-                <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wide">MSME Verified</span>
+                <ShieldCheck size={11} className="text-emerald-600 flex-shrink-0" />
+                <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-[0.1em] whitespace-nowrap">
+                  MSME Verified
+                </span>
               </div>
 
+              {/* Authenticated user dropdown */}
               {user ? (
                 <div className="hidden md:block">
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center gap-2.5 p-1.5 pr-4 rounded-full bg-gray-50 border border-gray-200 hover:bg-white hover:border-indigo-200 hover:shadow-md transition-all">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-sm uppercase shadow-sm">
-                          {user.user_metadata?.full_name?.[0] || 'U'}
+                      <button className="flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full border border-gray-200 bg-gray-50 hover:bg-white hover:border-indigo-200 hover:shadow-[0_2px_12px_rgba(99,102,241,0.12)] transition-all duration-200 outline-none">
+                        {/* Avatar */}
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-[11px] font-black shadow-sm flex-shrink-0">
+                          {userInitial}
                         </div>
-                        <span className="text-xs font-bold text-gray-700">
-                          {user.user_metadata?.full_name?.split(' ')[0] || 'User'}
-                        </span>
-                        <ChevronDown size={13} className="text-gray-400" />
+                        <span className="text-[12.5px] font-semibold text-gray-700">{userName}</span>
+                        <ChevronDown size={12} className="text-gray-400" />
                       </button>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent
-                      className="w-64 mt-3 p-2 rounded-2xl border-gray-100 shadow-2xl shadow-gray-200/50 bg-white"
+                      className="w-60 mt-2.5 p-1.5 rounded-2xl border border-gray-100 shadow-[0_8px_40px_rgba(0,0,0,0.12)] bg-white"
                       align="end"
+                      sideOffset={6}
                     >
-                      <DropdownMenuLabel className="p-4 bg-gradient-to-br from-indigo-50 to-violet-50 rounded-xl mb-2 border border-indigo-100/50">
+                      {/* User info */}
+                      <DropdownMenuLabel className="px-3.5 py-3 mb-1">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-base uppercase shadow-md">
-                            {user.user_metadata?.full_name?.[0] || 'U'}
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-black flex-shrink-0 shadow-sm">
+                            {userInitial}
                           </div>
-                          <div>
-                            <p className="text-sm font-black text-gray-900">
-                              {user.user_metadata?.full_name || 'Student'}
+                          <div className="min-w-0">
+                            <p className="text-[13px] font-bold text-gray-900 truncate">
+                              {user?.user_metadata?.full_name || 'Student'}
                             </p>
-                            <p className="text-[11px] text-gray-400 font-medium truncate max-w-[150px]">
-                              {user.email}
-                            </p>
+                            <p className="text-[11px] text-gray-400 truncate">{user?.email}</p>
                           </div>
                         </div>
                       </DropdownMenuLabel>
 
-                      <DropdownMenuGroup className="p-1 space-y-0.5">
+                      <DropdownMenuSeparator className="bg-gray-100 mx-1" />
+
+                      <DropdownMenuGroup className="py-1 space-y-0.5">
                         <DropdownMenuItem
                           onClick={() => router.push('/profile')}
-                          className="p-3 rounded-xl cursor-pointer hover:bg-indigo-50 flex gap-3 items-center"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-gray-50 focus:bg-gray-50"
                         >
-                          <div className="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <User size={14} className="text-indigo-600" />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-700">Profile</span>
+                          <User size={14} className="text-gray-400 flex-shrink-0" />
+                          <span className="text-[13px] font-medium text-gray-700">My Profile</span>
                         </DropdownMenuItem>
-
                         <DropdownMenuItem
                           onClick={() => router.push('/orders')}
-                          className="p-3 rounded-xl cursor-pointer hover:bg-indigo-50 flex gap-3 items-center"
+                          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-gray-50 focus:bg-gray-50"
                         >
-                          <div className="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <CreditCard size={14} className="text-indigo-600" />
-                          </div>
-                          <span className="text-sm font-semibold text-gray-700">Orders</span>
+                          <CreditCard size={14} className="text-gray-400 flex-shrink-0" />
+                          <span className="text-[13px] font-medium text-gray-700">Orders</span>
                         </DropdownMenuItem>
                       </DropdownMenuGroup>
 
-                      <DropdownMenuSeparator className="bg-gray-100 my-1.5" />
+                      <DropdownMenuSeparator className="bg-gray-100 mx-1" />
 
                       <DropdownMenuItem
                         onClick={handleSignOut}
-                        className="p-3 rounded-xl cursor-pointer hover:bg-red-50 flex gap-3 items-center"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-red-50 focus:bg-red-50 mt-0.5"
                       >
-                        <div className="w-7 h-7 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <LogOut size={14} className="text-red-500" />
-                        </div>
-                        <span className="text-sm font-semibold text-red-600">Sign out</span>
+                        <LogOut size={14} className="text-red-400 flex-shrink-0" />
+                        <span className="text-[13px] font-medium text-red-600">Sign out</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
               ) : (
+                /* Guest buttons */
                 <div className="hidden md:flex items-center gap-2">
                   <Link href="/auth/signin">
                     <Button
                       variant="ghost"
-                      className="text-gray-600 hover:text-gray-900 font-bold text-sm px-4 rounded-xl hover:bg-gray-50"
+                      className="h-9 px-4 text-[13px] font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl"
                     >
                       Sign In
                     </Button>
                   </Link>
                   <Link href="/auth/signup">
-                    <Button className="bg-[#1a1063] hover:bg-indigo-900 text-white font-black rounded-xl px-5 py-2.5 text-sm shadow-lg shadow-indigo-900/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5">
-                      <Zap size={13} className="fill-amber-400 text-amber-400" />
+                    <Button
+                      className="h-9 px-4 bg-[#1a1063] hover:bg-indigo-900 text-white text-[13px] font-bold rounded-xl shadow-sm shadow-indigo-900/20 hover:shadow-indigo-900/30 transition-all gap-1.5"
+                    >
+                      <Zap size={12} className="fill-amber-400 text-amber-400" />
                       Get Started
                     </Button>
                   </Link>
                 </div>
               )}
 
-              {/* Mobile Menu Button */}
+              {/* Mobile menu toggle */}
               <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl lg:hidden active:scale-95 transition-transform"
-                aria-label="Toggle menu"
+                onClick={() => setMobileOpen(v => !v)}
+                aria-label="Toggle navigation"
+                aria-expanded={mobileOpen}
+                className="lg:hidden flex items-center justify-center w-9 h-9 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors active:scale-95"
               >
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={isOpen ? 'close' : 'open'}
+                  <motion.span
+                    key={mobileOpen ? 'x' : 'menu'}
                     initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0,   opacity: 1 }}
+                    exit={{   rotate:  90,  opacity: 0 }}
                     transition={{ duration: 0.15 }}
+                    className="flex"
                   >
-                    {isOpen ? <X size={19} /> : <Menu size={19} />}
-                  </motion.div>
+                    {mobileOpen ? <X size={17} /> : <Menu size={17} />}
+                  </motion.span>
                 </AnimatePresence>
               </button>
             </div>
           </div>
         </div>
 
-        {/* ── Mobile Menu ── */}
+        {/* ── Mobile menu ──────────────────────────────────────────────── */}
         <AnimatePresence>
-          {isOpen && (
+          {mobileOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-xl shadow-gray-100/80 px-5 pt-4 pb-6 z-50 space-y-1"
+              exit={{   opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="lg:hidden bg-white border-t border-gray-100 shadow-lg shadow-gray-100/60"
             >
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={cn(
-                    'flex items-center py-3 px-3 rounded-xl text-sm font-bold transition-colors',
-                    isActive(item.href)
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              <div className="max-w-7xl mx-auto px-4 py-4 space-y-0.5">
 
-              {/* Trust badge mobile */}
-              <div className="flex items-center gap-2 px-3 pt-2 pb-1">
-                <ShieldCheck size={13} className="text-emerald-600" />
-                <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wide">MSME Verified · Govt. of India</span>
-              </div>
-
-              <div className="pt-3 border-t border-gray-100">
-                {!user ? (
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <Link href="/auth/signin" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full rounded-xl font-bold text-sm border-gray-200 h-11">
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link href="/auth/signup" onClick={() => setIsOpen(false)}>
-                      <Button className="w-full bg-[#1a1063] hover:bg-indigo-900 text-white font-black rounded-xl text-sm h-11 flex items-center gap-1.5">
-                        <Zap size={13} className="fill-amber-400 text-amber-400" />
-                        Get Started
-                      </Button>
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2.5">
+                {/* Nav links */}
+                {NAV_ITEMS.map((item, i) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.2 }}
+                  >
                     <Link
-                      href="/profile"
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-700 border border-gray-100"
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(
+                        'flex items-center justify-between w-full px-4 py-3 rounded-xl text-[13.5px] font-semibold transition-colors',
+                        isActive(item.href)
+                          ? 'text-indigo-700 bg-indigo-50'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      )}
                     >
-                      <User size={15} /> Profile
+                      {item.label}
+                      {isActive(item.href) && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                      )}
                     </Link>
-                    <button
-                      onClick={handleSignOut}
-                      className="flex items-center justify-center gap-2 p-3 bg-red-50 rounded-xl text-sm font-bold text-red-600 border border-red-100"
-                    >
-                      <LogOut size={15} /> Logout
-                    </button>
-                  </div>
-                )}
+                  </motion.div>
+                ))}
+
+                {/* MSME badge */}
+                <div className="flex items-center gap-2 px-4 py-2">
+                  <ShieldCheck size={12} className="text-emerald-600" />
+                  <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-[0.1em]">
+                    MSME Verified · Govt. of India
+                  </span>
+                </div>
+
+                {/* Auth buttons */}
+                <div className="pt-2 border-t border-gray-100 mt-2">
+                  {user ? (
+                    <div className="flex gap-2">
+                      <Link
+                        href="/profile"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex-1 flex items-center justify-center gap-2 h-10 bg-gray-50 border border-gray-200 rounded-xl text-[13px] font-semibold text-gray-700"
+                      >
+                        <User size={14} /> Profile
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex-1 flex items-center justify-center gap-2 h-10 bg-red-50 border border-red-100 rounded-xl text-[13px] font-semibold text-red-600"
+                      >
+                        <LogOut size={14} /> Sign Out
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <Link href="/auth/signin" onClick={() => setMobileOpen(false)} className="flex-1">
+                        <Button
+                          variant="outline"
+                          className="w-full h-10 text-[13px] font-semibold rounded-xl border-gray-200"
+                        >
+                          Sign In
+                        </Button>
+                      </Link>
+                      <Link href="/auth/signup" onClick={() => setMobileOpen(false)} className="flex-1">
+                        <Button
+                          className="w-full h-10 bg-[#1a1063] hover:bg-indigo-900 text-white text-[13px] font-bold rounded-xl gap-1.5"
+                        >
+                          <Zap size={12} className="fill-amber-400 text-amber-400" />
+                          Get Started
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           )}
