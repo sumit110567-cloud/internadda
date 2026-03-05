@@ -1,3 +1,4 @@
+//app/page.tsx
 'use client'
 
 import { Header } from '@/components/Header'
@@ -74,9 +75,9 @@ function FadeUp({ children, delay = 0, className = '' }: { children: React.React
   const inView = useInView(ref, { once: true, margin: '-50px' })
   return (
     <motion.div ref={ref}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}>
       {children}
     </motion.div>
@@ -112,62 +113,62 @@ function InternshipCard({ id, title, company, stipend, location, skills, applica
 
   return (
     <motion.article
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative bg-white rounded-2xl border border-gray-100 shadow-md shadow-gray-200/60 overflow-hidden flex flex-col cursor-pointer"
-      style={{ boxShadow: '0 4px 24px 0 rgba(99,102,241,0.07), 0 1px 4px 0 rgba(0,0,0,0.05)' }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden flex flex-col hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/50 transition-all duration-300"
     >
       {/* Image */}
-      <div className="relative h-44 bg-gray-100 overflow-hidden flex-shrink-0">
+      <div className="relative h-40 bg-slate-100 overflow-hidden flex-shrink-0">
         <Image src={image} alt={title} fill sizes="(max-width:640px)100vw,(max-width:1024px)50vw,400px"
           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/30 via-transparent to-transparent" />
-        <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-gray-700 text-[11px] font-medium px-2.5 py-1 rounded-lg shadow-sm">{tag}</span>
-        <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-[11px] font-medium px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 text-gray-600">
-          <Zap size={10} className="text-amber-500 fill-amber-400" />{applicants} applied
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+        <span className="absolute top-3 left-3 bg-white/95 text-slate-700 text-[10.5px] font-semibold px-2.5 py-1 rounded-lg shadow-sm tracking-wide">{tag}</span>
+        <span className="absolute top-3 right-3 bg-white/95 text-[10.5px] font-medium px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1 text-slate-600">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />{applicants} applied
         </span>
       </div>
 
       {/* Body */}
-      <div className="p-5 flex flex-col flex-1 gap-3">
-        <div className="flex items-center gap-2">
-          <div className="flex -space-x-2">
-            {companyLogos.map((l: string, i: number) => (
-              <div key={i} className="w-5 h-5 rounded-full border-2 border-white bg-gray-100 overflow-hidden relative shadow-sm">
-                <Image src={l} alt="" fill className="object-cover" />
-              </div>
-            ))}
+      <div className="p-5 flex flex-col flex-1 gap-3.5">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="flex -space-x-1.5">
+              {companyLogos.map((l: string, i: number) => (
+                <div key={i} className="w-4.5 h-4.5 w-[18px] h-[18px] rounded-full border-2 border-white bg-slate-100 overflow-hidden relative shadow-sm">
+                  <Image src={l} alt="" fill className="object-cover" />
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-slate-400 truncate font-medium">
+              {company} <span className="text-slate-300">+{otherCompaniesCount} more</span>
+            </p>
           </div>
-          <p className="text-xs text-gray-400 truncate leading-none">
-            {company} <span className="text-gray-300">+{otherCompaniesCount}</span>
-          </p>
+          <h3 className="text-[15px] font-bold text-slate-900 leading-snug">{title}</h3>
         </div>
-
-        <h3 className="text-[15px] font-semibold text-gray-900 leading-snug tracking-tight">{title}</h3>
 
         <div className="grid grid-cols-2 gap-2 bg-slate-50 border border-slate-100 rounded-xl p-3">
           <div>
-            <p className="text-[9px] font-semibold text-gray-400 uppercase tracking-widest mb-1">Stipend</p>
-            <p className="text-[13px] font-semibold text-gray-800">{stipend}</p>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Stipend</p>
+            <p className="text-[12.5px] font-bold text-slate-800">{stipend}</p>
           </div>
           <div>
-            <p className="text-[9px] font-semibold text-gray-400 uppercase tracking-widest mb-1">Location</p>
-            <p className="text-[13px] font-semibold text-gray-800 flex items-center gap-1">
-              <MapPin size={10} className="text-indigo-400 flex-shrink-0" />{location}
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</p>
+            <p className="text-[12.5px] font-bold text-slate-800 flex items-center gap-1">
+              <MapPin size={9} className="text-indigo-400 flex-shrink-0" />{location}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-1.5">
           {skills.map((s: string) => (
-            <span key={s} className="border border-gray-200 bg-gray-50 text-gray-500 text-[11px] px-2.5 py-0.5 rounded-md">{s}</span>
+            <span key={s} className="bg-indigo-50 text-indigo-600 text-[10.5px] font-semibold px-2.5 py-0.5 rounded-md border border-indigo-100">{s}</span>
           ))}
         </div>
 
-        <Button onClick={go}
-          className="mt-auto w-full bg-[#1a1063] hover:bg-indigo-900 text-white text-sm font-medium rounded-xl h-11 shadow-sm shadow-indigo-900/20 transition-all">
-          {user ? 'Apply Now' : 'Sign in to Apply'}
-        </Button>
+        <button onClick={go}
+          className="mt-auto w-full bg-[#1a1063] hover:bg-indigo-900 text-white text-[13px] font-semibold rounded-xl h-10 shadow-sm shadow-indigo-900/20 transition-all hover:shadow-md hover:shadow-indigo-900/30 active:scale-[0.98]">
+          {user ? 'Apply Now →' : 'Sign in to Apply →'}
+        </button>
       </div>
     </motion.article>
   )
@@ -185,48 +186,48 @@ const TICKER = [
 ]
 
 const METRICS = [
-  { icon: Shield, label: 'Verified Companies', value: '200+', tc: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-100' },
-  { icon: Users, label: 'Students Placed', value: '7200+', tc: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100' },
-  { icon: Clock, label: 'Avg. Offer Time', value: '48h', tc: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-  { icon: Award, label: 'Established', value: '2020', tc: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100' },
+  { icon: Shield,  label: 'Verified Companies', value: '200+',  color: '#4f46e5' },
+  { icon: Users,   label: 'Students Placed',    value: '7200+', color: '#7c3aed' },
+  { icon: Clock,   label: 'Avg. Offer Time',    value: '48h',   color: '#059669' },
+  { icon: Award,   label: 'Est.',               value: '2020',  color: '#d97706' },
 ]
 
-const PARTNERS = ['Delhi University', 'LAREX', 'Tracxn', 'Arjuna-AI']
+const PARTNERS = ['Delhi University', 'LAREX', 'Tracxn', 'Arjuna AI']
 
 const WHY = [
   {
     icon: Shield, title: '100% Verified Employers',
     body: 'Every company is vetted for legitimacy before listing. No fake roles, no misleading offers.',
-    tc: 'text-indigo-600', bg: 'bg-indigo-50',
+    accent: '#4f46e5', bg: '#eef2ff',
   },
   {
     icon: Zap, title: 'Offers Within 48 Hours',
     body: 'Our process connects you directly with hiring managers. Average time from apply to offer: 48 hours.',
-    tc: 'text-amber-600', bg: 'bg-amber-50',
+    accent: '#d97706', bg: '#fffbeb',
   },
   {
     icon: GraduationCap, title: 'Skill Certifications',
     body: 'Industry-aligned courses with partner-recognised certificates that make your profile stand out.',
-    tc: 'text-violet-600', bg: 'bg-violet-50',
+    accent: '#7c3aed', bg: '#f5f3ff',
   },
   {
     icon: TrendingUp, title: 'Career Progress Tracking',
     body: 'Monitor every application, collect structured feedback, and build a verified professional profile.',
-    tc: 'text-emerald-600', bg: 'bg-emerald-50',
+    accent: '#059669', bg: '#ecfdf5',
   },
 ]
 
 const TESTIMONIALS = [
   {
-    name: 'Priya Sharma', role: 'Data Science Intern · Larex Systems', av: 'PS',
+    name: 'Priya Sharma', role: 'Data Science Intern · Larex Systems', av: 'PS', color: '#4f46e5',
     quote: 'Applied on Monday, offer letter by Wednesday. The company was exactly as described — completely professional. The smoothest hiring process I have experienced.',
   },
   {
-    name: 'Aryan Kumar', role: 'Web Dev Intern · Arjuna AI', av: 'AK',
+    name: 'Aryan Kumar', role: 'Web Dev Intern · Arjuna AI', av: 'AK', color: '#7c3aed',
     quote: 'As a second-year student I was sceptical. InternAdda placed me with a real product team where I write production code and learn every single day.',
   },
   {
-    name: 'Sneha Rathi', role: 'UI/UX Intern · Delhi Startup', av: 'SR',
+    name: 'Sneha Rathi', role: 'UI/UX Intern · Delhi Startup', av: 'SR', color: '#059669',
     quote: 'Completed the UI/UX course, built my portfolio, and landed an internship all through InternAdda — in under a month. Best platform for students.',
   },
 ]
@@ -250,96 +251,97 @@ export default function Home() {
 
       <main className="w-full overflow-x-hidden">
 
-        {/* ═══════════════════════════════════════════════════
-            HERO
-        ═══════════════════════════════════════════════════ */}
-        <section className="relative bg-gradient-to-br from-[#eef0ff] via-[#f5f6ff] to-white overflow-hidden">
+        {/* ══════════════════════════════════════════════
+            HERO — tight, editorial, no wasted space
+        ══════════════════════════════════════════════ */}
+        <section className="relative bg-white overflow-hidden">
 
-          {/* Decorative blobs — desktop only, aria-hidden */}
-          <div aria-hidden className="pointer-events-none select-none absolute inset-0">
-            <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 right-0 w-80 h-80 bg-violet-200/20 rounded-full blur-3xl" />
-            {/* subtle grid */}
-            <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
+          {/* Subtle top-left accent */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 select-none overflow-hidden">
+            <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full"
+              style={{ background: 'radial-gradient(circle, rgba(79,70,229,0.07) 0%, transparent 70%)' }} />
+            <div className="absolute top-0 right-0 w-[40%] h-full"
+              style={{ background: 'linear-gradient(135deg, transparent 40%, rgba(238,242,255,0.5) 100%)' }} />
+            {/* Fine grid */}
+            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.025 }}>
               <defs>
-                <pattern id="hg" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4f46e5" strokeWidth="0.8" />
+                <pattern id="hg" width="32" height="32" patternUnits="userSpaceOnUse">
+                  <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#4f46e5" strokeWidth="0.6" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#hg)" />
             </svg>
           </div>
 
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-0 lg:pt-20">
-            <div className="flex flex-col items-center text-center lg:flex-row lg:items-center lg:text-left lg:gap-14 xl:gap-20">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12 xl:gap-16 pt-10 pb-0 lg:pt-14">
 
               {/* ── Left copy ── */}
               <motion.div
-                className="flex-1 max-w-2xl w-full pb-12 lg:pb-20"
-                initial={{ opacity: 0, y: 20 }}
+                className="flex-1 max-w-2xl w-full pb-10 lg:pb-16"
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                {/* Badge */}
-                <div className="inline-flex items-center gap-2 bg-white border border-indigo-100 rounded-full pl-1.5 pr-4 py-1.5 mb-7 shadow-sm shadow-indigo-100/60">
-                  <span className="bg-indigo-600 text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full tracking-wide">#1 IN INDIA</span>
-                  <span className="text-gray-600 text-xs font-medium">Dedicated Internship Platform · MSME Registered</span>
+                {/* Eyebrow */}
+                <div className="inline-flex items-center gap-2 mb-5 border border-indigo-100 bg-indigo-50 rounded-full px-3 py-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse" />
+                  <span className="text-[11px] font-bold text-indigo-700 uppercase tracking-[0.14em]">#1 Internship Platform · MSME Registered</span>
                 </div>
 
-                <h1 className="text-[2.4rem] sm:text-5xl xl:text-[3.5rem] font-bold text-gray-900 leading-[1.08] tracking-tight mb-5">
+                <h1 className="text-[2.35rem] sm:text-[2.8rem] xl:text-[3.2rem] font-extrabold text-slate-900 leading-[1.06] tracking-tight mb-4">
                   India's Largest<br />
-                  <span className="text-indigo-600">Internship Ecosystem</span><br />
-                  for Students.
+                  <span style={{ color: '#1a1063' }}>Internship Ecosystem</span><br />
+                  <span className="text-slate-500 font-semibold text-[1.5rem] sm:text-[1.8rem] xl:text-[2rem] leading-snug">for ambitious students.</span>
                 </h1>
 
-                <p className="text-gray-500 text-lg leading-relaxed mb-8 max-w-[500px] mx-auto lg:mx-0">
+                <p className="text-slate-500 text-[15px] leading-[1.7] mb-7 max-w-[460px]">
                   Find verified internships at 200+ trusted companies. Join 7,200 students who landed real roles — free, fast, and fully legitimate.
                 </p>
 
                 {/* CTAs */}
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-10">
-                  <Link href="/internships" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-[#1a1063] hover:bg-indigo-900 text-white px-7 py-5 text-sm font-semibold rounded-xl shadow-lg shadow-indigo-900/20 inline-flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                      Browse Internships <ArrowRight size={15} />
-                    </Button>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-8">
+                  <Link href="/internships">
+                    <button className="inline-flex items-center justify-center gap-2 bg-[#1a1063] hover:bg-indigo-900 text-white px-6 py-3 text-[13.5px] font-bold rounded-xl shadow-lg shadow-indigo-900/20 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto">
+                      Browse Internships <ArrowRight size={14} />
+                    </button>
                   </Link>
-                  <Link href="/courses" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-white hover:border-indigo-300 px-7 py-5 text-sm font-semibold rounded-xl transition-all">
-                      Explore Courses
-                    </Button>
+                  <Link href="/courses">
+                    <button className="inline-flex items-center justify-center gap-2 border-2 border-slate-200 text-slate-700 hover:border-indigo-200 hover:text-indigo-700 px-6 py-3 text-[13.5px] font-bold rounded-xl transition-all w-full sm:w-auto bg-white">
+                      <BookOpen size={14} /> Explore Courses
+                    </button>
                   </Link>
                 </div>
 
-                {/* Social proof */}
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                {/* Social proof row */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex -space-x-2.5">
+                    <div className="flex -space-x-2">
                       {AVATARS.map((src, i) => (
-                        <div key={i} className="w-9 h-9 rounded-full border-2 border-white overflow-hidden bg-gray-200 relative shadow-md flex-shrink-0">
+                        <div key={i} className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-slate-200 relative shadow-md flex-shrink-0">
                           <Image src={src} alt="Student" fill className="object-cover" />
                         </div>
                       ))}
                     </div>
-                    <div className="text-left">
-                      <p className="text-sm font-semibold text-gray-800">7,200+ students placed</p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        {[...Array(5)].map((_, i) => <Star key={i} size={11} className="fill-amber-400 text-amber-400" />)}
-                        <span className="text-xs text-gray-400 ml-1">4.9 / 5</span>
+                    <div>
+                      <p className="text-[13px] font-bold text-slate-800">7,200+ placed</p>
+                      <div className="flex items-center gap-0.5 mt-0.5">
+                        {[...Array(5)].map((_, i) => <Star key={i} size={10} className="fill-amber-400 text-amber-400" />)}
+                        <span className="text-[10.5px] text-slate-400 ml-1 font-medium">4.9 / 5</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Live activity ticker */}
-                  <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2.5 shadow-sm max-w-xs w-full sm:w-auto overflow-hidden"
-                    style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse flex-shrink-0" />
+                  {/* Live ticker */}
+                  <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-3.5 py-2 shadow-sm max-w-xs overflow-hidden">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse flex-shrink-0" />
                     <AnimatePresence mode="wait">
                       <motion.span key={tick}
-                        initial={{ opacity: 0, y: 5 }}
+                        initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        transition={{ duration: 0.25 }}
-                        className="text-xs text-gray-500 truncate">
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-[11px] text-slate-500 font-medium truncate">
                         {TICKER[tick]}
                       </motion.span>
                     </AnimatePresence>
@@ -350,9 +352,9 @@ export default function Home() {
               {/* ── Right visual ── */}
               <motion.div
                 className="flex-1 w-full max-w-xl mx-auto lg:max-w-none"
-                initial={{ opacity: 0, x: 24 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               >
                 <HeroVisual />
               </motion.div>
@@ -360,17 +362,20 @@ export default function Home() {
           </div>
 
           {/* ── Metrics strip ── */}
-          <div className="relative border-t border-gray-200 bg-white">
+          <div className="border-t border-slate-100 bg-slate-50/60">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-gray-100">
+              <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-slate-100">
                 {METRICS.map((m) => (
-                  <div key={m.label} className="flex items-center justify-center lg:justify-start gap-3.5 px-4 sm:px-6 py-5">
-                    <div className={`w-10 h-10 ${m.bg} border ${m.border} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <m.icon size={18} className={m.tc} />
+                  <div key={m.label} className="flex items-center gap-3 px-5 py-4">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: m.color + '14', border: `1px solid ${m.color}28` }}>
+                      <m.icon size={16} style={{ color: m.color }} />
                     </div>
                     <div>
-                      <p className={`text-xl font-bold leading-none ${m.tc} tabular-nums`}><Counter raw={m.value} /></p>
-                      <p className="text-[11px] text-gray-400 mt-1 leading-tight">{m.label}</p>
+                      <p className="text-[19px] font-extrabold leading-none tabular-nums" style={{ color: m.color }}>
+                        <Counter raw={m.value} />
+                      </p>
+                      <p className="text-[10.5px] text-slate-400 mt-0.5 font-medium">{m.label}</p>
                     </div>
                   </div>
                 ))}
@@ -379,154 +384,144 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            PARTNERS
-        ═══════════════════════════════════════════════════ */}
-        <section className="bg-slate-50 border-y border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-[0.18em]">Recognised by</p>
+        {/* ══════════════════════════════════════════════
+            PARTNERS — minimal bar
+        ══════════════════════════════════════════════ */}
+        <section className="border-b border-slate-100 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5">
+              <p className="text-[9.5px] font-bold text-slate-400 uppercase tracking-[0.18em]">Recognised by</p>
               {PARTNERS.map(n => (
-                <span key={n} className="text-sm font-medium text-gray-400 hover:text-gray-700 transition-colors cursor-default">{n}</span>
+                <span key={n} className="text-[12px] font-semibold text-slate-400 hover:text-slate-700 transition-colors cursor-default">{n}</span>
               ))}
-              <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1.5">
-                <Shield size={11} className="text-emerald-600" />
-                <span className="text-[11px] text-emerald-700 font-semibold">MSME · Govt. of India</span>
+              <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
+                <CheckCircle size={10} className="text-emerald-500" />
+                <span className="text-[10.5px] text-emerald-700 font-bold">MSME · Govt. of India</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
+        {/* ══════════════════════════════════════════════
             FEATURED INTERNSHIPS
-        ═══════════════════════════════════════════════════ */}
-        <section className="py-16 sm:py-20 md:py-24 bg-white">
+        ══════════════════════════════════════════════ */}
+        <section className="py-14 sm:py-16 lg:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <FadeUp className="text-center mb-12">
-              <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-2">Handpicked for you</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">Top internships this week</h2>
-              <p className="text-gray-500 text-base max-w-md mx-auto">Secure your future with positions at India's most trusted startups and companies.</p>
+            <FadeUp className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+              <div>
+                <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-1.5">Handpicked for you</p>
+                <h2 className="text-[1.75rem] sm:text-[2rem] font-extrabold text-slate-900 tracking-tight">Top internships this week</h2>
+                <p className="text-slate-500 text-[13.5px] mt-1.5 max-w-sm">Verified roles at India's most trusted startups.</p>
+              </div>
+              <Link href="/internships" className="hidden sm:inline-flex items-center gap-1.5 text-[12.5px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors border border-indigo-200 hover:border-indigo-300 px-4 py-2 rounded-lg whitespace-nowrap bg-indigo-50 hover:bg-indigo-100">
+                View all <ArrowRight size={13} />
+              </Link>
             </FadeUp>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {featuredInternships.map((item, i) => (
-                <FadeUp key={item.id} delay={i * 0.08}>
+                <FadeUp key={item.id} delay={i * 0.07}>
                   <InternshipCard {...item} />
                 </FadeUp>
               ))}
             </div>
 
-            <FadeUp className="mt-10 text-center">
+            <FadeUp className="mt-8 text-center sm:hidden">
               <Link href="/internships">
-                <Button variant="outline" className="border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-semibold px-7 py-5 text-sm rounded-xl inline-flex items-center gap-2 transition-all">
-                  View all internships <ArrowRight size={14} />
-                </Button>
+                <button className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-indigo-600 border border-indigo-200 px-5 py-2.5 rounded-lg bg-indigo-50">
+                  View all internships <ArrowRight size={13} />
+                </button>
               </Link>
             </FadeUp>
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            WHY INTERNADDA  — left/right split on desktop
-        ═══════════════════════════════════════════════════ */}
-        <section className="py-16 sm:py-20 md:py-24 bg-[#f7f8ff] border-y border-indigo-50">
+        {/* ══════════════════════════════════════════════
+            WHY INTERNADDA
+        ══════════════════════════════════════════════ */}
+        <section className="py-14 sm:py-16 lg:py-20 bg-slate-50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Mobile heading — centered */}
-            <FadeUp className="text-center mb-10 lg:hidden">
-              <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-2">Why InternAdda</p>
-              <h2 className="text-3xl font-bold text-gray-900 tracking-tight mb-3">Built for students,<br />not just listings.</h2>
-              <p className="text-gray-500 text-base max-w-sm mx-auto">We verify every employer, accelerate every hire, and support your growth all the way.</p>
-            </FadeUp>
+            <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16 xl:gap-20">
 
-            <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16 xl:gap-24">
-
-              {/* Left heading — desktop only */}
-              <FadeUp className="hidden lg:block lg:w-72 xl:w-80 flex-shrink-0 sticky top-28">
-                <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-3">Why InternAdda</p>
-                <h2 className="text-4xl font-bold text-gray-900 tracking-tight leading-tight mb-4">
+              {/* Left heading */}
+              <FadeUp className="lg:w-64 xl:w-72 flex-shrink-0 mb-8 lg:mb-0 lg:sticky lg:top-24">
+                <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-2">Why InternAdda</p>
+                <h2 className="text-[1.75rem] sm:text-[2rem] font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
                   Built for students,<br />not just listings.
                 </h2>
-                <p className="text-gray-500 text-[15px] leading-relaxed mb-7">
-                  We verify every employer, accelerate every hire, and support your growth with courses and community.
+                <p className="text-slate-500 text-[13.5px] leading-relaxed mb-5">
+                  We verify every employer, accelerate every hire, and support your growth all the way.
                 </p>
                 <Link href="/about">
-                  <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-white text-sm font-medium rounded-xl px-5 py-4 inline-flex items-center gap-1.5 transition-all">
+                  <button className="inline-flex items-center gap-1.5 border border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:text-indigo-700 text-[12.5px] font-bold rounded-xl px-4 py-2.5 transition-all">
                     About InternAdda <ArrowRight size={13} />
-                  </Button>
+                  </button>
                 </Link>
               </FadeUp>
 
               {/* Right grid */}
-              <div className="flex-1 grid sm:grid-cols-2 gap-4">
+              <div className="flex-1 grid sm:grid-cols-2 gap-3.5">
                 {WHY.map((w, i) => (
-                  <FadeUp key={w.title} delay={i * 0.07}>
+                  <FadeUp key={w.title} delay={i * 0.06}>
                     <motion.div
-                      whileHover={{ y: -4, boxShadow: '0 12px 32px rgba(99,102,241,0.12)' }}
-                      transition={{ duration: 0.22 }}
-                      className="bg-white border border-gray-200 rounded-2xl p-6 h-full transition-colors duration-200 hover:border-indigo-200"
-                      style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}
+                      whileHover={{ y: -3 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white border border-slate-200 rounded-2xl p-5 h-full hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/40 transition-all duration-300"
                     >
-                      <div className={`w-10 h-10 ${w.bg} rounded-xl flex items-center justify-center mb-4`}>
-                        <w.icon size={18} className={w.tc} />
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3.5"
+                        style={{ background: w.bg, border: `1px solid ${w.accent}22` }}>
+                        <w.icon size={16} style={{ color: w.accent }} />
                       </div>
-                      <h3 className="text-[14px] font-semibold text-gray-900 mb-1.5 leading-snug">{w.title}</h3>
-                      <p className="text-[13px] text-gray-500 leading-relaxed">{w.body}</p>
+                      <h3 className="text-[13.5px] font-bold text-slate-900 mb-1.5 leading-snug">{w.title}</h3>
+                      <p className="text-[12.5px] text-slate-500 leading-relaxed">{w.body}</p>
                     </motion.div>
                   </FadeUp>
                 ))}
               </div>
             </div>
-
-            {/* Mobile CTA */}
-            <FadeUp className="mt-10 text-center lg:hidden">
-              <Link href="/about">
-                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-white text-sm font-medium rounded-xl px-5 py-4 inline-flex items-center gap-1.5">
-                  About InternAdda <ArrowRight size={13} />
-                </Button>
-              </Link>
-            </FadeUp>
-
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
+        {/* ══════════════════════════════════════════════
             TESTIMONIALS
-        ═══════════════════════════════════════════════════ */}
-        <section className="py-16 sm:py-20 md:py-24 bg-white">
+        ══════════════════════════════════════════════ */}
+        <section className="py-14 sm:py-16 lg:py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <FadeUp className="text-center mb-12">
-              <p className="text-xs font-semibold text-indigo-600 uppercase tracking-widest mb-2">Student Stories</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-3">What our students say</h2>
-              <p className="text-gray-500 text-base max-w-md mx-auto">Real students, real results. No paid reviews, no manufactured testimonials.</p>
+            <FadeUp className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+              <div>
+                <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-1.5">Student Stories</p>
+                <h2 className="text-[1.75rem] sm:text-[2rem] font-extrabold text-slate-900 tracking-tight">What our students say</h2>
+                <p className="text-slate-500 text-[13.5px] mt-1.5">Real students, real results — no paid reviews.</p>
+              </div>
             </FadeUp>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               {TESTIMONIALS.map((t, i) => (
-                <FadeUp key={t.name} delay={i * 0.08}>
+                <FadeUp key={t.name} delay={i * 0.07}>
                   <motion.figure
-                    whileHover={{ y: -4 }}
-                    transition={{ duration: 0.22 }}
-                    className="bg-white border border-gray-200 rounded-2xl p-6 h-full flex flex-col"
-                    style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.05)' }}
+                    whileHover={{ y: -3 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white border border-slate-200 rounded-2xl p-5 h-full flex flex-col hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/30 transition-all duration-300"
                   >
-                    <div className="flex gap-0.5 mb-4">
-                      {[...Array(5)].map((_, j) => <Star key={j} size={13} className="fill-amber-400 text-amber-400" />)}
+                    <div className="flex gap-0.5 mb-3.5">
+                      {[...Array(5)].map((_, j) => <Star key={j} size={12} className="fill-amber-400 text-amber-400" />)}
                     </div>
-                    <blockquote className="text-[13.5px] text-gray-600 leading-relaxed flex-1 mb-5">
+                    <blockquote className="text-[13px] text-slate-600 leading-relaxed flex-1 mb-4">
                       "{t.quote}"
                     </blockquote>
-                    <figcaption className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                      <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[11px] font-semibold flex-shrink-0 shadow-sm">
+                    <figcaption className="flex items-center gap-2.5 pt-3.5 border-t border-slate-100">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 shadow-sm"
+                        style={{ background: t.color }}>
                         {t.av}
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-[13px] font-semibold text-gray-900 leading-none mb-0.5">{t.name}</p>
-                        <p className="text-[11px] text-gray-400 truncate">{t.role}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12.5px] font-bold text-slate-900 leading-none mb-0.5">{t.name}</p>
+                        <p className="text-[10.5px] text-slate-400 truncate font-medium">{t.role}</p>
                       </div>
-                      <CheckCircle size={15} className="text-emerald-500 ml-auto flex-shrink-0" />
+                      <CheckCircle size={14} className="text-emerald-500 flex-shrink-0" />
                     </figcaption>
                   </motion.figure>
                 </FadeUp>
@@ -535,61 +530,59 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════
-            CTA BANNER
-        ═══════════════════════════════════════════════════ */}
-        <section className="pb-14 sm:pb-16 px-4 sm:px-6 lg:px-8">
+        {/* ══════════════════════════════════════════════
+            CTA BANNER — refined, not loud
+        ══════════════════════════════════════════════ */}
+        <section className="pb-12 sm:pb-14 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <FadeUp>
-              <div className="relative bg-[#1a1063] rounded-2xl overflow-hidden">
+              <div className="relative rounded-2xl overflow-hidden" style={{ background: '#1a1063' }}>
 
-                {/* Dot texture */}
-                <div aria-hidden className="absolute inset-0 opacity-[0.055] pointer-events-none select-none">
+                {/* Texture */}
+                <div aria-hidden className="absolute inset-0 opacity-[0.045] pointer-events-none">
                   <svg width="100%" height="100%">
                     <defs>
-                      <pattern id="dp2" width="28" height="28" patternUnits="userSpaceOnUse">
-                        <circle cx="2" cy="2" r="1.3" fill="white" />
+                      <pattern id="dp2" width="24" height="24" patternUnits="userSpaceOnUse">
+                        <circle cx="1.5" cy="1.5" r="1" fill="white" />
                       </pattern>
                     </defs>
                     <rect width="100%" height="100%" fill="url(#dp2)" />
                   </svg>
                 </div>
+                <div aria-hidden className="absolute inset-y-0 right-0 w-1/2 pointer-events-none"
+                  style={{ background: 'linear-gradient(to left, rgba(99,102,241,0.3), transparent)' }} />
 
-                {/* Right glow — decorative */}
-                <div aria-hidden className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-indigo-500/35 to-transparent pointer-events-none" />
-                <div aria-hidden className="absolute -bottom-16 -right-16 w-64 h-64 bg-violet-500/20 rounded-full blur-3xl pointer-events-none" />
-
-                {/* Main content — centered on mobile, split on desktop */}
-                <div className="relative flex flex-col items-center text-center lg:flex-row lg:items-center lg:justify-between lg:text-left gap-8 px-6 sm:px-10 md:px-14 py-12">
+                {/* Content */}
+                <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-7 px-7 sm:px-10 md:px-12 py-10">
                   <div className="max-w-lg">
-                    <p className="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-2.5">Ready to begin?</p>
-                    <h2 className="text-[1.85rem] sm:text-[2.2rem] font-bold text-white leading-tight tracking-tight mb-3">
+                    <p className="text-indigo-300 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-2">Ready to begin?</p>
+                    <h2 className="text-[1.7rem] sm:text-[2rem] font-extrabold text-white leading-tight tracking-tight mb-2.5">
                       Launch your career<br />with InternAdda.
                     </h2>
-                    <p className="text-indigo-200 text-[15px] leading-relaxed max-w-md mx-auto lg:mx-0">
+                    <p className="text-indigo-200/80 text-[14px] leading-relaxed max-w-md">
                       Thousands of students found their first real work experience here. Verified listings, fast hiring, zero cost.
                     </p>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
-                    <Link href="/internships" className="w-full sm:w-auto">
-                      <Button className="w-full sm:w-auto bg-white text-[#1a1063] hover:bg-indigo-50 font-semibold px-7 py-5 text-sm rounded-xl shadow-lg inline-flex items-center justify-center gap-2 transition-all">
-                        Browse Internships <ArrowRight size={15} />
-                      </Button>
+                  <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+                    <Link href="/internships">
+                      <button className="w-full sm:w-auto bg-white text-[#1a1063] hover:bg-slate-50 font-bold px-6 py-3 text-[13.5px] rounded-xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2">
+                        Browse Internships <ArrowRight size={14} />
+                      </button>
                     </Link>
-                    <Link href="/auth/signup" className="w-full sm:w-auto">
-                      <Button className="w-full sm:w-auto bg-indigo-500/80 hover:bg-indigo-500 text-white border border-white/20 font-semibold px-7 py-5 text-sm rounded-xl transition-all">
-                        Create Free Account
-                      </Button>
+                    <Link href="/auth/signup">
+                      <button className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-6 py-3 text-[13.5px] rounded-xl transition-all inline-flex items-center justify-center gap-2">
+                        <Zap size={13} className="fill-amber-400 text-amber-400" /> Create Free Account
+                      </button>
                     </Link>
                   </div>
                 </div>
 
                 {/* Trust footnote */}
-                <div className="relative border-t border-white/10 px-6 sm:px-10 md:px-14 py-4 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2">
-                  {['Free to register', 'MSME Registered · Govt. of India', '200+ verified companies', '48 h average offer time'].map(item => (
-                    <span key={item} className="flex items-center gap-1.5 text-indigo-300/80 text-xs">
-                      <CheckCircle size={10} className="text-indigo-400/70 flex-shrink-0" />
+                <div className="relative border-t border-white/10 px-7 sm:px-10 md:px-12 py-3.5 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+                  {['Free to register', 'MSME · Govt. of India', '200+ verified companies', '48h avg. offer time'].map(item => (
+                    <span key={item} className="flex items-center gap-1.5 text-indigo-300/70 text-[11px] font-medium">
+                      <CheckCircle size={9} className="text-indigo-400/60 flex-shrink-0" />
                       {item}
                     </span>
                   ))}
