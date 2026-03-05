@@ -3,15 +3,14 @@
 // Place this file at: app/courses/[id]/page.tsx
 
 import { useEffect, useState, useRef, useCallback } from 'react'
+import React from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Header } from '@/components/Header'
-import { Footer } from '@/components/Footer'
 import { useAuth } from '@/lib/auth-context'
 import { courses, type Lesson } from '../course-data'
 import {
   CheckCircle, Circle, ChevronRight, ChevronDown, ChevronLeft,
   BookOpen, Code, FileText, HelpCircle, Award, Download,
-  Clock, Users, Star, ArrowRight, Lock, Play, X, Shield, Menu,
+  Clock, Play, X, Shield, Menu,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -180,90 +179,206 @@ function CertificateModal({ course, userName, onClose }: {
   userName: string,
   onClose: () => void,
 }) {
+  const certRef = React.useRef<HTMLDivElement>(null)
   const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+  // Generate a deterministic cert ID from userName + course title
+  const certId = 'IA-' + [...(userName + (course as any).title)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) & 0xffffff, 0).toString(16).toUpperCase().padStart(6, '0')
+
+  const handleDownload = () => {
+    const el = certRef.current
+    if (!el) return
+    // Open print dialog scoped to certificate only via a new window
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>Certificate – ${userName}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{width:794px;height:562px;overflow:hidden;font-family:'Inter',sans-serif;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      @page{size:A4 landscape;margin:0}
+    </style>
+    </head><body>${el.innerHTML}</body></html>`
+    const w = window.open('', '_blank', 'width=900,height=650')
+    if (!w) return
+    w.document.write(html)
+    w.document.close()
+    w.onload = () => { w.focus(); w.print() }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, y: 24 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9 }}
-        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-2xl"
+        initial={{ scale: 0.88, y: 32, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-3xl"
         onClick={e => e.stopPropagation()}
       >
-        {/* Certificate design */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
-          {/* Top strip — dark navy */}
-          <div className="relative bg-[#0f0c3d] px-10 pt-10 pb-8 overflow-hidden">
-            {/* Corner ornaments */}
-            {['top-4 left-4 rounded-tl-xl border-t-2 border-l-2',
-              'top-4 right-4 rounded-tr-xl border-t-2 border-r-2',
-              'bottom-4 left-4 rounded-bl-xl border-b-2 border-l-2',
-              'bottom-4 right-4 rounded-br-xl border-b-2 border-r-2',
-            ].map((cls, i) => (
-              <div key={i} className={`absolute w-14 h-14 border-indigo-300/25 ${cls}`} />
-            ))}
-            {/* Dot texture */}
-            <div aria-hidden className="absolute inset-0 opacity-[0.04] pointer-events-none">
-              <svg width="100%" height="100%">
-                <defs><pattern id="cert-dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="white" /></pattern></defs>
-                <rect width="100%" height="100%" fill="url(#cert-dot)" />
-              </svg>
-            </div>
-            {/* Glow */}
-            <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+        {/* ── Certificate ── */}
+        <div
+          ref={certRef}
+          className="relative bg-white overflow-hidden"
+          style={{
+            borderRadius: 0,
+            aspectRatio: '794 / 562',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)',
+            fontFamily: "'Playfair Display', Georgia, serif",
+          }}
+        >
+          {/* Outer border frame */}
+          <div className="absolute inset-3 border border-[#c8a951]/40 pointer-events-none z-10" style={{ borderRadius: 2 }} />
+          <div className="absolute inset-4 border border-[#c8a951]/20 pointer-events-none z-10" style={{ borderRadius: 1 }} />
 
-            <div className="relative text-center">
-              <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-5">
-                <Shield size={12} className="text-amber-300" />
-                <span className="text-white/80 text-xs font-semibold tracking-[0.15em] uppercase">InternAdda Academy</span>
+          {/* Gold corner ornaments */}
+          {[
+            'top-3 left-3',
+            'top-3 right-3 rotate-90',
+            'bottom-3 left-3 -rotate-90',
+            'bottom-3 right-3 rotate-180',
+          ].map((pos, i) => (
+            <svg key={i} className={`absolute ${pos} z-10`} width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <path d="M2 26 L2 2 L26 2" stroke="#c8a951" strokeWidth="1.5" fill="none" opacity="0.8"/>
+              <path d="M6 22 L6 6 L22 6" stroke="#c8a951" strokeWidth="0.7" fill="none" opacity="0.4"/>
+              <circle cx="2" cy="2" r="2" fill="#c8a951" opacity="0.9"/>
+            </svg>
+          ))}
+
+          {/* Left dark sidebar */}
+          <div className="absolute left-0 top-0 bottom-0 w-[38%]" style={{ background: 'linear-gradient(135deg, #0a0820 0%, #1a1063 60%, #0f1a5c 100%)' }}>
+            {/* Subtle pattern */}
+            <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="cert-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                  <circle cx="12" cy="12" r="0.8" fill="white"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#cert-grid)"/>
+            </svg>
+            {/* Glow orb */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full opacity-20 pointer-events-none" style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)' }} />
+
+            {/* Logo / brand area */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
+              {/* Seal */}
+              <div className="relative mb-5">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                  <circle cx="45" cy="45" r="42" fill="none" stroke="#c8a951" strokeWidth="1.2" opacity="0.7"/>
+                  <circle cx="45" cy="45" r="36" fill="none" stroke="#c8a951" strokeWidth="0.6" opacity="0.4"/>
+                  <circle cx="45" cy="45" r="30" fill="#c8a951" opacity="0.12"/>
+                  {/* Star rays */}
+                  {Array.from({length: 8}).map((_, i) => {
+                    const angle = (i * 45) * Math.PI / 180
+                    const x1 = 45 + 31 * Math.cos(angle), y1 = 45 + 31 * Math.sin(angle)
+                    const x2 = 45 + 38 * Math.cos(angle), y2 = 45 + 38 * Math.sin(angle)
+                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c8a951" strokeWidth="1" opacity="0.6"/>
+                  })}
+                  <text x="45" y="38" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="7" fill="#c8a951" fontWeight="600" letterSpacing="2">INTERN</text>
+                  <text x="45" y="49" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="14" fill="#c8a951" fontWeight="700">IA</text>
+                  <text x="45" y="60" textAnchor="middle" fontFamily="'Playfair Display', serif" fontSize="7" fill="#c8a951" fontWeight="600" letterSpacing="2">ADDA</text>
+                </svg>
               </div>
-              <p className="text-indigo-200 text-sm font-medium mb-2">This is to certify that</p>
-              <h2 className="text-3xl font-bold text-white tracking-tight mb-2">{userName}</h2>
-              <p className="text-indigo-200/80 text-sm mb-4">has successfully completed the course</p>
-              <h3 className="text-xl font-bold text-amber-300 mb-1.5">{(course as any).title}</h3>
-              <p className="text-indigo-300 text-sm">
-                Instructed by {(course as any).instructor} · {(course as any).instructorTitle}
-              </p>
+
+              <p className="text-white/40 text-[8px] font-semibold tracking-[0.25em] uppercase mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>InternAdda Academy</p>
+              <p className="text-white/25 text-[7px] tracking-[0.15em]" style={{ fontFamily: "'Inter', sans-serif" }}>MSME · Govt. of India</p>
+
+              {/* Divider */}
+              <div className="mt-6 flex items-center gap-2 opacity-30">
+                <div className="h-px w-10 bg-[#c8a951]" />
+                <div className="w-1 h-1 rounded-full bg-[#c8a951]" />
+                <div className="h-px w-10 bg-[#c8a951]" />
+              </div>
+
+              <p className="mt-4 text-white/25 text-[7px] tracking-[0.1em] leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>Cert ID: {certId}</p>
             </div>
           </div>
 
-          {/* Bottom strip */}
-          <div className="flex items-center justify-between px-10 py-5 bg-gray-50 border-t border-gray-100">
-            <div>
-              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mb-0.5">Date Issued</p>
-              <p className="text-sm font-semibold text-gray-800">{date}</p>
+          {/* Right content area */}
+          <div className="absolute left-[38%] right-0 top-0 bottom-0 flex flex-col justify-center px-10 py-8 bg-white">
+            {/* Top label */}
+            <div className="flex items-center gap-2 mb-5">
+              <div className="h-px flex-1 bg-[#c8a951]/30" />
+              <p className="text-[#c8a951] text-[8px] font-semibold tracking-[0.3em] uppercase" style={{ fontFamily: "'Inter', sans-serif" }}>Certificate of Completion</p>
+              <div className="h-px flex-1 bg-[#c8a951]/30" />
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
-                <Award size={18} className="text-white" />
+
+            <p className="text-gray-400 text-[10px] tracking-widest uppercase mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>This certifies that</p>
+
+            {/* Name — hero element */}
+            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(22px, 4vw, 32px)', color: '#0a0820', lineHeight: 1.1, letterSpacing: '-0.5px', fontWeight: 700, marginBottom: 6 }}>
+              {userName}
+            </h2>
+
+            {/* Gold underline */}
+            <div className="flex gap-0.5 mb-5">
+              <div className="h-[2.5px] w-12 rounded-full" style={{ background: '#c8a951' }} />
+              <div className="h-[2.5px] w-4 rounded-full" style={{ background: '#c8a951', opacity: 0.4 }} />
+            </div>
+
+            <p className="text-gray-500 text-[10px] tracking-wide uppercase mb-2" style={{ fontFamily: "'Inter', sans-serif" }}>has successfully completed</p>
+
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(13px, 2vw, 17px)', color: '#1a1063', lineHeight: 1.3, fontWeight: 600, marginBottom: 4 }}>
+              {(course as any).title}
+            </h3>
+            <p className="text-gray-400 text-[10px] mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Instructed by <span className="text-gray-600 font-medium">{(course as any).instructor}</span>
+              {(course as any).instructorTitle && <span> · {(course as any).instructorTitle}</span>}
+            </p>
+
+            {/* Bottom row */}
+            <div className="flex items-end justify-between">
+              {/* Signature block */}
+              <div>
+                <div className="mb-1" style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: '#1a1063', lineHeight: 1, letterSpacing: '-0.5px', fontStyle: 'italic', opacity: 0.85 }}>
+                  InternAdda
+                </div>
+                <div className="h-px w-24 bg-gray-300 mb-1" />
+                <p className="text-gray-400 text-[8px] tracking-wider uppercase" style={{ fontFamily: "'Inter', sans-serif" }}>Authorised Signatory</p>
               </div>
-              <p className="text-[10px] text-gray-400 font-medium">Verified</p>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mb-0.5">Registered</p>
-              <p className="text-sm font-semibold text-gray-800">MSME · Govt. of India</p>
+
+              {/* Date + badge */}
+              <div className="text-right">
+                <p className="text-gray-400 text-[8px] uppercase tracking-wider mb-0.5" style={{ fontFamily: "'Inter', sans-serif" }}>Issue Date</p>
+                <p className="text-[#1a1063] text-[11px] font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{date}</p>
+                <div className="mt-2 flex items-center justify-end gap-1">
+                  <Shield size={9} className="text-emerald-500" />
+                  <p className="text-emerald-600 text-[8px] font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>Verified Certificate</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Actions */}
+        {/* ── Actions ── */}
         <div className="flex gap-3 mt-4">
           <Button
-            onClick={() => window.print()}
-            className="flex-1 bg-[#1a1063] hover:bg-indigo-900 text-white font-semibold rounded-xl h-11 flex items-center justify-center gap-2"
+            onClick={handleDownload}
+            className="flex-1 bg-[#1a1063] hover:bg-indigo-900 text-white font-semibold rounded-xl h-11 flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/30"
           >
             <Download size={15} /> Download Certificate
           </Button>
           <button
+            onClick={() => {
+              const text = `🎓 I just completed "${(course as any).title}" on InternAdda Academy! Proud to have earned this certificate. #InternAdda #Learning #Certificate`
+              window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://www.internadda.com/courses')}&summary=${encodeURIComponent(text)}`, '_blank')
+            }}
+            className="h-11 px-4 bg-[#0077b5] hover:bg-[#006097] text-white rounded-xl flex items-center gap-2 text-sm font-semibold transition-colors shadow-lg shadow-blue-900/20"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            Share on LinkedIn
+          </button>
+          <button
             onClick={onClose}
-            className="w-11 h-11 bg-white/15 hover:bg-white/25 rounded-xl flex items-center justify-center text-white border border-white/20 transition-colors"
+            className="w-11 h-11 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white border border-white/15 transition-colors"
           >
             <X size={16} />
           </button>
         </div>
+
+        <p className="text-center text-white/30 text-[11px] mt-3">
+          Share your achievement and inspire others to learn! 🎓
+        </p>
       </motion.div>
     </motion.div>
   )
@@ -442,17 +557,18 @@ export default function CoursePage() {
 
   return (
     <>
-      <Header />
-
-      {/* ── Top progress bar ── */}
+      {/* ── Distraction-free top bar (replaces full Header) ── */}
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 py-3">
-            <Link href="/courses" className="text-gray-400 hover:text-gray-700 transition-colors p-1 -ml-1 flex-shrink-0">
+            <Link href="/courses" className="flex items-center gap-1.5 text-gray-400 hover:text-gray-700 transition-colors flex-shrink-0">
               <ChevronLeft size={18} />
+              <span className="text-xs font-medium hidden sm:inline">All Courses</span>
             </Link>
 
-            {/* Course name */}
+            <div className="w-px h-4 bg-gray-200 hidden sm:block flex-shrink-0" />
+
+            {/* Course name + progress */}
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-gray-700 truncate hidden sm:block">{course.title}</p>
               <div className="flex items-center gap-2 mt-1 sm:mt-0.5">
@@ -668,8 +784,6 @@ export default function CoursePage() {
           />
         )}
       </AnimatePresence>
-
-      <Footer />
     </>
   )
 }
