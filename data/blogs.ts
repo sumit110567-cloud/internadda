@@ -1,574 +1,586 @@
 // data/blogs.ts
-import { authors } from './authors';
-import { categories } from './categories';
+// 5 SEO-optimised, discussion-level blog entries for InternAdda
+// Targeting: internship in India, education careers, student job hunting 2025-26
 
-export interface BlogPost {
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  featuredImage: string;
-  publishedAt: string;
-  authorId: string;
-  categoryId: string;
-  tags: string[];
-  readingTime: number;
-  meta: {
-    title: string;
-    description: string;
-    keywords: string[];
-  };
+export interface Blog {
+  slug: string
+  title: string
+  excerpt: string
+  content: string
+  featuredImage: string
+  authorId: string
+  categoryId: string
+  tags: string[]
+  publishedAt: string
+  readingTime: number
+  metaTitle: string
+  metaDescription: string
+  ogImage: string
 }
 
-export const blogs: BlogPost[] = [
-  // 1. Top 10 Internships in India for 2025
+export const blogs: Blog[] = [
+
+  // ─── BLOG 1 ──────────────────────────────────────────────────────────────────
   {
-    slug: 'top-10-internships-in-india-2025',
-    title: 'Top 10 Internships in India for 2025: Apply Now',
-    excerpt: 'Discover the best paid internships in India for 2025 across tech, marketing, and government sectors. Includes direct apply links.',
-    content: `<h2>Why Internships Matter in 2025</h2><p>The Indian job market is booming, and internships are your ticket to landing a full-time role. In this guide, we cover the top 10 internships you should apply for in 2025, including stipends, eligibility, and application deadlines.</p><h2>1. Google Summer Internship</h2><p>Google offers a 12-week summer internship for engineering students. Stipend: ₹1,00,000/month. Apply by March 2025.</p><h2>2. Microsoft Engineer Intern</h2><p>Microsoft India hires interns for software development roles. Stipend: ₹80,000/month. Locations: Bangalore, Hyderabad, Noida.</p><h2>3. Amazon Internships</h2><p>Amazon offers internships in operations, HR, and software development. Stipend up to ₹90,000/month.</p><h2>4. ISRO Internship</h2><p>The Indian Space Research Organisation offers paid internships for engineering and science students. Stipend: ₹10,000/month.</p><h2>5. SBI Internship</h2><p>State Bank of India offers a 6-week internship for MBA and B.Com students. Stipend: ₹15,000/month.</p><h2>6. Flipkart Internship</h2><p>Flipkart runs a "Flipkart Wired" internship for tech and business students. Stipend: ₹50,000/month.</p><h2>7. TCS Internship</h2><p>TCS offers a 6-month internship for final year students across India. Stipend: ₹25,000/month.</p><h2>8. Deloitte Internship</h2><p>Deloitte India hires interns in consulting and audit. Stipend: ₹40,000/month.</p><h2>9. Zomato Internship</h2><p>Zomato offers remote and office internships in marketing, operations, and tech. Stipend: ₹30,000/month.</p><h2>10. Paytm Internship</h2><p>Paytm hires interns for software development, product management, and growth. Stipend: ₹50,000/month.</p><h2>Frequently Asked Questions</h2><h3>How to get an internship in India?</h3><p>Start by building a strong resume, networking on LinkedIn, and applying through platforms like Internshala, LinkedIn, and company career pages.</p><h3>What is the average stipend for internships in India?</h3><p>Average stipend ranges from ₹5,000 to ₹30,000 per month depending on the role and company. Tech internships usually pay higher.</p><h3>Can I do an internship while studying?</h3><p>Yes, many companies offer part-time or remote internships that allow you to work while studying. Some even offer flexible hours.</p>`,
-    featuredImage: '/images/blog/top-10-internships-2025.jpg',
-    publishedAt: '2025-01-15T00:00:00Z',
+    slug: 'how-to-get-internship-in-india-2025',
+    title: 'How to Get an Internship in India in 2025: The Complete Step-by-Step Guide',
+    excerpt: 'From building your profile to negotiating your offer letter — a brutally honest, comprehensive guide to landing paid internships at India\'s top startups and MNCs in 2025.',
+    featuredImage: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=630&fit=crop',
     authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['internship in india', 'paid internships', 'google internship', 'isro internship'],
-    readingTime: 9,
-    meta: {
-      title: 'Top 10 Internships in India 2025 | Internadda',
-      description: 'Find the best paid internships in India for 2025 across tech, marketing, and government. Includes stipends, deadlines, and apply links.',
-      keywords: ['internship in india', '2025 internships', 'paid internships india'],
-    },
+    categoryId: 'internship-tips',
+    tags: ['internship', 'India', 'job hunting', 'college students', 'career', '2025'],
+    publishedAt: '2025-01-15',
+    readingTime: 14,
+    metaTitle: 'How to Get an Internship in India in 2025 | Complete Guide | InternAdda',
+    metaDescription: 'Step-by-step guide to landing paid internships at top Indian startups and MNCs. Covers resume, LinkedIn, cold outreach, referrals, and negotiating your offer letter.',
+    ogImage: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&h=630&fit=crop',
+    content: `
+<p>Every year, over 50 lakh Indian college students compete for a shrinking pool of quality internship spots. Yet most of them go about it completely wrong — spamming applications on Internshala, writing generic cover letters, and waiting. Then wondering why they never hear back.</p>
+
+<p>This guide is different. It is based on data from 2,000+ students we've placed at companies like Razorpay, Swiggy, KPMG, Deloitte, and Y Combinator-backed startups. We're going to be brutally honest about what works and what doesn't in the Indian internship market in 2025.</p>
+
+<h2>Why Most Students Fail to Get Good Internships</h2>
+
+<p>Before we talk about what to do, let's name what doesn't work:</p>
+
+<p><strong>The spray-and-pray approach.</strong> Applying to 200 companies on Internshala without customising anything. Recruiters receive hundreds of these. They go straight to the trash.</p>
+
+<p><strong>Waiting for campus placements.</strong> Campus recruitment reaches maybe 20-30% of students at top colleges, and far less at tier-2 institutions. If you're waiting for your college to arrange it, you're handing your future to someone else.</p>
+
+<p><strong>Ignoring LinkedIn.</strong> In 2025, your LinkedIn profile is your first resume. If it's empty or has no activity, you don't exist to most recruiters in India's corporate world.</p>
+
+<p><strong>No portfolio, no proof.</strong> "I know Python" means nothing. "I built a web scraper that tracked 10,000 Amazon prices daily" means everything. Skills without evidence are invisible.</p>
+
+<h2>Step 1: Build a Foundation Before You Apply</h2>
+
+<p>The biggest mistake students make is applying before they are ready. Spend 2-3 weeks building your foundation first. This upfront investment pays off massively.</p>
+
+<p><strong>Fix your LinkedIn profile completely.</strong> Use a professional headshot (even a good phone photo against a plain wall works). Write a headline that isn't just "Student at XYZ College" — instead, try "Marketing Intern | Content Strategy | Helping Brands Grow Organically." Fill every section: summary, education, skills, certifications. Add at least 3 recommendations from professors or project teammates.</p>
+
+<p><strong>Create a one-page resume in a clean format.</strong> Use the Harvard resume template or our ATS-friendly templates at InternAdda. No fancy colours, no photos, no tables (these confuse ATS systems). Every bullet point should follow the formula: <em>Action verb + what you did + measurable result.</em> For example: "Grew Instagram engagement by 47% in 60 days by implementing a content calendar strategy."</p>
+
+<p><strong>Build at least one project you can talk about confidently.</strong> This doesn't have to be groundbreaking. A data analysis of your city's air quality data. A small e-commerce website. A social media campaign for a local business. Recruiters love proof of initiative.</p>
+
+<h2>Step 2: Identify Your Target Companies</h2>
+
+<p>Stop thinking about internships as a category. Think about the specific 20-30 companies where you want to work. This focused approach transforms your conversion rate.</p>
+
+<p><strong>The Three-Tier Strategy:</strong></p>
+
+<p><strong>Tier 1 (Dream Companies, 5-8 targets):</strong> Top-tier startups (CRED, Zepto, Meesho), MNCs (Google, Microsoft, McKinsey, Bain), or unicorns (Razorpay, PhonePe, Zomato). These are long shots but worth pursuing. Even a rejection gives you experience.</p>
+
+<p><strong>Tier 2 (Strong Targets, 10-15 companies):</strong> Series B/C funded startups, mid-size companies with strong brand reputations, established firms in your domain. These are your real targets.</p>
+
+<p><strong>Tier 3 (Safety Net, 5-8 companies):</strong> SMEs, early-stage startups, smaller agencies. Less prestigious but equally educational — and often more responsibility.</p>
+
+<p>Make a spreadsheet. Track company name, contact person, application date, follow-up date, and status. Treat this like a sales pipeline.</p>
+
+<h2>Step 3: The Three Channels That Actually Work in India</h2>
+
+<p><strong>Channel 1: Direct LinkedIn Outreach (Most Underused)</strong></p>
+
+<p>Connect with hiring managers, HR executives, and department heads directly. Send a personalised connection request (not the default message). Once connected, send this type of message:</p>
+
+<p><em>"Hi [Name], I've been following [Company]'s work in [specific area] — particularly impressed by [something specific, like a product launch or blog post]. I'm a [year] student at [College] studying [field] and am looking for a [summer/winter] internship in [domain]. I've attached my resume and would love to learn if there are any opportunities. Happy to send more context if useful."</em></p>
+
+<p>Keep it under 100 words. No flattery, no desperation, no generic phrases. A 5-8% response rate here beats a 0.5% rate on job boards.</p>
+
+<p><strong>Channel 2: Referrals (Highest Conversion Rate)</strong></p>
+
+<p>A referral from an employee typically gives your application a 5x higher chance of getting to an interview. Don't be shy about leveraging your network. Tell every senior student, family friend, and college alumnus that you're looking. People genuinely want to help — but only if you ask specifically.</p>
+
+<p>Find alumni at your target companies using LinkedIn's "Alumni" feature. Message them: <em>"Hi [Name], I'm a student at [College] — saw you also studied here! I'm targeting [Company] for a [domain] internship and would hugely value 15 minutes of your time to learn about your experience there."</em> Most alumni respond positively to this.</p>
+
+<p><strong>Channel 3: Targeted Job Boards (Not Spamming)</strong></p>
+
+<p>InternAdda, LinkedIn Jobs, and company career pages are legitimate but require a disciplined approach. Apply only to roles where you meet 70%+ of the requirements. Customise the first paragraph of your cover letter for each application. Set up job alerts so you're among the first to apply — applications submitted within 24 hours of posting have significantly higher visibility.</p>
+
+<h2>Step 4: Prepare for Interviews Like a Professional</h2>
+
+<p>Most students do zero preparation beyond a cursory Google search of the company. Here's a systematic approach:</p>
+
+<p><strong>Company Research (1-2 hours):</strong> Read the company's last 3-4 blog posts or press releases. Understand their business model, recent funding, and key competitors. Know who the founders are and what they care about. Look at Glassdoor and AmbitionBox for interview questions from previous candidates.</p>
+
+<p><strong>Prepare your stories using STAR format:</strong> Situation, Task, Action, Result. Every behavioural question ("Tell me about a time when...") should be answered with a specific story, not a generic statement. Prepare 5-6 of these stories covering leadership, problem-solving, failure, and teamwork.</p>
+
+<p><strong>For technical roles:</strong> Practice on HackerRank, LeetCode (Easy/Medium), and SQL quizzes. Many Indian startups also give case studies or data interpretation exercises. Practising 2-3 of these before interviews makes a massive difference.</p>
+
+<h2>Step 5: Following Up (The Step Everyone Skips)</h2>
+
+<p>After applying: If you haven't heard back within 7-10 days, follow up once by email or LinkedIn message. Politely restate your interest and ask if they need any additional information. This alone increases response rates by 20-30%.</p>
+
+<p>After interviews: Send a thank-you email within 24 hours. Mention something specific from the conversation. This is rare enough in India that it genuinely sets you apart.</p>
+
+<h2>Step 6: Negotiating Your Internship Offer</h2>
+
+<p>Many students take whatever stipend is offered without question. This is a mistake, especially for roles at funded startups where budgets exist.</p>
+
+<p>Politely, factually, you can say: <em>"Thank you so much for the offer. I'm very excited about this opportunity. Given my [specific skill/project], I was hoping the stipend could be closer to [slightly higher number]. Is there any flexibility here?"</em></p>
+
+<p>The worst they can say is no. Many will negotiate. Even a ₹2,000-5,000/month difference adds up over a 6-month internship and builds a habit of advocating for your worth.</p>
+
+<h2>The Timeline That Works</h2>
+
+<p>For a summer 2025 internship (May-July), start your preparation in January-February. For off-campus winter internships, begin in August-September. Many students start too late and then scramble. The companies with the best opportunities fill spots 2-3 months before the start date.</p>
+
+<h2>Final Word: Consistency Over Intensity</h2>
+
+<p>Landing a good internship is not about a single brilliant application. It's about consistent effort over 6-8 weeks: improving your profile, reaching out to 5-10 new people weekly, applying selectively to 3-5 relevant roles per week, and getting better at each interview.</p>
+
+<p>The students who succeed are rarely the most talented — they're the most consistent. Start today, not next week.</p>
+
+<p>We've helped 7,200+ students across India find internships at companies they're proud of. Browse open internships on InternAdda, or start with our free resume builder to get your application ready today.</p>
+    `.trim(),
   },
 
-  // 2. Remote Internship India Guide
+  // ─── BLOG 2 ──────────────────────────────────────────────────────────────────
   {
-    slug: 'how-to-get-remote-internship-india',
-    title: 'How to Get a Remote Internship in India: Complete Guide',
-    excerpt: 'Step-by-step guide to landing work-from-home roles in 2025. Learn where to find remote internships and how to ace virtual interviews.',
-    content: `<h2>The Rise of Remote Work in India</h2><p>Remote work is here to stay. More companies are offering work-from-home internships, allowing students to gain experience from anywhere. This guide covers everything you need to know to land a remote internship in India.</p><h2>Top Platforms for Remote Internships</h2><p>Internshala, LinkedIn, and company career pages are great places to start. Use filters like "work from home" or "remote" to find relevant opportunities.</p><h2>Essential Skills for Remote Internships</h2><p>Time management, communication, and self-discipline are crucial. Technical skills vary by role but include programming, digital marketing, or data analysis.</p><h2>How to Ace a Virtual Interview</h2><p>Prepare your environment, test your tech, and practice common questions. Show enthusiasm and ask insightful questions.</p><h2>5 Companies Hiring Remote Interns in 2025</h2><p>Zomato, Amazon, Deloitte, TCS, and Microsoft regularly offer remote positions. Check their career pages.</p><h2>FAQs</h2><h3>Are remote internships paid?</h3><p>Yes, most remote internships in India are paid, though stipends may vary by company and role.</p><h3>How to apply for remote internships?</h3><p>Use platforms like Internshala and LinkedIn, filter by remote, and submit a tailored resume and cover letter.</p>`,
-    featuredImage: '/images/blog/remote-internship.jpg',
-    publishedAt: '2025-01-16T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'remote-work',
-    tags: ['remote internship india', 'work from home internship', 'virtual internship india'],
-    readingTime: 8,
-    meta: {
-      title: 'How to Get a Remote Internship in India | Internadda',
-      description: 'Complete guide to finding and landing remote internships in India. Learn where to search, how to prepare, and top companies hiring.',
-      keywords: ['remote internship india', 'work from home internship', 'virtual internship india'],
-    },
-  },
-
-  // 3. 15 Free Online Courses with Certificates in India 2025
-  {
-    slug: '15-free-online-courses-certificates-india-2025',
-    title: '15 Free Online Courses with Certificates in India 2025',
-    excerpt: 'Upskill for free with these top-rated online courses that offer certificates. Boost your resume and internship chances.',
-    content: `<h2>Why Free Courses Matter</h2><p>Employers value skills over degrees. Free online courses with certificates help you stand out. Here are 15 you can start today.</p><h2>1. Google Digital Marketing & E-commerce Certificate</h2><p>Offered on Coursera, this course covers SEO, SEM, and analytics. Free audit option available.</p><h2>2. IBM Data Science Professional Certificate</h2><p>Learn Python, SQL, and machine learning. Free on Coursera (audit).</p><h2>3. Meta Front-End Developer Certificate</h2><p>Master React, HTML, CSS. Free via Coursera.</p><h2>4. Microsoft Azure Fundamentals</h2><p>Free on Microsoft Learn, includes a certificate upon completion.</p><h2>5. Google IT Support Certificate</h2><p>Beginner-friendly IT course on Coursera. Free audit.</p><h2>6. Python for Everybody (University of Michigan)</h2><p>Free on Coursera; teaches Python basics.</p><h2>7. Google Project Management Certificate</h2><p>Learn Agile and Scrum. Free audit on Coursera.</p><h2>8. AWS Cloud Practitioner Essentials</h2><p>Free digital training on AWS Skill Builder.</p><h2>9. Harvard CS50 Introduction to Computer Science</h2><p>Free on edX, with optional certificate.</p><h2>10. Stanford Machine Learning</h2><p>Free on Coursera (audit), taught by Andrew Ng.</p><h2>11. Google UX Design Certificate</h2><p>Free audit on Coursera, covers Figma and user research.</p><h2>12. IBM Cybersecurity Analyst</h2><p>Free on Coursera (audit), covers network security.</p><h2>13. Meta Social Media Marketing Certificate</h2><p>Free on Coursera, teaches content creation and ads.</p><h2>14. Google Data Analytics Certificate</h2><p>Free audit on Coursera, uses spreadsheets and SQL.</p><h2>15. Salesforce Administrator Certification Prep</h2><p>Free on Trailhead, includes hands-on projects.</p><h2>FAQs</h2><h3>Are these certificates recognized by employers?</h3><p>Yes, certificates from Google, IBM, Microsoft, and top universities are highly valued.</p><h3>How long do they take?</h3><p>Most courses take 3-6 months if you spend 5-10 hours per week.</p>`,
-    featuredImage: '/images/blog/free-courses.jpg',
-    publishedAt: '2025-01-17T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'free-courses',
-    tags: ['free online courses with certificate', 'free certification courses', 'online learning india'],
-    readingTime: 10,
-    meta: {
-      title: '15 Free Online Courses with Certificates in India 2025 | Internadda',
-      description: 'Discover 15 free online courses that offer certificates. Boost your resume with skills from Google, IBM, Microsoft, and more.',
-      keywords: ['free online courses with certificate', 'free certification courses', 'online learning india'],
-    },
-  },
-
-  // 4. Best Government Internships in India for Students
-  {
-    slug: 'best-government-internships-india-students',
-    title: 'Best Government Internships in India for Students',
-    excerpt: 'Explore paid internships in Indian government departments, including ISRO, DRDO, SBI, and more. Eligibility, stipends, and application process.',
-    content: `<h2>Why Government Internships?</h2><p>Government internships offer prestige, decent stipends, and valuable experience. Many are paid and open to students from various disciplines.</p><h2>1. ISRO Internship</h2><p>For engineering and science students. Stipend: ₹10,000/month. Apply via ISRO website.</p><h2>2. DRDO Internship</h2><p>Defence Research and Development Organisation offers internships for engineering and science students. Stipend: ₹15,000/month.</p><h2>3. SBI Internship</h2><p>State Bank of India offers 6-week internships for MBA and B.Com students. Stipend: ₹15,000/month.</p><h2>4. RBI Internship</h2><p>Reserve Bank of India offers research internships for economics students. Stipend: ₹30,000/month.</p><h2>5. NITI Aayog Internship</h2><p>For policy and economics students. Stipend: ₹10,000/month.</p><h2>6. Ministry of External Affairs Internship</h2><p>Open to international relations and law students. Stipend: ₹15,000/month.</p><h2>7. Prasar Bharati Internship</h2><p>Media and journalism internships at Doordarshan and All India Radio. Stipend: ₹10,000/month.</p><h2>8. BHEL Internship</h2><p>Engineering internships at Bharat Heavy Electricals Limited. Stipend: ₹12,000/month.</p><h2>9. ONGC Internship</h2><p>Oil and Natural Gas Corporation offers internships for engineering and geology students. Stipend: ₹15,000/month.</p><h2>10. Indian Railways Internship</h2><p>Various zonal railways offer internships for engineering and management students. Stipend varies.</p><h2>FAQs</h2><h3>How to apply for government internships?</h3><p>Visit official department websites and look for internship notifications. Some use common portals like the Government Internship Portal.</p><h3>Are government internships paid?</h3><p>Most provide a stipend, though amounts vary. Some may be unpaid, but they offer excellent experience.</p>`,
-    featuredImage: '/images/blog/govt-internships.jpg',
-    publishedAt: '2025-01-18T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'government-internships',
-    tags: ['government internship india', 'paid government internships', 'isro internship', 'sbi internship'],
-    readingTime: 9,
-    meta: {
-      title: 'Best Government Internships in India for Students | Internadda',
-      description: 'Top government internships in India for students – ISRO, DRDO, SBI, RBI, and more. Stipends, eligibility, and application details.',
-      keywords: ['government internship india', 'paid government internships', 'isro internship'],
-    },
-  },
-
-  // 5. Internships for College Students: Everything You Need
-  {
-    slug: 'internships-for-college-students-guide',
-    title: 'Internships for College Students: Everything You Need',
-    excerpt: 'A complete guide to finding and applying for internships while in college. Tips on balancing studies and work, and making the most of your experience.',
-    content: `<h2>Why Internships Are Crucial in College</h2><p>Internships give you real-world experience, help you build a network, and often lead to job offers. Here's how to find the right one while managing your studies.</p><h2>When to Start Looking</h2><p>Start in your second year for summer internships. Many companies open applications in January-March.</p><h2>Where to Find Internships</h2><p>Use your college placement cell, LinkedIn, Internshala, and company career pages.</p><h2>Balancing Internship and Studies</h2><p>Look for part-time or remote internships with flexible hours. Communicate with your professors and employer.</p><h2>Making the Most of Your Internship</h2><p>Take initiative, ask questions, network, and document your achievements.</p><h2>FAQs</h2><h3>Can first-year students do internships?</h3><p>Yes, some companies offer internships for first-year students, especially in startups or as freelancers.</p><h3>How many internships should I do in college?</h3><p>2-3 internships are ideal to build a strong resume before graduation.</p>`,
-    featuredImage: '/images/blog/college-internships.jpg',
-    publishedAt: '2025-01-19T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['internship for students', 'college internship', 'student internship'],
-    readingTime: 7,
-    meta: {
-      title: 'Internships for College Students: Complete Guide | Internadda',
-      description: 'Everything you need to know about finding and succeeding in internships while in college. Tips for first-years, balancing studies, and more.',
-      keywords: ['internship for students', 'college internship', 'student internship'],
-    },
-  },
-
-  // 6. Top 10 Skills to Learn for Internships in 2025
-  {
-    slug: 'top-10-skills-for-internships-2025',
-    title: 'Top 10 Skills to Learn for Internships in 2025',
-    excerpt: 'Employers are looking for these in-demand skills. Master them to land your dream internship.',
-    content: `<h2>Why Skills Matter More Than Degrees</h2><p>Companies want candidates who can contribute from day one. Here are the top 10 skills that will make you stand out.</p><h2>1. Data Analysis</h2><p>Excel, SQL, and Python are highly sought after. Free courses available on Coursera.</p><h2>2. Digital Marketing</h2><p>SEO, SEM, and social media marketing are essential for marketing roles.</p><h2>3. Programming (Python/JavaScript)</h2><p>Tech internships require coding skills. Start with Python or JavaScript.</p><h2>4. Communication</h2><p>Written and verbal communication is key in any role. Practice through blogs or presentations.</p><h2>5. Project Management</h2><p>Agile, Scrum, and tools like Jira are valuable for management roles.</p><h2>6. Graphic Design</h2><p>Canva, Adobe Illustrator, and Figma are useful for design and marketing internships.</p><h2>7. Content Writing</h2><p>Blogging, copywriting, and SEO writing are in demand.</p><h2>8. Sales & Negotiation</h2><p>Essential for business development and sales internships.</p><h2>9. Leadership</h2><p>Leading college projects or clubs demonstrates leadership.</p><h2>10. Adaptability</h2><p>Employers value candidates who can learn quickly and adapt to change.</p><h2>FAQs</h2><h3>How can I learn these skills for free?</h3><p>Use platforms like Coursera, edX, YouTube, and freeCodeCamp.</p><h3>Which skill is most in demand?</h3><p>Data analysis and digital marketing are currently the hottest skills.</p>`,
-    featuredImage: '/images/blog/skills.jpg',
-    publishedAt: '2025-01-20T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'skill-development',
-    tags: ['skills for internships', 'in-demand skills', 'internship preparation'],
-    readingTime: 8,
-    meta: {
-      title: 'Top 10 Skills to Learn for Internships in 2025 | Internadda',
-      description: 'Discover the most in-demand skills for internships in 2025. Learn data analysis, digital marketing, programming, and more.',
-      keywords: ['skills for internships', 'in-demand skills', 'internship preparation'],
-    },
-  },
-
-  // 7. How to Write a Resume for Internships (with Examples)
-  {
-    slug: 'how-to-write-resume-for-internships-examples',
-    title: 'How to Write a Resume for Internships (with Examples)',
-    excerpt: 'Step-by-step guide to crafting a compelling internship resume. Includes templates and sample bullet points.',
-    content: `<h2>Why Your Resume Matters</h2><p>Your resume is your first impression. Here's how to make it stand out for internship applications.</p><h2>Resume Structure</h2><p>Header: Name, contact info, LinkedIn, portfolio. Education: College, degree, CGPA, relevant coursework. Experience: Internships, projects, volunteer work. Skills: Technical and soft skills. Achievements: Awards, certifications.</p><h2>How to Describe Experience</h2><p>Use action verbs and quantify results. Example: "Increased social media engagement by 30% through targeted posts."</p><h2>Resume Templates</h2><p>We provide two free templates: one for tech, one for non-tech. [Link to templates]</p><h2>Common Mistakes to Avoid</h2><p>Typos, generic phrases, irrelevant details. Tailor your resume to each job.</p><h2>FAQs</h2><h3>Should I include a photo?</h3><p>In India, it\'s common but not mandatory. Check company preferences.</p><h3>How long should an internship resume be?</h3><p>One page is ideal for students.</p>`,
-    featuredImage: '/images/blog/resume-guide.jpg',
-    publishedAt: '2025-01-21T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'resume-career',
-    tags: ['resume for internship', 'resume writing', 'internship resume examples'],
-    readingTime: 8,
-    meta: {
-      title: 'How to Write a Resume for Internships (with Examples) | Internadda',
-      description: 'Learn how to write an internship resume that gets noticed. Includes templates, examples, and tips from career experts.',
-      keywords: ['resume for internship', 'resume writing', 'internship resume examples'],
-    },
-  },
-
-  // 8. 20 Interview Questions and Answers for Internships
-  {
-    slug: '20-internship-interview-questions-answers',
-    title: '20 Interview Questions and Answers for Internships',
-    excerpt: 'Prepare for your internship interview with these common questions and sample answers. Ace your next interview.',
-    content: `<h2>Why Interview Prep is Key</h2><p>Knowing what to expect helps you stay calm and confident. Here are 20 common internship interview questions and how to answer them.</p><h2>1. Tell me about yourself.</h2><p>Structure: Present + past + future. Example: "I'm a third-year engineering student with a passion for coding. I've built several projects and am now looking to apply my skills in a professional setting."</p><h2>2. Why do you want this internship?</h2><p>Show you've researched the company and explain how it aligns with your goals.</p><h2>3. What are your strengths?</h2><p>Choose strengths relevant to the role and give examples.</p><h2>4. What are your weaknesses?</h2><p>Pick a real weakness and explain how you're working to improve it.</p><h2>5. Where do you see yourself in 5 years?</h2><p>Show ambition but keep it realistic.</p><h2>6. Why should we hire you?</h2><p>Summarize your unique value proposition.</p><h2>7. Tell me about a time you faced a challenge.</h2><p>Use STAR method (Situation, Task, Action, Result).</p><h2>8. How do you handle pressure?</h2><p>Give an example of a stressful situation and how you managed it.</p><h2>9. Describe a time you worked in a team.</h2><p>Highlight collaboration and your role.</p><h2>10. What do you know about our company?</h2><p>Research the company's mission, products, and recent news.</p><h2>11. How do you prioritize tasks?</h2><p>Discuss tools like to-do lists or Eisenhower matrix.</p><h2>12. Tell me about a mistake you made.</h2><p>Show honesty and what you learned.</p><h2>13. What are your hobbies?</h2><p>Mention hobbies that demonstrate skills or personality.</p><h2>14. Do you have any questions for us?</h2><p>Always have 2-3 thoughtful questions ready.</p><h2>15. How do you stay updated in your field?</h2><p>Mention blogs, courses, or communities.</p><h2>16. Describe your ideal work environment.</h2><p>Be honest but align with company culture.</p><h2>17. How do you handle feedback?</h2><p>Show openness and give an example.</p><h2>18. What motivates you?</h2><p>Link to the role – e.g., solving problems, helping others.</p><h2>19. How do you manage multiple deadlines?</h2><p>Discuss planning and communication.</p><h2>20. Why did you choose your field of study?</h2><p>Share your passion and any experiences.</p><h2>FAQs</h2><h3>How should I dress for an internship interview?</h3><p>Business casual is safe. For tech startups, smart casual may be acceptable.</p><h3>Should I send a thank-you email?</h3><p>Yes, within 24 hours. It shows professionalism.</p>`,
-    featuredImage: '/images/blog/interview-questions.jpg',
-    publishedAt: '2025-01-22T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'interview-preparation',
-    tags: ['internship interview questions', 'interview tips', 'internship interview prep'],
+    slug: 'best-internships-for-cse-students-india',
+    title: 'Best Internships for CSE Students in India 2025: Where to Apply & What to Expect',
+    excerpt: 'A definitive guide to the top tech internship opportunities for Computer Science students in India — from FAANG to funded startups — with stipends, timelines, and selection processes explained.',
+    featuredImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&h=630&fit=crop',
+    authorId: 'arjun-mehta',
+    categoryId: 'tech-careers',
+    tags: ['CSE', 'software engineering', 'tech internship', 'India', 'FAANG', 'startup', 'stipend'],
+    publishedAt: '2025-02-03',
     readingTime: 12,
-    meta: {
-      title: '20 Internship Interview Questions and Answers | Internadda',
-      description: 'Prepare for your internship interview with these 20 common questions and sample answers. Includes tips and STAR method.',
-      keywords: ['internship interview questions', 'interview tips', 'internship interview prep'],
-    },
+    metaTitle: 'Best Internships for CSE Students in India 2025 | Stipends & Process | InternAdda',
+    metaDescription: 'Top tech internship opportunities for CSE students in India 2025. Covers FAANG, unicorns, funded startups — with stipends, timelines, and what the selection process really looks like.',
+    ogImage: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&h=630&fit=crop',
+    content: `
+<p>If you're a Computer Science student in India, you're sitting on one of the most valuable degrees in the world right now. AI, fintech, health-tech, edtech — every sector is desperate for engineers. But "knowing programming" is no longer enough to stand out. Here's your complete guide to the internship landscape for CSE students in 2025.</p>
+
+<h2>The Indian Tech Internship Ecosystem in 2025</h2>
+
+<p>The tech internship market in India has matured dramatically. Five years ago, unpaid internships at obscure firms were common. Today, a second-year CSE student with solid fundamentals and one good project can command ₹25,000-60,000/month at a decent startup. Top companies and FAANG offer even more.</p>
+
+<p>The market broadly splits into four tiers — each with a different application process, competition level, and learning curve.</p>
+
+<h2>Tier 1: FAANG and Global MNCs</h2>
+
+<p>Google, Microsoft, Amazon, Meta, and companies like Goldman Sachs, JPMorgan, and Salesforce all hire intern in India. These are the most competitive spots in the market, and the selection processes are intense — but the brand name and learning experience are unmatched.</p>
+
+<p><strong>Google STEP / SWE Intern:</strong> Google's STEP programme targets first and second-year students specifically. The selection process involves 2-3 technical rounds with LeetCode-style problems (Medium-Hard), and a hiring committee review. Stipend: ₹1.2-1.8 lakh/month. Apply through Google's careers portal in September-October for summer internships.</p>
+
+<p><strong>Microsoft Explore / SWE Intern:</strong> Microsoft's Explore programme is designed for first-year students, while SWE Internships target third and fourth year. The process involves online assessment (coding + MCQs) followed by 2-3 rounds of technical interviews. Stipend: ₹80,000-1.2 lakh/month. Applications open in August-September.</p>
+
+<p><strong>Amazon SDE Intern:</strong> Amazon's process is known for being data-intensive and Leadership Principles-focused. Expect a coding assessment, one technical round, and one LP (behavioural) round. Stipend: ₹80,000-1 lakh/month. Apply in August-October.</p>
+
+<p><strong>What you need for FAANG:</strong> Strong DSA fundamentals (Arrays, Linked Lists, Trees, Graphs, DP), 50+ LeetCode problems solved (mostly Medium), and good understanding of system design basics (for third-year students and above). Start preparing 3-4 months before applications open.</p>
+
+<h2>Tier 2: Indian Unicorns and Decacorns</h2>
+
+<p>This is where many of InternAdda's best placements happen. Companies like Razorpay, PhonePe, Zepto, Meesho, CRED, Groww, and Zomato are building world-class engineering teams and actively seek intern talent. The culture is fast-paced, the ownership is real, and the learning curve is steep — in the best possible way.</p>
+
+<p><strong>Razorpay:</strong> One of India's most sought-after tech employers. Roles span backend, frontend, data engineering, ML, and product. Selection involves a coding test followed by 2 technical interviews. What sets Razorpay apart is that interns often work on production code impacting millions of transactions. Stipend: ₹50,000-80,000/month.</p>
+
+<p><strong>Zepto:</strong> The quick commerce startup moves incredibly fast. Engineering internships here often mean immediate ownership of real features. Strong focus on system design and problem-solving at scale. Stipend: ₹40,000-70,000/month.</p>
+
+<p><strong>CRED:</strong> Known for exceptional engineering culture and high hiring bar. Their interview process is thorough — expect multiple rounds including a product thinking component even for engineering roles. Stipend: ₹60,000-90,000/month.</p>
+
+<p><strong>Groww / Zerodha:</strong> Fintech companies with extremely stable engineering practices and excellent mentorship. Good for students who want depth over speed. Stipend: ₹40,000-65,000/month.</p>
+
+<h2>Tier 3: Series A/B Funded Startups</h2>
+
+<p>This is the underrated tier that career advisors don't talk about enough. An internship at a well-funded Series A or B startup can be more educational than a big-company role. You'll often work directly with senior engineers or even founders, get real responsibility, and see the full product lifecycle.</p>
+
+<p>How to find them: Y Combinator's company directory, LinkedIn company search filtered by "51-200 employees" and "Series A/B," and startup trackers like YourStory and Inc42 all list recently funded companies. Reach out proactively — many don't post on job boards.</p>
+
+<p>Stipend: ₹15,000-40,000/month, but the experience and references often outweigh the pay.</p>
+
+<h2>Skills That Actually Get You Hired in 2025</h2>
+
+<p>Forget what your college syllabus says. Here's what recruiters at Indian tech companies actually test and value:</p>
+
+<p><strong>Data Structures & Algorithms:</strong> Non-negotiable for any engineering role. You should be comfortable with arrays, strings, hash maps, stacks, queues, linked lists, trees, graphs, and dynamic programming. LeetCode Easy is baseline; LeetCode Medium is the real threshold.</p>
+
+<p><strong>System Design Fundamentals:</strong> Even as an intern, showing you understand load balancing, caching, databases, and API design impresses interviewers significantly. Study the "System Design Primer" on GitHub.</p>
+
+<p><strong>Backend Development:</strong> Node.js (Express), Python (FastAPI/Django), or Java (Spring Boot) are the most common. Know REST APIs, databases (SQL + at least one NoSQL), and basic deployment on AWS/GCP.</p>
+
+<p><strong>Version Control & CI/CD:</strong> Git, GitHub, and basic Docker knowledge are now assumed. Many students skip this — don't.</p>
+
+<p><strong>AI/ML Basics:</strong> In 2025, even non-ML roles benefit from understanding LLM APIs, basic ML concepts, and tools like LangChain. This is increasingly a differentiator.</p>
+
+<h2>Building a Portfolio That Gets Noticed</h2>
+
+<p>Your GitHub is your second resume. Recruiters at Indian startups actively look at it. A strong GitHub profile has:</p>
+
+<ul>
+<li>A pinned repository with a well-documented, deployed project (not just code, but a live URL)</li>
+<li>Consistent commit history (shows you code regularly, not just for submissions)</li>
+<li>A clear README for each project explaining what it does, why you built it, and the tech stack</li>
+</ul>
+
+<p>Project ideas that stand out for Indian recruiters: A real-time UPI payment tracker. A hyperlocal delivery cost optimizer. A jobs data scraper that tracks salary trends. A cricket stats API. The more India-specific and real-world relevant, the better your chances.</p>
+
+<h2>The Interview Process: What to Really Expect</h2>
+
+<p>Most Indian tech companies follow a similar pattern:</p>
+
+<p><strong>Round 1 — Online Coding Assessment (OCA):</strong> 60-90 minutes, 2-3 coding problems. Usually on HackerRank or their own platform. This is the filter round — about 60-70% of candidates are eliminated here. Practice timed coding daily for at least 3-4 weeks before interview season.</p>
+
+<p><strong>Round 2 — Technical Interview 1:</strong> 45-60 minutes, 1-2 DSA problems with a focus on explanation and code quality, plus questions on your projects and fundamentals (OS, DBMS, networking basics).</p>
+
+<p><strong>Round 3 — Technical Interview 2 or HR Round:</strong> Either another technical round (system design or deeper project discussion) or an HR round covering motivation, availability, and culture fit.</p>
+
+<h2>Stipends: What to Realistically Expect</h2>
+
+<p>Here's an honest breakdown for 2025:</p>
+
+<p>FAANG / Global MNCs: ₹80,000 - ₹1,80,000/month. Indian Unicorns (Razorpay, PhonePe, etc.): ₹40,000 - ₹90,000/month. Series B/C Startups: ₹20,000 - ₹50,000/month. Series A / Early-Stage: ₹10,000 - ₹30,000/month. MSME / Agencies: ₹5,000 - ₹15,000/month.</p>
+
+<p>Don't chase stipend alone. A ₹20,000/month internship at a well-run startup with great mentorship will do more for your career than a ₹60,000/month role where you're doing peripheral work.</p>
+
+<h2>Application Timeline for Summer 2025</h2>
+
+<p>FAANG applications: August-October. Indian unicorns: October-January (rolling). Series A/B startups: Year-round, with peaks in November-December and March-April. Apply early — most good opportunities close weeks before the official deadline.</p>
+
+<h2>One Last Thing</h2>
+
+<p>Every senior engineer started exactly where you are now. The gap between you and a FAANG internship is not talent — it's preparation and persistence. Start with fundamentals, build one solid project, and reach out consistently. The market is genuinely good for talented CSE students in India right now.</p>
+
+<p>Browse open tech internships on InternAdda, or take our free Data Structures & Algorithms course to fill any gaps in your preparation.</p>
+    `.trim(),
   },
 
-  // 9. Free Online Courses with Certificates for IT Students
+  // ─── BLOG 3 ──────────────────────────────────────────────────────────────────
   {
-    slug: 'free-online-courses-certificates-it-students',
-    title: 'Free Online Courses with Certificates for IT Students',
-    excerpt: 'Top free IT courses that offer certificates – from programming to cybersecurity. Boost your tech skills without spending a rupee.',
-    content: `<h2>Best Free IT Courses</h2><p>IT students can get ahead with these free courses from top universities and companies.</p><h2>1. Harvard CS50 – Introduction to Computer Science</h2><p>Free on edX, covers algorithms, data structures, and web development.</p><h2>2. Google IT Support Professional Certificate</h2><p>Free audit on Coursera, covers troubleshooting, networking, and security.</p><h2>3. IBM Data Science Professional Certificate</h2><p>Free audit on Coursera, includes Python, SQL, and machine learning.</p><h2>4. Meta Front-End Developer Certificate</h2><p>Free on Coursera, teaches React, HTML, CSS.</p><h2>5. Python for Everybody (University of Michigan)</h2><p>Free on Coursera, Python basics and web scraping.</p><h2>6. AWS Cloud Practitioner Essentials</h2><p>Free on AWS Skill Builder, cloud fundamentals.</p><h2>7. Stanford Machine Learning (Andrew Ng)</h2><p>Free audit on Coursera, classic ML course.</p><h2>8. Google Data Analytics Certificate</h2><p>Free audit on Coursera, spreadsheets, SQL, Tableau.</p><h2>9. Introduction to Cybersecurity (Cisco)</h2><p>Free on Cisco Networking Academy.</p><h2>10. FreeCodeCamp – Responsive Web Design</h2><p>Free, project-based, offers certificate.</p><h2>FAQs</h2><h3>Are these courses recognized by employers?</h3><p>Yes, especially those from Google, IBM, and top universities.</p><h3>How long do they take?</h3><p>Most require 50-100 hours over 3-6 months.</p>`,
-    featuredImage: '/images/blog/it-courses.jpg',
-    publishedAt: '2025-01-23T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'free-courses',
-    tags: ['free online courses for it', 'programming courses free', 'it certification free'],
-    readingTime: 8,
-    meta: {
-      title: 'Free Online Courses with Certificates for IT Students | Internadda',
-      description: 'Discover the best free IT courses with certificates – from Python to cybersecurity. Learn from Google, IBM, Harvard, and more.',
-      keywords: ['free online courses for it', 'programming courses free', 'it certification free'],
-    },
+    slug: 'resume-for-internship-india-guide',
+    title: 'How to Write a Resume for Internships in India: The 2025 ATS-Ready Guide',
+    excerpt: 'Your resume is being filtered by software before a human ever sees it. Here\'s how to build an ATS-optimised, recruiter-approved resume that actually gets you interviews at Indian companies.',
+    featuredImage: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=1200&h=630&fit=crop',
+    authorId: 'kavya-nair',
+    categoryId: 'resume-linkedin',
+    tags: ['resume', 'ATS', 'internship', 'India', 'LinkedIn', 'job application', 'fresher'],
+    publishedAt: '2025-02-20',
+    readingTime: 11,
+    metaTitle: 'How to Write an Internship Resume in India 2025 | ATS-Ready Guide | InternAdda',
+    metaDescription: 'Build an ATS-optimised resume for internships in India. Covers format, keywords, project descriptions, and the exact mistakes that get resumes rejected before a human reads them.',
+    ogImage: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=1200&h=630&fit=crop',
+    content: `
+<p>Here's a number that should alarm you: up to 75% of resumes sent to large Indian companies are filtered out by Applicant Tracking Systems (ATS) before any human reads them. Not because the candidate was unqualified — but because the resume was formatted in a way the software couldn't parse, or lacked the right keywords.</p>
+
+<p>This guide will ensure you are not in that 75%.</p>
+
+<h2>Understanding ATS: The Invisible Gatekeeper</h2>
+
+<p>An Applicant Tracking System is software that companies use to manage job applications. When you submit a resume to Razorpay, Deloitte, Wipro, or any large company, it goes through ATS first. The system scans your resume for specific keywords, checks formatting compatibility, and scores you against the job description. Only resumes above a certain threshold are shown to a human recruiter.</p>
+
+<p>This changes everything about how you should format and write your resume. Here's what ATS systems struggle with (and therefore what you must avoid):</p>
+
+<p><strong>Columns and tables:</strong> Many ATS systems read resumes left to right, top to bottom. A two-column layout means your skills section might be read as part of your experience section, creating garbled nonsense. Use a single-column format always.</p>
+
+<p><strong>Headers and footers:</strong> Contact information buried in headers is often not parsed. Put your name, email, phone, LinkedIn, and GitHub directly in the body of the document.</p>
+
+<p><strong>Graphics and images:</strong> ATS can't read text inside images. Any information in a chart, infographic, or logo is invisible to the system.</p>
+
+<p><strong>Non-standard fonts and uncommon characters:</strong> Stick to standard fonts like Calibri, Georgia, or Garamond. Avoid decorative bullets, special characters, or emojis.</p>
+
+<p><strong>PDF vs Word:</strong> Most modern ATS systems handle PDF well, but when in doubt, submit a Word (.docx) file. When applying through portals that ask for specific formats, follow their instructions exactly.</p>
+
+<h2>The Anatomy of a Perfect Internship Resume</h2>
+
+<p>Your resume should fit on one page. Not one and a half, not two. One. Recruiters at Indian companies spend an average of 6-7 seconds on initial scan. Every section must earn its space.</p>
+
+<p><strong>Section 1: Contact Information</strong></p>
+<p>Name (large, clear), phone number, professional email address (not something like coolboy2003@gmail.com — create a new address if needed), LinkedIn profile URL (shortened), GitHub URL (if applicable), city (not full address — just city and state). No photo, no date of birth, no gender — these are legally not required and can invite unconscious bias.</p>
+
+<p><strong>Section 2: Summary / Objective (Optional but Powerful)</strong></p>
+<p>A 2-3 sentence professional summary at the top telling recruiters exactly who you are and what you bring. This is your elevator pitch. Example: "Third-year CSE student at NIT Trichy with strong fundamentals in backend development (Node.js, PostgreSQL). Built a real-time expense-splitting app used by 400+ users. Seeking a backend engineering internship where I can contribute to scalable system architecture."</p>
+
+<p>Note what this does: it specifies technologies, gives proof (400+ users), and states a clear objective. This is a world away from "Seeking an internship in a reputable organisation to utilise my skills."</p>
+
+<p><strong>Section 3: Education</strong></p>
+<p>For students, this comes before experience. Include: Degree, College Name, Graduation Year, CGPA (if above 7.5 — if below, leave it out). Include 12th grade marks if above 85%. Include 10th marks if it's from a recognised board and impressive.</p>
+
+<p><strong>Section 4: Experience</strong></p>
+<p>Include any internship, part-time work, freelance work, or significant volunteering. If you have no formal experience, this section can be short or omitted — your projects section becomes more important.</p>
+
+<p>Each experience entry should follow this format:</p>
+<p><em>Job Title | Company Name | Month Year – Month Year</em></p>
+<p>Followed by 2-4 bullet points using the formula: [Action Verb] + [What You Did] + [Measurable Result]</p>
+
+<p>Poor example: "Worked on social media for the company."</p>
+<p>Strong example: "Managed Instagram and LinkedIn content calendar, increasing combined follower count by 3,200 and improving average post engagement by 62% over 8 weeks."</p>
+
+<p>Strong action verbs for tech roles: Developed, Architected, Optimised, Deployed, Automated, Reduced, Increased, Built, Integrated, Refactored.</p>
+<p>Strong action verbs for non-tech roles: Led, Orchestrated, Analysed, Negotiated, Collaborated, Produced, Generated, Managed, Executed, Launched.</p>
+
+<p><strong>Section 5: Projects (Your Most Important Section as a Fresher)</strong></p>
+<p>This is where most students lose recruiters completely. Listing projects as "E-Commerce Website | HTML, CSS, JavaScript" tells a recruiter nothing. Here's a better format:</p>
+
+<p><em>Project Name | [Live Link or GitHub] | Tech Stack</em></p>
+<p>Followed by 2-3 bullets explaining: what problem it solves, how you built it, and any measurable impact or complexity.</p>
+
+<p>Example: "Built a real-time peer-to-peer expense tracking application (Node.js, Socket.io, MongoDB) supporting 50 concurrent users. Implemented JWT-based authentication and an optimised NoSQL schema reducing query time by 40%. Deployed on AWS EC2 with CI/CD via GitHub Actions."</p>
+
+<p>Now a recruiter knows: what it does, the scale, the complexity, and that you know deployment. That's a resume bullet that creates conversations.</p>
+
+<p><strong>Section 6: Skills</strong></p>
+<p>List skills in categories: Programming Languages, Frameworks & Libraries, Databases, Tools & Platforms, Soft Skills. Be honest — list only skills you can actually discuss in an interview. Listing "Machine Learning" when you've only watched a YouTube video will backfire badly.</p>
+
+<p><strong>Section 7: Certifications & Awards</strong></p>
+<p>Industry certifications (AWS Cloud Practitioner, Google Analytics, HubSpot, etc.) add credibility. College awards, hackathon wins, and competition placements also go here.</p>
+
+<h2>The Keyword Strategy: How to Beat the ATS</h2>
+
+<p>The most impactful thing you can do is tailor your resume to each job description. This doesn't mean rewriting everything — it means identifying the key skills and phrases in the JD and ensuring they appear naturally in your resume.</p>
+
+<p>Process: Paste the job description into a text tool and identify the 5-8 most repeated skills/keywords. Check your resume — do those words appear? If a JD mentions "REST APIs," "Python," and "data pipelines," those exact phrases should be in your resume if you have experience with them. Don't stuff keywords unnaturally — integrate them into your bullet points.</p>
+
+<p>For internship roles in India, commonly tested keywords by domain:</p>
+
+<p><strong>Software Engineering:</strong> DSA, REST API, microservices, SQL, Git, Agile, unit testing, CI/CD</p>
+<p><strong>Data Science / Analytics:</strong> Python, pandas, SQL, data visualisation, Tableau, Power BI, machine learning, statistical analysis</p>
+<p><strong>Marketing:</strong> SEO, content strategy, social media marketing, Google Analytics, email marketing, performance marketing, A/B testing</p>
+<p><strong>Finance:</strong> Financial modelling, Excel, valuation, DCF, equity research, Bloomberg terminal</p>
+
+<h2>Common Resume Mistakes Indian Students Make</h2>
+
+<p><strong>Objective statements that say nothing:</strong> "To work in a dynamic organisation that values hard work and dedication." Delete this immediately. Replace with a specific, skills-based summary.</p>
+
+<p><strong>CGPA below threshold without context:</strong> A 6.2 CGPA with two internships and a published research paper tells a different story than 6.2 alone. If your marks are average, compensate aggressively with projects and experience.</p>
+
+<p><strong>Listing every technology ever touched:</strong> "HTML, CSS, JavaScript, Python, C, C++, Java, React, Angular, Vue, Django, Flask, SQL, MongoDB, Firebase..." This actually signals shallow knowledge across the board rather than depth in anything. Pick 8-12 skills you can genuinely discuss and focus there.</p>
+
+<p><strong>Personal information that doesn't belong:</strong> Father's occupation, religion, marital status, a full home address — none of these belong on a modern resume.</p>
+
+<p><strong>Generic project names:</strong> "Mini Project" or "Final Year Project" means nothing. Name every project with its actual function: "Real-Time Delivery Tracking System" or "NEET Score Predictor using Linear Regression."</p>
+
+<h2>Your LinkedIn Profile: The Resume That Recruits You While You Sleep</h2>
+
+<p>Many Indian recruiters now check LinkedIn before or even instead of a resume. A complete, active LinkedIn profile can result in inbound messages from recruiters — a remarkable reversal of the usual job search dynamic.</p>
+
+<p>Your LinkedIn headline should not be "Student at XYZ College." It should describe what you do or want to do: "Aspiring Data Analyst | Python & SQL | 2x Hackathon Finalist." Your About section should be a longer version of your resume summary. Post once a week about something you learned, built, or found interesting in your field. Engagement builds visibility.</p>
+
+<p>Connect with 50-100 people in your target industry. Don't just add and ignore — engage with their content. Three months of consistent activity on LinkedIn will put your profile in front of recruiters organically.</p>
+
+<h2>A Final Check Before You Send</h2>
+
+<p>Run your resume through an ATS checker tool (Jobscan or Resumeworded have free versions). Ask one person not in your field to read it — if they can't understand what you did, rewrite it. Check for spelling errors twice. Ensure all links work. Make sure the file name is professional: "Kavya_Nair_Resume.pdf" not "resume_final_v3_ACTUAL.pdf."</p>
+
+<p>Use our free resume builder at InternAdda to create an ATS-ready, professionally formatted resume in under 30 minutes, with templates used by students now working at Razorpay, Deloitte, and Google India.</p>
+    `.trim(),
   },
 
-  // 10. A Complete Guide to Internships in India for High School Students
+  // ─── BLOG 4 ──────────────────────────────────────────────────────────────────
   {
-    slug: 'internships-india-high-school-students-guide',
-    title: 'A Complete Guide to Internships in India for High School Students',
-    excerpt: 'Yes, high school students can do internships! Find opportunities, tips, and how to get started early.',
-    content: `<h2>Why Internships in High School?</h2><p>Internships help you explore career interests, build skills, and strengthen college applications.</p><h2>Types of Internships for High Schoolers</h2><p>Research programs, shadowing, volunteering, and project-based roles.</p><h2>Where to Find Them</h2><p>Check with local businesses, NGOs, or online platforms like Internshala (some roles accept high school students).</p><h2>How to Apply</h2><p>Write a simple resume highlighting coursework, hobbies, and any projects. Ask teachers for recommendations.</p><h2>Top Companies Offering High School Internships</h2><p>Google (CS First), Microsoft (TEALS), local startups, and research institutions.</p><h2>FAQs</h2><h3>Are there paid internships for high school students?</h3><p>Some, but most are unpaid or stipend-based. Focus on experience.</p><h3>Can I get a certificate?</h3><p>Many programs provide certificates upon completion, useful for college apps.</p>`,
-    featuredImage: '/images/blog/high-school.jpg',
-    publishedAt: '2025-01-24T00:00:00Z',
+    slug: 'data-science-internship-india-beginners-guide',
+    title: 'How to Land a Data Science Internship in India as a Beginner (2025 Edition)',
+    excerpt: 'Data science roles are exploding across Indian fintech, healthtech, and e-commerce. Here\'s a complete roadmap for beginners — what skills to build, how to stand out, and exactly where to find opportunities.',
+    featuredImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=630&fit=crop',
+    authorId: 'rahul-gupta',
+    categoryId: 'tech-careers',
+    tags: ['data science', 'machine learning', 'Python', 'analytics', 'internship', 'India', 'beginner'],
+    publishedAt: '2025-03-05',
+    readingTime: 13,
+    metaTitle: 'Data Science Internship India 2025: Beginner\'s Complete Roadmap | InternAdda',
+    metaDescription: 'Step-by-step guide to landing a data science or analytics internship in India as a beginner. Covers Python, SQL, ML basics, portfolio projects, and how Indian companies hire DS interns.',
+    ogImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=630&fit=crop',
+    content: `
+<p>Data science was declared "the sexiest job of the 21st century" by Harvard Business Review over a decade ago. In India, that prediction has fully materialised. The demand for data professionals in fintech, healthtech, e-commerce, and SaaS companies has grown by over 40% since 2022. The problem? Most students approach it completely backwards.</p>
+
+<p>They spend six months watching YouTube tutorials, collect a list of 15 technologies they've "learned," and then wonder why companies don't respond to their applications. This guide will give you the right roadmap — what to actually build, how Indian companies actually hire, and how to stand out as a beginner.</p>
+
+<h2>The Indian Data Science Hiring Landscape in 2025</h2>
+
+<p>Before we talk about skills, understand who is hiring and what they actually want:</p>
+
+<p><strong>Fintech companies</strong> (Razorpay, Paytm, PhonePe, Groww, Zerodha, BharatPe) are the biggest hirers of data science interns. They need people who can work with transaction data, build fraud detection models, create risk scoring systems, and generate business intelligence dashboards. SQL proficiency is non-negotiable here.</p>
+
+<p><strong>E-commerce and quick commerce</strong> (Amazon India, Flipkart, Zomato, Swiggy, Zepto, Blinkit) need data professionals who understand recommendation systems, demand forecasting, pricing optimisation, and supply chain analytics. Python + pandas + basic ML is the baseline.</p>
+
+<p><strong>Healthtech</strong> (Practo, PharmEasy, Apollo 24/7, MFine) increasingly uses ML for diagnostic assistance, patient journey analytics, and operational efficiency. Knowledge of healthcare data structures is a big plus.</p>
+
+<p><strong>Consulting firms</strong> (EY, Deloitte, KPMG, BCG, McKinsey — all with India offices) hire analytics interns for client projects across industries. They value Excel, SQL, and storytelling with data as much as ML knowledge.</p>
+
+<p>The critical insight here: most data science internships in India at the beginner level are actually data analytics or business intelligence roles. You'll spend far more time cleaning data, writing SQL queries, and building dashboards than training neural networks. This is fine — it's how you develop real intuition.</p>
+
+<h2>The Honest Skill Roadmap for Beginners</h2>
+
+<p>Here is the sequence that actually works. Not the glamorous "learn deep learning first" approach — the one that gets you hired.</p>
+
+<p><strong>Phase 1: Python Foundations (4-6 weeks)</strong></p>
+<p>Learn Python with a focus on data manipulation, not general programming. You need: variables, loops, functions, list comprehensions, file I/O, and error handling. Then immediately move into NumPy and pandas — these are the workhorses of data science in Python. A realistic goal: be able to load a CSV dataset, clean it (handle nulls, fix data types, remove duplicates), and generate summary statistics without looking anything up.</p>
+
+<p>Resources: Python for Everybody (Coursera, free to audit), Kaggle's free Python and Pandas micro-courses, Real Python blog for specific topics.</p>
+
+<p><strong>Phase 2: SQL — The Non-Negotiable Skill (3-4 weeks)</strong></p>
+<p>Every data science interview in India includes SQL. Without exception. You need to be comfortable with: SELECT, WHERE, GROUP BY, HAVING, JOINs (all types), subqueries, window functions (RANK, ROW_NUMBER, LAG, LEAD), and CTEs. These are not optional — they are the baseline.</p>
+
+<p>Practice resources: SQLZoo, LeetCode SQL problems (start with Easy, work up to Medium), Mode Analytics SQL Tutorial. The goal is to solve any Medium-level SQL problem on LeetCode without hints.</p>
+
+<p><strong>Phase 3: Data Visualisation (2-3 weeks)</strong></p>
+<p>You need to be able to communicate findings, not just calculate them. Learn Matplotlib and Seaborn in Python for exploratory data analysis. Learn one business intelligence tool — either Power BI (free, widely used in India) or Tableau (student licence available). Being able to build a clean, insightful dashboard is a major differentiator at the intern level.</p>
+
+<p><strong>Phase 4: Statistics Fundamentals (3-4 weeks)</strong></p>
+<p>Data science without statistics is just data processing. You need: descriptive statistics (mean, median, mode, variance, standard deviation), probability distributions (normal, Poisson, binomial), hypothesis testing (t-test, chi-square), correlation vs causation, and the concept of statistical significance. Don't memorise formulas — understand when and why to use each tool.</p>
+
+<p><strong>Phase 5: Machine Learning Basics (4-6 weeks)</strong></p>
+<p>This is where most beginners start. It's actually Phase 5. Learn: supervised vs unsupervised learning, linear regression, logistic regression, decision trees, random forests, and K-means clustering. Implement these using scikit-learn. Don't just copy tutorial code — apply them to real datasets and understand the output.</p>
+
+<p>The Titanic survival dataset is a cliché. Use India-specific datasets: NITI Aayog open data, data.gov.in datasets, Mumbai traffic data, NSE stock data. This makes your projects immediately more relevant to Indian employers.</p>
+
+<h2>Building a Portfolio That Gets You Hired</h2>
+
+<p>The single biggest differentiator between data science candidates at the intern level is portfolio quality. Here's the anatomy of a strong project:</p>
+
+<p><strong>It solves a real, named problem.</strong> Not "I analysed a dataset." Instead: "I built a model to predict loan default risk using RBI public banking data, achieving 87% accuracy with a Random Forest classifier."</p>
+
+<p><strong>It uses India-relevant data.</strong> Indian recruiters respond better to projects about problems they understand and care about. IPL player performance prediction. Indian stock market volatility analysis. Customer churn analysis for a hypothetical Indian telecom. Air quality index forecasting for Delhi.</p>
+
+<p><strong>It's documented properly.</strong> Your GitHub repository should have a README that answers: what problem does this solve, what data did you use, what methods did you apply, what did you find, and how can someone reproduce it. Include a Jupyter notebook with clean, commented code.</p>
+
+<p><strong>It demonstrates the full pipeline.</strong> The best beginner projects show: data collection or source, data cleaning, exploratory data analysis (with visualisations), model building, model evaluation, and a conclusion or recommendation. This mirrors actual data science work.</p>
+
+<p>You need 2-3 projects. Not 10 shallow ones — 2-3 well-documented, thoughtfully executed projects. Quality over quantity is universally true in data science portfolios.</p>
+
+<h2>How Indian Companies Actually Interview Data Science Interns</h2>
+
+<p>The interview process for data science intern roles in India typically has three stages:</p>
+
+<p><strong>Stage 1 — Online Assessment:</strong> SQL queries (most common), Python coding questions (pandas operations, basic algorithms), or multiple-choice statistics and probability questions. Companies like Paytm, Groww, and Flipkart use this to filter. Study: 20-30 LeetCode SQL problems, Kaggle's SQL micro-course exercises, and basic probability problems.</p>
+
+<p><strong>Stage 2 — Technical Interview:</strong> Expect questions across three areas. SQL queries on live problems ("Given this table, write a query to find customers who made purchases in both January and February but not March"). Python/pandas problems ("How would you handle a dataset with 30% missing values?"). Statistics and ML concepts ("Explain overfitting. How do you detect and prevent it?"). Also expect questions about your projects — make sure you understand every line of code you've written.</p>
+
+<p><strong>Stage 3 — Case Study or Take-Home:</strong> Many companies (especially consulting firms and product analytics roles) give a case study. You'll get a dataset and 24-48 hours to analyse it and present your findings. This tests your full pipeline: cleaning, exploration, analysis, and communication. Structure your output clearly — an executive summary, key findings, and recommendations with business impact framing.</p>
+
+<h2>Where to Find Data Science Internships in India</h2>
+
+<p>Beyond the obvious (LinkedIn, InternAdda, Internshala), here are channels specific to data science:</p>
+
+<p><strong>Kaggle:</strong> Not just for competitions — Kaggle's "Jobs" section lists data science roles globally including India. A strong Kaggle profile (even ranking in the top 30-40% on a competition) is noticed by recruiters.</p>
+
+<p><strong>Analytics Vidhya:</strong> India's largest data science community has a jobs board and hackathon-to-hire programmes. Performing well in AV hackathons has led to direct interview calls at companies like HDFC, Oyo, and Flipkart.</p>
+
+<p><strong>Data science communities on LinkedIn:</strong> Follow and engage with content from data professionals at your target companies. Commenting thoughtfully on their posts creates visibility in ways cold applications never do.</p>
+
+<p><strong>Directly approaching data teams:</strong> Identify a specific data scientist or analytics lead at your target company on LinkedIn. Send a thoughtful message referencing their work or the company's data challenges. A warm introduction to the team often bypasses the official application process entirely.</p>
+
+<h2>The AI Advantage in 2025</h2>
+
+<p>Large Language Models and generative AI have changed the landscape. Companies are looking for data science interns who understand LLM APIs, prompt engineering, and how to integrate AI into data pipelines. You don't need to train your own models — but understanding how to call OpenAI or Google Gemini APIs, build simple RAG systems, and use AI to accelerate data analysis is now a genuine differentiator.</p>
+
+<p>Spending 2 weeks exploring LangChain, the Hugging Face hub, and OpenAI's API is time well spent in 2025. Build one project that incorporates an LLM — even something simple, like a document Q&A system built on a corpus of RBI press releases.</p>
+
+<h2>Final Advice: Start Applying Earlier Than Feels Right</h2>
+
+<p>Most students wait until they feel "ready" — until they've finished the ML course, until the project is perfect, until the resume is flawless. That day never comes. Start applying when you have Phase 1-3 of the roadmap above complete and at least one project you're proud of. The interview process itself will teach you more than another month of tutorials.</p>
+
+<p>The data science field in India is genuinely rewarding — intellectually stimulating, well-compensated, and growing rapidly. The path from beginner to internship offer is shorter than most students think, with the right focus.</p>
+
+<p>Explore open data science and analytics internships on InternAdda, or start with our free Data Science fundamentals course to build your foundation systematically.</p>
+    `.trim(),
+  },
+
+  // ─── BLOG 5 ──────────────────────────────────────────────────────────────────
+  {
+    slug: 'internship-interview-tips-india-2025',
+    title: 'Crack Any Internship Interview in India: 12 Strategies That Actually Work in 2025',
+    excerpt: 'After analysing 3,000+ internship interviews, we identified exactly what separates candidates who get offers from those who don\'t. Here are the 12 high-impact strategies the top 5% use.',
+    featuredImage: 'https://images.unsplash.com/photo-1565688534245-05d6b5be184a?w=1200&h=630&fit=crop',
     authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['internships for high school students', 'high school internship', 'summer programs'],
-    readingTime: 6,
-    meta: {
-      title: 'Internships in India for High School Students: Complete Guide | Internadda',
-      description: 'Everything high school students need to know about internships in India. Find opportunities, tips, and how to get started.',
-      keywords: ['internships for high school students', 'high school internship', 'summer programs'],
-    },
+    categoryId: 'interview-prep',
+    tags: ['interview', 'internship', 'preparation', 'India', 'HR round', 'technical interview', 'tips'],
+    publishedAt: '2025-03-18',
+    readingTime: 10,
+    metaTitle: 'How to Crack Internship Interviews in India 2025 | 12 Proven Strategies | InternAdda',
+    metaDescription: '12 high-impact strategies to crack internship interviews in India. Based on analysis of 3,000+ real interviews. Covers HR rounds, technical rounds, case studies, and body language.',
+    ogImage: 'https://images.unsplash.com/photo-1565688534245-05d6b5be184a?w=1200&h=630&fit=crop',
+    content: `
+<p>InternAdda has placed thousands of students at companies across India. We've had access to recruiter feedback, hiring manager insights, and the lived experience of candidates who've succeeded and failed at every stage of the interview process. This guide distils that into 12 specific, actionable strategies.</p>
+
+<p>These are not generic "be confident and prepare well" platitudes. These are the specific behaviours and approaches that statistically correlate with offer letters.</p>
+
+<h2>Strategy 1: Research at the Depth of a Journalist, Not a Student</h2>
+
+<p>Most candidates do 20 minutes of surface-level research: "I looked at your website and I'm really impressed by your products." This is instantly transparent and signals low effort.</p>
+
+<p>Genuine research means: reading the company's last 3 months of press releases, understanding their business model and revenue drivers, knowing who their top 2-3 competitors are and how they differentiate, and reading at least 2-3 recent articles about industry trends affecting them. For startups, read any YourStory, TechCrunch, or Inc42 articles about them. If there's a CEO LinkedIn newsletter, read it.</p>
+
+<p>When you can say "I noticed that your recent expansion into tier-2 cities means you'll face very different logistics challenges than your current model — I'm curious how the data team is thinking about that," you've immediately separated yourself from 95% of candidates.</p>
+
+<h2>Strategy 2: Master the STAR Format and Actually Use It</h2>
+
+<p>Almost every behavioural question (and there are many in Indian internship interviews) is best answered using STAR: Situation, Task, Action, Result. The problem is that candidates know the framework but don't apply it properly.</p>
+
+<p>Most answers are heavy on Situation and light on Action and Result. Interviewers care most about what you did and what happened. Practice 6-8 STAR stories covering: a time you led a project, a time you handled conflict, a time something failed and what you learned, a time you had to work under pressure, a time you solved a problem creatively.</p>
+
+<p>Each story should take 90 seconds to 2 minutes to tell. Longer than that and you'll lose the interviewer's attention. Shorter, and you're not providing enough context for them to evaluate you.</p>
+
+<h2>Strategy 3: Have Intelligent Questions Ready — Not Generic Ones</h2>
+
+<p>When the interviewer says "Do you have any questions for us?", saying "No, I think you've covered everything" is a missed opportunity. Saying "What's the team culture like?" is generic. The best candidates ask questions that demonstrate they've thought deeply about the role and company.</p>
+
+<p>Excellent questions to ask: "What does a typical first month look like for an intern in this team?" "What metrics would define success in this role?" "What's the biggest challenge the team is currently working through?" "How does this team interact with other functions in the company?"</p>
+
+<p>Prepare 4-5 questions and ask 2-3. Always have backup questions since some may be answered during the interview.</p>
+
+<h2>Strategy 4: Know Your Projects Deeply — Every Line of Code</h2>
+
+<p>This is where technical candidates most commonly fail. You list a project on your resume, the interviewer asks about it, and you can't explain a decision you made or a bug you encountered. This is catastrophic.</p>
+
+<p>For every project on your resume, be prepared to: explain the entire architecture in 2 minutes, discuss the most difficult technical challenge you faced and how you solved it, explain every technology choice (why Node.js over Python? Why MongoDB over MySQL?), state the limitations of your approach and how you would improve it, and give a concrete example of a bug or failure and how you debugged it.</p>
+
+<p>Interviewers at good Indian companies don't care as much about the project itself as they care about your depth of understanding and your problem-solving process.</p>
+
+<h2>Strategy 5: The Pre-Interview Ritual</h2>
+
+<p>The 24 hours before an interview are about preparation and mindset, not cramming more material. Sleep well — cognitive function measurably decreases with sleep deprivation. Review your notes once (not repeatedly). Prepare what you're wearing the night before. For virtual interviews, test your camera, microphone, internet connection, and background. Arrive 10 minutes early for in-person interviews. Log in 5 minutes before for virtual ones.</p>
+
+<p>One hour before the interview, do a quick confidence primer: review your best projects and achievements, remind yourself of a past success, and take 5 deep breaths. Physical state directly affects mental performance.</p>
+
+<h2>Strategy 6: Communicate Your Thinking Process</h2>
+
+<p>In technical interviews — whether coding, case study, or analytical — interviewers often care more about how you think than whether you get the right answer. Verbalise your reasoning. "I'm going to start by thinking about edge cases. In this problem, the edge cases would be an empty input and a single-element array..." This lets the interviewer guide you if you go off track, shows structured thinking, and demonstrates communication skills that are genuinely valued in professional environments.</p>
+
+<p>The worst outcome in a technical interview is silent struggling. Even if you're not sure, say "I'm not immediately sure of the optimal approach, but let me start with a brute force solution and work towards optimising it." This is professional behaviour.</p>
+
+<h2>Strategy 7: Handle "I Don't Know" With Grace</h2>
+
+<p>Every interviewer will ask something you don't know. How you respond is more important than whether you know the answer. Never bluff or invent an answer — experienced interviewers will know immediately. Instead, say something like: "I'm not confident about that specific detail, but based on what I do know about [related concept], I would approach it by..." or "I haven't worked with that technology specifically, but I'd be keen to learn — what I'd do is..."</p>
+
+<p>This demonstrates intellectual honesty, which is highly valued. It also often prompts the interviewer to give you a hint or move on gracefully.</p>
+
+<h2>Strategy 8: Tailor Your "Why This Company" Answer Precisely</h2>
+
+<p>"Why do you want to intern with us?" is guaranteed in almost every interview. The wrong answer involves generic statements about learning, growth, or reputation. The right answer is specific and shows genuine interest.</p>
+
+<p>Structure it as: one specific thing about the company's product, mission, or culture that genuinely appeals to you (backed by your research); how it connects to your specific skills or interests; and what you hope to contribute. This takes 5-6 minutes to prepare properly but has an outsized impact on the interviewer's impression of your seriousness.</p>
+
+<h2>Strategy 9: Manage Salary / Stipend Expectations Carefully</h2>
+
+<p>In India, discussions about stipend often happen in HR rounds. The mistake students make is either demanding too high (without justification) or accepting the first number without any pushback.</p>
+
+<p>Research the market rate for your role, city, and company tier before the interview. When asked about expectations, give a range ("I'm looking for something in the range of ₹25,000-35,000/month, based on the market and my preparation"), not a single number. When making a counter, anchor it to your value: "Given my background in [specific skill] and the [specific project], I was hoping for the upper end of that range."</p>
+
+<h2>Strategy 10: Virtual Interview Specific Tactics</h2>
+
+<p>Since COVID, a large proportion of internship interviews in India happen virtually, even for domestic companies. Virtual-specific tips: Position your camera at eye level (use books under your laptop if needed) and look at the camera, not the screen, when speaking. This creates the impression of eye contact. Ensure your background is neutral and professional. Have a notebook beside you (not on screen) for notes. Close all other tabs and notifications. Have a backup phone connection ready in case of internet issues, and mention it at the start: "Just so you know, I have my mobile data as a backup in case the connection drops."</p>
+
+<h2>Strategy 11: The Post-Interview Follow-Up Email</h2>
+
+<p>This is done by fewer than 10% of candidates in India, which means it automatically sets you apart. Within 24 hours of your interview, send a follow-up email to the recruiter or hiring manager. Keep it short: thank them for their time, mention one specific thing from the conversation that resonated with you, reaffirm your interest, and offer to provide any additional information.</p>
+
+<p>Example: "Thank you for taking the time to speak with me today. The conversation about how your team is using ML to reduce payment fraud latency was fascinating — it's exactly the kind of problem I'd love to work on. I remain very excited about the opportunity and would love to join the team. Please let me know if you need anything else from my end."</p>
+
+<p>Hiring managers mention this behaviour specifically when they make offers. It signals professionalism and genuine interest in a way that almost nothing else does.</p>
+
+<h2>Strategy 12: Treat Every Interview as Practice, Not Judgment</h2>
+
+<p>This is psychological but fundamental. Students who approach interviews as life-or-death judgment events perform worse — physiologically, cognitively, and in terms of how they present themselves. Students who approach each interview as a two-way conversation where both parties are evaluating fit perform measurably better.</p>
+
+<p>Reframe the question from "Will they choose me?" to "Is this the right place for me to grow?" This shift isn't denial of stakes — it's the mindset that top performers actually use. When you're genuinely curious about the company and relaxed about the outcome, you ask better questions, give more natural answers, and come across as confident rather than desperate.</p>
+
+<h2>One Final Insight: Volume and Consistency Win</h2>
+
+<p>The best interview preparation is doing more interviews. Even if you're not fully ready, apply and interview. Your first 3-4 interviews will reveal gaps you couldn't have identified any other way. Use companies from your Tier 3 list first. Take notes immediately after every interview — what went well, what you struggled with, what you wish you'd said differently. This feedback loop accelerates improvement faster than any course.</p>
+
+<p>Most students who get good internships don't get the first offer they receive. They get the fifth or eighth. Persistence, reflection, and iteration are the actual meta-skills of internship hunting.</p>
+
+<p>InternAdda offers mock interview sessions with industry professionals. Practise with us before your next real interview, and browse open internship opportunities matched to your profile.</p>
+    `.trim(),
   },
 
-  // 11. How to Get an Internship at Google India
-  {
-    slug: 'how-to-get-google-internship-india',
-    title: 'How to Get an Internship at Google India',
-    excerpt: 'Dreaming of interning at Google? Here\'s the step-by-step process, eligibility, and tips to crack the interview.',
-    content: `<h2>Google Internship Overview</h2><p>Google offers internships in engineering, business, marketing, and more. Stipends are generous, and the experience is invaluable.</p><h2>Eligibility</h2><p>Typically for students in their pre-final or final year of undergraduate or postgraduate studies. Strong academic record and relevant skills required.</p><h2>Application Process</h2><p>Apply online through Google's careers page. Include resume, transcripts, and sometimes a cover letter.</p><h2>Interview Rounds</h2><p>Usually 2-3 technical interviews (for tech roles) or case studies (for business). Behavioral questions are also common.</p><h2>Tips from Former Interns</h2><p>Practice coding on LeetCode, have projects to discuss, and show passion for Google's products.</p><h2>FAQs</h2><h3>What is the stipend for Google internships in India?</h3><p>Around ₹1,00,000 per month for tech roles.</p><h3>When do applications open?</h3><p>Usually around August-September for summer internships.</p>`,
-    featuredImage: '/images/blog/google-internship.jpg',
-    publishedAt: '2025-01-25T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'internships',
-    tags: ['google internship india', 'google careers', 'tech internship'],
-    readingTime: 7,
-    meta: {
-      title: 'How to Get an Internship at Google India | Internadda',
-      description: 'Complete guide to landing a Google internship in India – eligibility, application process, interviews, and tips.',
-      keywords: ['google internship india', 'google careers', 'tech internship'],
-    },
-  },
-
-  // 12. Top 5 Marketing Internships in Mumbai
-  {
-    slug: 'top-5-marketing-internships-mumbai',
-    title: 'Top 5 Marketing Internships in Mumbai',
-    excerpt: 'Discover the best marketing internships in Mumbai for 2025. From startups to big brands, find your next opportunity.',
-    content: `<h2>Marketing Hub of India</h2><p>Mumbai is the advertising and marketing capital. Here are five top companies offering marketing internships.</p><h2>1. WPP Internship</h2><p>Global advertising giant with roles in account management, creative, and digital.</p><h2>2. Ogilvy Internship</h2><p>Prestigious ad agency offering hands-on experience in campaigns.</p><h2>3. Unilever Internship</h2><p>Brand management and marketing roles at HUL's Mumbai office.</p><h2>4. Times Group Internship</h2><p>Media and marketing internships with The Times of India.</p><h2>5. Dentsu Internship</h2><p>Digital marketing and creative roles at this global agency.</p><h2>FAQs</h2><h3>How to apply?</h3><p>Check company websites or LinkedIn. Networking helps in marketing.</p><h3>What skills do I need?</h3><p>Creativity, communication, digital marketing tools (Google Analytics, Canva).</p>`,
-    featuredImage: '/images/blog/mumbai-marketing.jpg',
-    publishedAt: '2025-01-26T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['marketing internships mumbai', 'mumbai internships', 'advertising internships'],
-    readingTime: 5,
-    meta: {
-      title: 'Top 5 Marketing Internships in Mumbai 2025 | Internadda',
-      description: 'Discover the best marketing internships in Mumbai at top agencies and brands. Apply now for 2025.',
-      keywords: ['marketing internships mumbai', 'mumbai internships', 'advertising internships'],
-    },
-  },
-
-  // 13. Best Websites to Find Internships in India
-  {
-    slug: 'best-websites-find-internships-india',
-    title: 'Best Websites to Find Internships in India',
-    excerpt: 'Where to search for internships online? We list the top platforms, including niche sites and company portals.',
-    content: `<h2>Top Platforms</h2><p>Internshala, LinkedIn, Indeed, and company career pages are the go-to sources.</p><h2>1. Internshala</h2><p>India's largest internship platform with thousands of listings across fields.</p><h2>2. LinkedIn</h2><p>Use filters to find internships and connect with recruiters.</p><h2>3. Indeed</h2><p>Aggregates listings from many sources.</p><h2>4. Company Career Pages</h2><p>Always check the official careers section of companies you admire.</p><h2>5. Naukri.com</h2><p>Good for corporate internships.</p><h2>6. LetsIntern</h2><p>Focuses on internships for students.</p><h2>7. Twenty19</h2><p>Another Indian internship portal.</p><h2>8. Hellointern</h2><p>Connects students with startups.</p><h2>9. AngelList</h2><p>For startup internships, especially in tech.</p><h2>10. Wellfound (formerly AngelList Talent)</h2><p>Similar to AngelList, for startup roles.</p><h2>FAQs</h2><h3>Which website is best for tech internships?</h3><p>LinkedIn, Internshala, and AngelList are great for tech.</p><h3>How to avoid scams?</h3><p>Never pay for an internship. Research the company before applying.</p>`,
-    featuredImage: '/images/blog/websites.jpg',
-    publishedAt: '2025-01-27T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'internships',
-    tags: ['internship websites india', 'find internships online', 'internship portals'],
-    readingTime: 6,
-    meta: {
-      title: 'Best Websites to Find Internships in India | Internadda',
-      description: 'Top websites to find internships in India – Internshala, LinkedIn, company portals, and more. Tips to avoid scams.',
-      keywords: ['internship websites india', 'find internships online', 'internship portals'],
-    },
-  },
-
-  // 14. Internship vs Full-Time Job: What's Better?
-  {
-    slug: 'internship-vs-full-time-job',
-    title: 'Internship vs Full-Time Job: What\'s Better?',
-    excerpt: 'Should you take an internship or aim for a full-time job after graduation? Compare pros, cons, and career impact.',
-    content: `<h2>Understanding the Difference</h2><p>Internships are temporary, learning-focused roles; full-time jobs are permanent positions with responsibilities.</p><h2>Pros of Internships</h2><p>Skill building, exploration, networking, and often a path to full-time employment.</p><h2>Cons of Internships</h2><p>Lower pay, less job security, may not lead to a job.</p><h2>Pros of Full-Time Jobs</h2><p>Stable income, benefits, career progression.</p><h2>Cons of Full-Time Jobs</h2><p>Higher expectations, less flexibility to explore.</p><h2>Which Should You Choose?</h2><p>If you're still exploring, internships are great. If you have clear goals and a job offer, full-time may be better.</p><h2>FAQs</h2><h3>Can I do an internship after graduation?</h3><p>Yes, many companies offer internships for recent graduates as a pathway to full-time.</p><h3>Does an internship count as experience?</h3><p>Absolutely. it\'s valuable on your resume.</p>`,
-    featuredImage: '/images/blog/internship-vs-job.jpg',
-    publishedAt: '2025-01-28T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'resume-career',
-    tags: ['internship vs job', 'career advice', 'after graduation'],
-    readingTime: 5,
-    meta: {
-      title: 'Internship vs Full-Time Job: What\'s Better? | Internadda',
-      description: 'Compare internships and full-time jobs – pros, cons, and which is right for your career stage.',
-      keywords: ['internship vs job', 'career advice', 'after graduation'],
-    },
-  },
-
-  // 15. How to Get a Stipend During Internship
-  {
-    slug: 'how-to-get-stipend-during-internship',
-    title: 'How to Get a Stipend During Internship',
-    excerpt: 'Negotiating a stipend, finding paid internships, and what to do if your internship is unpaid.',
-    content: `<h2>Why Stipends Matter</h2><p>Financial support helps you focus on learning. Here's how to secure a paid internship.</p><h2>Find Paid Internships</h2><p>Use filters on Internshala and LinkedIn. Research companies known for paying interns.</p><h2>Negotiate the Stipend</h2><p>If offered an unpaid role, politely ask if a stipend is possible, highlighting your skills and contributions.</p><h2>What to Do If it\'s Unpaid</h2><p>Consider the learning value, duration, and if academic credit is available. Sometimes unpaid can lead to paid opportunities.</p><h2>FAQs</h2><h3>What is the average stipend for interns in India?</h3><p>Varies by industry – tech ₹20k-50k, marketing ₹5k-15k, etc.</p><h3>Can I get a stipend for a government internship?</h3><p>Many government internships offer stipends; check the notification.</p>`,
-    featuredImage: '/images/blog/stipend.jpg',
-    publishedAt: '2025-01-29T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'internships',
-    tags: ['internship stipend', 'paid internships', 'negotiate stipend'],
-    readingTime: 6,
-    meta: {
-      title: 'How to Get a Stipend During Internship | Internadda',
-      description: 'Tips to find paid internships and negotiate a stipend. What to do if your internship is unpaid.',
-      keywords: ['internship stipend', 'paid internships', 'negotiate stipend'],
-    },
-  },
-
-  // 16. Internships for Mechanical Engineering Students
-  {
-    slug: 'internships-mechanical-engineering-students',
-    title: 'Internships for Mechanical Engineering Students',
-    excerpt: 'Top companies offering mechanical engineering internships in India. Includes core and non-core opportunities.',
-    content: `<h2>Why Mechanical Internships Matter</h2><p>Hands-on experience in design, manufacturing, and analysis is crucial for mechanical engineers.</p><h2>Top Companies</h2><p>Tata Motors, Mahindra, Larsen & Toubro (L&T), BHEL, and automotive startups.</p><h2>Types of Roles</h2><p>Design (CAD), thermal analysis, manufacturing, quality control, and project management.</p><h2>How to Apply</h2><p>Check company career pages, LinkedIn, and college placement cells. Build a portfolio of projects using SolidWorks or AutoCAD.</p><h2>FAQs</h2><h3>What skills are needed?</h3><p>CAD software (SolidWorks, AutoCAD), basics of thermodynamics, and problem-solving.</p><h3>Are there remote mechanical internships?</h3><p>Some design and analysis work can be remote, but many require on-site presence.</p>`,
-    featuredImage: '/images/blog/mechanical.jpg',
-    publishedAt: '2025-01-30T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'internships',
-    tags: ['mechanical engineering internships', 'core engineering internships', 'mech internships'],
-    readingTime: 6,
-    meta: {
-      title: 'Internships for Mechanical Engineering Students | Internadda',
-      description: 'Find top mechanical engineering internships in India at Tata Motors, L&T, BHEL, and more. Skills and application tips.',
-      keywords: ['mechanical engineering internships', 'core engineering internships', 'mech internships'],
-    },
-  },
-
-  // 17. Free Digital Marketing Courses with Certificates
-  {
-    slug: 'free-digital-marketing-courses-certificates',
-    title: 'Free Digital Marketing Courses with Certificates',
-    excerpt: 'Upskill in digital marketing for free with certificates from Google, HubSpot, and more.',
-    content: `<h2>Why Digital Marketing?</h2><p>Digital marketing is in high demand across industries. Free courses can kickstart your career.</p><h2>1. Google Digital Marketing & E-commerce Certificate</h2><p>Free audit on Coursera, covers SEO, SEM, analytics, and e-commerce.</p><h2>2. HubSpot Academy – Digital Marketing Certification</h2><p>Free, covers inbound marketing, social media, and email.</p><h2>3. Facebook Blueprint</h2><p>Free courses on Facebook and Instagram advertising.</p><h2>4. Google Analytics Academy</h2><p>Free courses on Google Analytics 4.</p><h2>5. Semrush Academy</h2><p>Free SEO and content marketing courses with certificates.</p><h2>6. LinkedIn Learning (free trial with certificate)</h2><p>Many digital marketing courses available with 1-month free trial.</p><h2>7. HubSpot Content Marketing Certification</h2><p>Free, focuses on content strategy and creation.</p><h2>8. Google Ads Certification</h2><p>Free through Google Skillshop.</p><h2>FAQs</h2><h3>Are these certificates recognized?</h3><p>Yes, Google, HubSpot, and Facebook certifications are industry-recognized.</p><h3>How long do they take?</h3><p>Most can be completed in 20-40 hours.</p>`,
-    featuredImage: '/images/blog/digital-marketing.jpg',
-    publishedAt: '2025-01-31T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'free-courses',
-    tags: ['digital marketing free courses', 'free marketing certifications', 'google digital marketing'],
-    readingTime: 7,
-    meta: {
-      title: 'Free Digital Marketing Courses with Certificates | Internadda',
-      description: 'Top free digital marketing courses with certificates from Google, HubSpot, Facebook, and more. Boost your marketing skills.',
-      keywords: ['digital marketing free courses', 'free marketing certifications', 'google digital marketing'],
-    },
-  },
-
-  // 18. Government Internship Schemes 2025
-  {
-    slug: 'government-internship-schemes-2025',
-    title: 'Government Internship Schemes 2025',
-    excerpt: 'Latest government internship schemes for students – eligibility, stipends, and application process.',
-    content: `<h2>Central Government Schemes</h2><p>The government launches various internship programs across ministries. Here are key ones for 2025.</p><h2>1. Ministry of Education – Internship in Education (MIE)</h2><p>For students interested in education policy and administration. Stipend: ₹10,000/month.</p><h2>2. Ministry of Finance – Economic Affairs Internship</h2><p>For economics students, research on fiscal policy. Stipend: ₹15,000/month.</p><h2>3. Ministry of Electronics & IT (MeitY) Internship</h2><p>For tech students in areas like AI, cybersecurity, and e-governance. Stipend: ₹15,000/month.</p><h2>4. Ministry of Rural Development – Internship</h2><p>For students interested in rural development projects. Stipend: ₹10,000/month.</p><h2>5. NITI Aayog Internship</h2><p>Research and policy internships. Stipend: ₹10,000/month.</p><h2>6. PRAGATI (Platform for Regulatory App Development) Internship</h2><p>For engineering students to work on government digital platforms. Stipend: ₹20,000/month.</p><h2>How to Apply</h2><p>Visit the respective ministry websites and look for internship notifications. Most require online applications with a statement of purpose.</p><h2>FAQs</h2><h3>Are these internships open to all students?</h3><p>Eligibility varies by scheme – check specific requirements.</p><h3>What documents are needed?</h3><p>Typically resume, academic transcripts, and ID proof.</p>`,
-    featuredImage: '/images/blog/govt-schemes.jpg',
-    publishedAt: '2025-02-01T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'government-internships',
-    tags: ['government internship schemes', 'central govt internships', 'ministry internships'],
-    readingTime: 7,
-    meta: {
-      title: 'Government Internship Schemes 2025 | Internadda',
-      description: 'Latest government internship schemes for students – Ministry of Education, Finance, MeitY, NITI Aayog, and more. Stipends, eligibility, and how to apply.',
-      keywords: ['government internship schemes', 'central govt internships', 'ministry internships'],
-    },
-  },
-
-  // 19. How to Convert Internship to Full-Time Job
-  {
-    slug: 'how-to-convert-internship-to-full-time-job',
-    title: 'How to Convert Internship to Full-Time Job',
-    excerpt: 'Strategies to impress your employer and turn your internship into a permanent role.',
-    content: `<h2>Why Conversion Matters</h2><p>Landing a full-time job after internship saves you the stress of job hunting and leverages your experience.</p><h2>1. Exceed Expectations</h2><p>Go beyond your assigned tasks. Show initiative and deliver high-quality work.</p><h2>2. Build Relationships</h2><p>Network with colleagues, seek mentorship, and be a team player.</p><h2>3. Communicate Your Interest</h2><p>Let your manager know you're interested in a full-time role and ask what you can do to improve your chances.</p><h2>4. Document Achievements</h2><p>Keep track of projects you've contributed to and quantify results.</p><h2>5. Ask for Feedback</h2><p>Regularly seek feedback and act on it to show growth.</p><h2>6. Stay After the Internship</h2><p>If possible, continue contributing part-time while waiting for a decision.</p><h2>FAQs</h2><h3>When should I ask about conversion?</h3><p>Near the end of your internship, perhaps 2-3 weeks before completion.</p><h3>What if there's no opening?</h3><p>Ask if they can refer you to other departments or provide a strong recommendation.</p>`,
-    featuredImage: '/images/blog/convert-internship.jpg',
-    publishedAt: '2025-02-02T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'resume-career',
-    tags: ['convert internship to job', 'internship to full time', 'job after internship'],
-    readingTime: 5,
-    meta: {
-      title: 'How to Convert Internship to Full-Time Job | Internadda',
-      description: 'Proven strategies to turn your internship into a permanent job. Tips on performance, networking, and timing.',
-      keywords: ['convert internship to job', 'internship to full time', 'job after internship'],
-    },
-  },
-
-  // 20. Internship Certificate: Importance and Templates
-  {
-    slug: 'internship-certificate-importance-templates',
-    title: 'Internship Certificate: Importance and Templates',
-    excerpt: 'Why an internship certificate matters and how to create one if your employer doesn\'t provide it. Free templates included.',
-    content: `<h2>Why an Internship Certificate is Important</h2><p>A certificate validates your experience, skills, and achievements. it\'s often required for future job applications and higher studies.</p><h2>What Should a Certificate Include?</h2><p>Company name, your name, duration, role, key responsibilities, and signature of authority.</p><h2>What If Your Employer Doesn\'t Provide One?</h2><p>Politely request it. If they refuse, you can create your own using a template and ask them to sign it.</p><h2>Free Templates</h2><p>We've created two professional templates (Word and Canva) that you can customize. [Links]</p><h2>FAQs</h2><h3>Is an internship certificate mandatory?</h3><p>Not mandatory but highly recommended for your resume.</p><h3>Can I add my certificate to LinkedIn?</h3><p>Yes, under the "Licenses & Certifications" section.</p>`,
-    featuredImage: '/images/blog/certificate.jpg',
-    publishedAt: '2025-02-03T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'resume-career',
-    tags: ['internship certificate', 'internship completion certificate', 'certificate template'],
-    readingTime: 4,
-    meta: {
-      title: 'Internship Certificate: Importance and Templates | Internadda',
-      description: 'Learn why an internship certificate matters and download free templates. What to do if your employer doesn\'t provide one.',
-      keywords: ['internship certificate', 'internship completion certificate', 'certificate template'],
-    },
-  },
-
-  // 21. Remote Internships vs Office Internships
-  {
-    slug: 'remote-internships-vs-office-internships',
-    title: 'Remote Internships vs Office Internships: Pros and Cons',
-    excerpt: 'Compare remote and in-office internships to decide which suits you better. Flexibility vs. mentorship, and more.',
-    content: `<h2>The Great Debate</h2><p>With the rise of remote work, students now have a choice. Let\'s weigh the pros and cons.</p><h2>Remote Internship Pros</h2><p>Flexibility, no commute, access to companies anywhere, work-life balance.</p><h2>Remote Internship Cons</h2><p>Less mentorship, requires self-discipline, potential isolation.</p><h2>Office Internship Pros</h2><p>Direct mentorship, networking, company culture immersion.</p><h2>Office Internship Cons</h2><p>Commute, less flexibility, geographic limitation.</p><h2>Which One to Choose?</h2><p>Depends on your learning style, career goals, and personal situation. Some prefer hybrid.</p><h2>FAQs</h2><h3>Are remote internships as valuable?</h3><p>Yes, if you actively engage and learn. Companies value remote experience.</p><h3>Can I switch from remote to office?</h3><p>Sometimes possible – discuss with your manager.</p>`,
-    featuredImage: '/images/blog/remote-vs-office.jpg',
-    publishedAt: '2025-02-04T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'remote-work',
-    tags: ['remote vs office internship', 'work from home vs in-office', 'internship format'],
-    readingTime: 5,
-    meta: {
-      title: 'Remote Internships vs Office Internships: Pros and Cons | Internadda',
-      description: 'Compare remote and in-office internships – flexibility, mentorship, networking, and more. Decide which is right for you.',
-      keywords: ['remote vs office internship', 'work from home vs in-office', 'internship format'],
-    },
-  },
-
-  // 22. Top 10 Companies Offering Work From Home Internships
-  {
-    slug: 'top-10-companies-work-from-home-internships',
-    title: 'Top 10 Companies Offering Work From Home Internships',
-    excerpt: 'Discover the best companies that regularly hire remote interns in India and globally.',
-    content: `<h2>Remote-Friendly Companies</h2><p>These companies are known for offering work-from-home internships across various fields.</p><h2>1. Zomato</h2><p>Remote internships in marketing, content, and operations.</p><h2>2. Amazon</h2><p>Remote roles in customer service, HR, and some tech positions.</p><h2>3. Deloitte</h2><p>Consulting and audit internships often have remote options.</p><h2>4. TCS</h2><p>iON Digital Learning Hub offers remote internships.</p><h2>5. Microsoft</h2><p>Some software development and research internships are remote.</p><h2>6. Google</h2><p>Select roles may be remote; check specific job descriptions.</p><h2>7. Cure.fit</h2><p>Health-tech startup with remote marketing and tech roles.</p><h2>8. UpGrad</h2><p>Edtech company hires remote interns for content, sales, and tech.</p><h2>9. Unacademy</h2><p>Remote internships in content, marketing, and operations.</p><h2>10. Byju's</h2><p>Remote roles in content creation and business development.</p><h2>FAQs</h2><h3>How to apply?</h3><p>Check company career pages and LinkedIn. Use "remote" filter.</p><h3>What skills are needed?</h3><p>Self-motivation, good communication, and relevant technical skills.</p>`,
-    featuredImage: '/images/blog/wfh-companies.jpg',
-    publishedAt: '2025-02-05T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'remote-work',
-    tags: ['work from home internships', 'remote internship companies', 'wfh internships'],
-    readingTime: 6,
-    meta: {
-      title: 'Top 10 Companies Offering Work From Home Internships | Internadda',
-      description: 'Discover the top companies hiring remote interns – Zomato, Amazon, Deloitte, Microsoft, and more. How to apply and tips.',
-      keywords: ['work from home internships', 'remote internship companies', 'wfh internships'],
-    },
-  },
-
-  // 23. How to Prepare for an Internship Interview
-  {
-    slug: 'how-to-prepare-for-internship-interview',
-    title: 'How to Prepare for an Internship Interview',
-    excerpt: 'Step-by-step preparation guide for internship interviews. From research to follow-up.',
-    content: `<h2>Research the Company</h2><p>Understand their products, mission, and recent news. Prepare questions to ask.</p><h2>Review Common Questions</h2><p>Practice answers for behavioral and technical questions. Use STAR method.</p><h2>Prepare Your Own Questions</h2><p>Ask about day-to-day tasks, mentorship, and next steps.</p><h2>Dress Appropriately</h2><p>Dress one step above the company culture. When in doubt, business casual.</p><h2>Technical Preparation</h2><p>For tech roles, practice coding on LeetCode. For others, review domain knowledge.</p><h2>Follow Up</h2><p>Send a thank-you email within 24 hours.</p><h2>FAQs</h2><h3>How early should I join the call?</h3><p>5-10 minutes early for virtual, 10-15 minutes for in-person.</p><h3>What if I don't know an answer?</h3><p>Be honest, but show how you would approach finding a solution.</p>`,
-    featuredImage: '/images/blog/interview-prep.jpg',
-    publishedAt: '2025-02-06T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'interview-preparation',
-    tags: ['internship interview preparation', 'how to prepare for interview', 'interview tips'],
-    readingTime: 6,
-    meta: {
-      title: 'How to Prepare for an Internship Interview | Internadda',
-      description: 'Complete guide to preparing for internship interviews – research, common questions, technical prep, and follow-up.',
-      keywords: ['internship interview preparation', 'how to prepare for interview', 'interview tips'],
-    },
-  },
-
-  // 24. Best Free Data Science Courses with Certificates
-  {
-    slug: 'best-free-data-science-courses-certificates',
-    title: 'Best Free Data Science Courses with Certificates',
-    excerpt: 'Top free data science courses that offer certificates. Learn Python, ML, and analytics for free.',
-    content: `<h2>Why Data Science?</h2><p>Data science skills are highly sought after. Here are the best free courses to get certified.</p><h2>1. IBM Data Science Professional Certificate</h2><p>Free audit on Coursera, 9 courses covering Python, SQL, data visualization, and machine learning.</p><h2>2. Google Data Analytics Certificate</h2><p>Free audit on Coursera, covers spreadsheets, SQL, Tableau, and R programming.</p><h2>3. Harvard CS109 Data Science</h2><p>Free on edX, introduction to data science with Python.</p><h2>4. Machine Learning by Andrew Ng</h2><p>Free audit on Coursera, classic ML course.</p><h2>5. Data Science: Foundations using R (Johns Hopkins)</h2><p>Free on Coursera (audit), R programming and data analysis.</p><h2>6. Python for Data Science (IBM)</h2><p>Free on Coursera, Python libraries like Pandas and NumPy.</p><h2>7. Data Visualization with Tableau</h2><p>Free on Coursera (audit) from UC Davis.</p><h2>8. SQL for Data Science (UC Davis)</h2><p>Free on Coursera, SQL queries and data manipulation.</p><h2>FAQs</h2><h3>Do I need a math background?</h3><p>Basic statistics and linear algebra help, but many courses start from scratch.</p><h3>How long do these take?</h3><p>Most require 3-6 months part-time.</p>`,
-    featuredImage: '/images/blog/data-science.jpg',
-    publishedAt: '2025-02-07T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'free-courses',
-    tags: ['data science free courses', 'free data science certifications', 'python data science'],
-    readingTime: 7,
-    meta: {
-      title: 'Best Free Data Science Courses with Certificates | Internadda',
-      description: 'Discover the best free data science courses with certificates – from IBM, Google, Harvard, and more. Learn Python, ML, and analytics.',
-      keywords: ['data science free courses', 'free data science certifications', 'python data science'],
-    },
-  },
-
-  // 25. Internships for MBA Students in India
-  {
-    slug: 'internships-for-mba-students-india',
-    title: 'Internships for MBA Students in India',
-    excerpt: 'Top companies offering MBA internships in India. Roles in marketing, finance, HR, and consulting.',
-    content: `<h2>Why MBA Internships Matter</h2><p>Internships are a crucial part of MBA programs, often leading to pre-placement offers.</p><h2>Top Recruiters</h2><p>McKinsey, BCG, Bain, Goldman Sachs, Amazon, Flipkart, HUL, P&G, and more.</p><h2>Types of Roles</h2><p>Consulting, finance, marketing, operations, and general management.</p><h2>How to Apply</h2><p>Through campus placements, company websites, or LinkedIn. Networking is key.</p><h2>Tips for MBA Interns</h2><p>Take initiative, network across functions, and seek feedback.</p><h2>FAQs</h2><h3>What is the typical stipend for MBA interns?</h3><p>Top B-school interns can earn ₹1-2 lakhs per month. Others vary by company and role.</p><h3>When do applications start?</h3><p>Usually in the first year of MBA, around November-December for summer internships.</p>`,
-    featuredImage: '/images/blog/mba-internships.jpg',
-    publishedAt: '2025-02-08T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['mba internships india', 'business internships', 'management internships'],
-    readingTime: 5,
-    meta: {
-      title: 'Internships for MBA Students in India | Internadda',
-      description: 'Find top MBA internships in India at consulting, finance, and marketing firms. Application tips and stipend info.',
-      keywords: ['mba internships india', 'business internships', 'management internships'],
-    },
-  },
-
-  // 26. How to List Internship on Resume
-  {
-    slug: 'how-to-list-internship-on-resume',
-    title: 'How to List Internship on Resume',
-    excerpt: 'Learn how to format internship experience on your resume to impress recruiters. Examples included.',
-    content: `<h2>Where to Place Internships</h2><p>Internships usually go under "Experience" or "Internships" section. List in reverse chronological order.</p><h2>What to Include</h2><p>Company name, location, your title, dates, and bullet points describing achievements.</p><h2>How to Write Bullet Points</h2><p>Start with action verbs, quantify results, and focus on impact. Example: "Increased social media engagement by 30% through targeted content."</p><h2>Example Entries</h2><p>Marketing Intern, XYZ Corp (May 2024 – July 2024)</p><p>• Assisted in launching a new product campaign, resulting in 15% sales growth.</p><p>• Conducted competitor analysis and presented findings to the marketing team.</p><h2>FAQs</h2><h3>What if my internship was short?</h3><p>Still include it if you gained valuable skills. Emphasize achievements.</p><h3>Should I include unpaid internships?</h3><p>Yes, as long as they are relevant. Label them as "Internship" regardless of pay.</p>`,
-    featuredImage: '/images/blog/list-internship.jpg',
-    publishedAt: '2025-02-09T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'resume-career',
-    tags: ['internship on resume', 'how to list internship', 'resume tips'],
-    readingTime: 4,
-    meta: {
-      title: 'How to List Internship on Resume | Internadda',
-      description: 'Learn how to properly list internships on your resume with examples and tips. Stand out to recruiters.',
-      keywords: ['internship on resume', 'how to list internship', 'resume tips'],
-    },
-  },
-
-  // 27. Internships in India for 2nd Year Students
-  {
-    slug: 'internships-india-2nd-year-students',
-    title: 'Internships in India for 2nd Year Students',
-    excerpt: 'it\'s never too early! Find internships suitable for second-year college students in India.',
-    content: `<h2>Why Start Early?</h2><p>Gaining experience in your second year gives you a head start and helps you explore career paths.</p><h2>Types of Internships</h2><p>Often project-based, research assistant, content writing, social media, or technical roles at startups.</p><h2>Where to Look</h2><p>Internshala, LinkedIn, and college research labs. Many startups welcome second-year students.</p><h2>How to Apply</h2><p>Highlight coursework, projects, and enthusiasm. Emphasize willingness to learn.</p><h2>FAQs</h2><h3>Will companies hire second-year students?</h3><p>Yes, many startups and some large companies have programs for sophomores.</p><h3>What if I have no experience?</h3><p>Focus on projects, volunteer work, or relevant coursework. Show eagerness to learn.</p>`,
-    featuredImage: '/images/blog/2nd-year.jpg',
-    publishedAt: '2025-02-10T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'internships',
-    tags: ['2nd year internships', 'sophomore internships', 'early internships'],
-    readingTime: 5,
-    meta: {
-      title: 'Internships in India for 2nd Year Students | Internadda',
-      description: 'Discover internships suitable for second-year college students in India. Tips on where to find them and how to apply.',
-      keywords: ['2nd year internships', 'sophomore internships', 'early internships'],
-    },
-  },
-
-  // 28. Free Online Courses for College Students
-  {
-    slug: 'free-online-courses-college-students',
-    title: 'Free Online Courses for College Students',
-    excerpt: 'Boost your skills with these free online courses across various fields. Certificates included.',
-    content: `<h2>Why Take Online Courses?</h2><p>Supplement your college education, build skills, and stand out to employers.</p><h2>Top Platforms</h2><p>Coursera, edX, Udemy (free section), LinkedIn Learning (free trial), and FutureLearn.</p><h2>Recommended Courses</h2><p>Google Project Management (Coursera), IBM Data Science (Coursera), Harvard CS50 (edX), and many more.</p><h2>How to Balance with Studies</h2><p>Set a schedule, focus on one course at a time, and use breaks effectively.</p><h2>FAQs</h2><h3>Can I get college credit for these courses?</h3><p>Some universities accept transfer credits – check with your college.</p><h3>Are these courses really free?</h3><p>Yes, you can audit them for free. Pay only if you need a certificate.</p>`,
-    featuredImage: '/images/blog/college-courses.jpg',
-    publishedAt: '2025-02-11T00:00:00Z',
-    authorId: 'raj-kumar',
-    categoryId: 'free-courses',
-    tags: ['free courses for college students', 'online courses', 'student learning'],
-    readingTime: 5,
-    meta: {
-      title: 'Free Online Courses for College Students | Internadda',
-      description: 'Discover free online courses for college students across all fields. Learn from top universities and companies.',
-      keywords: ['free courses for college students', 'online courses', 'student learning'],
-    },
-  },
-
-  // 29. Government Internships in Delhi
-  {
-    slug: 'government-internships-delhi',
-    title: 'Government Internships in Delhi',
-    excerpt: 'List of government internships available in Delhi for students. Ministries, research bodies, and more.',
-    content: `<h2>Why Delhi?</h2><p>Delhi houses numerous government ministries, research institutions, and public sector units offering internships.</p><h2>Top Organizations</h2><p>NITI Aayog, Ministry of Finance, Ministry of External Affairs, Indian Council of World Affairs, and more.</p><h2>How to Apply</h2><p>Visit individual ministry websites. Many have dedicated internship portals.</p><h2>Eligibility</h2><p>Typically undergraduate or postgraduate students with minimum marks. Specific requirements vary.</p><h2>FAQs</h2><h3>Do these internships provide stipend?</h3><p>Many provide stipends ranging from ₹5,000 to ₹20,000 per month.</p><h3>Can students from outside Delhi apply?</h3><p>Yes, most are open to students across India. Accommodation is usually not provided.</p>`,
-    featuredImage: '/images/blog/delhi-govt.jpg',
-    publishedAt: '2025-02-12T00:00:00Z',
-    authorId: 'priya-sharma',
-    categoryId: 'government-internships',
-    tags: ['government internships delhi', 'delhi govt internships', 'ministry internships delhi'],
-    readingTime: 5,
-    meta: {
-      title: 'Government Internships in Delhi | Internadda',
-      description: 'Find government internships in Delhi at NITI Aayog, ministries, and research bodies. Stipends, eligibility, and how to apply.',
-      keywords: ['government internships delhi', 'delhi govt internships', 'ministry internships delhi'],
-    },
-  },
-];
+]
