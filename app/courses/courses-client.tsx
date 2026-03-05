@@ -1,184 +1,235 @@
 'use client'
+// app/courses/courses-client.tsx
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Clock, Users, Star, CheckCircle, GraduationCap, ArrowRight } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import {
+  Search, Clock, Users, Star, ArrowRight,
+  BookOpen, Lock, CheckCircle, Zap,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { toast } from "sonner"
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
+import type { Course } from './course-data'
 
-interface Course {
-  id: number;
-  title: string;
-  category: string;
-  instructor: string;
-  rating: number;
-  reviews: number;
-  students: number;
-  duration: string;
-  price: string;
-  description: string;
-  topics: string[];
-  level: string;
-  image: string;
+// ── Category colour map ───────────────────────────────────────────────────────
+
+const CAT_STYLE: Record<string, { pill: string; badge: string }> = {
+  Development: { pill: 'bg-indigo-50 text-indigo-700 border-indigo-100',  badge: 'bg-indigo-600' },
+  'Data Science':{ pill: 'bg-violet-50 text-violet-700 border-violet-100', badge: 'bg-violet-600' },
+  Design:      { pill: 'bg-rose-50 text-rose-700 border-rose-100',         badge: 'bg-rose-500' },
+  Marketing:   { pill: 'bg-amber-50 text-amber-700 border-amber-100',      badge: 'bg-amber-500' },
+  Business:    { pill: 'bg-sky-50 text-sky-700 border-sky-100',            badge: 'bg-sky-500' },
 }
+const fallbackStyle = { pill: 'bg-gray-50 text-gray-600 border-gray-100', badge: 'bg-gray-500' }
 
-const CourseCard = ({ course }: { course: Course }) => {
+// ── Single course card ────────────────────────────────────────────────────────
+
+function CourseCard({ course }: { course: Course }) {
+  const { user } = useAuth()
+  const router   = useRouter()
+  const style    = CAT_STYLE[course.category] ?? fallbackStyle
+  const total    = course.modules.reduce((s, m) => s + m.lessons.length, 0)
+
   const handleEnroll = () => {
-    toast.success(`Welcome to ${course.title}!`, {
-      description: "You have been successfully enrolled. Check your dashboard for details.",
-    });
-  };
+    if (!user) {
+      router.push(`/auth/signin?callbackUrl=/courses/${course.id}`)
+      return
+    }
+    router.push(`/courses/${course.id}`)
+  }
 
   return (
-    <article className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 w-full max-w-[360px] flex flex-col group mx-auto">
-      <div className="relative h-48 w-full bg-gray-100 rounded-t-2xl overflow-hidden">
-        <Image 
-          src={course.image} 
-          alt={course.title} 
-          fill 
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+    <motion.article
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.22, ease: 'easeOut' }}
+      className="group flex flex-col h-full bg-white rounded-2xl border border-gray-200 overflow-hidden"
+      style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)' }}
+    >
+      {/* Thumbnail */}
+      <div className="relative h-44 bg-gray-100 overflow-hidden flex-shrink-0">
+        <Image
+          src={course.image} alt={course.title} fill
+          sizes="(max-width:640px)100vw,(max-width:1024px)50vw,380px"
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
-        <div className="absolute top-3 left-3 bg-indigo-600 text-white px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+
+        {/* Category pill */}
+        <span className={`absolute top-3 left-3 border text-[11px] font-semibold px-2.5 py-1 rounded-lg shadow-sm bg-white/95 ${style.pill}`}>
           {course.category}
+        </span>
+
+        {/* Rating */}
+        <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+          <Star size={11} className="fill-amber-400 text-amber-400" />
+          <span className="text-[11px] font-semibold text-gray-700">{course.rating}</span>
         </div>
-        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm border border-gray-100">
-          <Star size={12} className="text-amber-500 fill-amber-500" />
-          <span className="text-gray-700 text-xs font-bold">{course.rating}</span>
-        </div>
+
+        {/* Free badge */}
+        <span className="absolute bottom-3 left-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-md tracking-wide">
+          FREE
+        </span>
       </div>
 
-      <div className="p-6 text-center flex flex-col flex-1">
-        <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-2">
-          {course.level} • {course.instructor}
-        </p>
-        
-        <h3 className="text-lg font-bold text-gray-800 mb-3 leading-snug min-h-[3.5rem] flex items-center justify-center">
-          {course.title}
-        </h3>
-
-        <div className="flex items-center justify-center gap-4 mb-4 pb-4 border-b border-gray-50">
-          <div className="flex items-center gap-1 text-xs font-medium text-gray-500">
-            <Clock size={14} className="text-indigo-600" /> {course.duration}
-          </div>
-          <div className="flex items-center gap-1 text-xs font-medium text-gray-500">
-            <Users size={14} className="text-indigo-600" /> {course.students}+ Students
-          </div>
+      {/* Body */}
+      <div className="flex flex-col flex-1 p-5 gap-3">
+        <div>
+          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-1">
+            {course.level} · {course.instructor}
+          </p>
+          <h3 className="text-[15px] font-semibold text-gray-900 leading-snug">{course.title}</h3>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-1.5 mb-6">
-          {course.topics.map((topic) => (
-            <span key={topic} className="bg-gray-50 border border-gray-100 px-3 py-1 rounded-full text-[10px] font-medium text-gray-600">
-              {topic}
-            </span>
+        <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-2">{course.description}</p>
+
+        {/* Meta */}
+        <div className="flex items-center gap-4 text-xs text-gray-400 pt-2 border-t border-gray-100">
+          <span className="flex items-center gap-1.5"><Clock size={12} className="text-indigo-400" />{course.duration}</span>
+          <span className="flex items-center gap-1.5"><BookOpen size={12} className="text-indigo-400" />{total} lessons</span>
+          <span className="flex items-center gap-1.5"><Users size={12} className="text-indigo-400" />{course.students.toLocaleString('en-IN')}+</span>
+        </div>
+
+        {/* Topics */}
+        <div className="flex flex-wrap gap-1.5">
+          {course.topics.map(t => (
+            <span key={t} className="bg-slate-50 border border-slate-200 text-gray-500 text-[11px] px-2.5 py-0.5 rounded-md">{t}</span>
           ))}
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-4">
-          <div className="text-left">
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wide">Status</p>
-            <p className="text-lg font-black text-emerald-600">FREE</p>
-          </div>
-          <Button 
-            onClick={handleEnroll}
-            className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-xl font-semibold text-sm shadow-md shadow-indigo-100 transition-all active:scale-95"
-          >
-            Enroll Now
-          </Button>
-        </div>
+        {/* CTA */}
+        <Button
+          onClick={handleEnroll}
+          className="mt-auto w-full bg-[#1a1063] hover:bg-indigo-900 text-white text-sm font-medium rounded-xl h-11 shadow-sm shadow-indigo-900/15 transition-all flex items-center justify-center gap-2"
+        >
+          {user
+            ? <><BookOpen size={14} />Start Learning</>
+            : <><Lock size={14} />Sign in to Enroll</>
+          }
+          <ArrowRight size={13} className="ml-auto opacity-60" />
+        </Button>
       </div>
-    </article>
+    </motion.article>
   )
 }
 
-export default function CoursesClient({ initialCourses }: { initialCourses: Course[] }) {
-  const [searchTerm, setSearchTerm] = useState('')
+// ── Main export ───────────────────────────────────────────────────────────────
 
-  const filteredCourses = initialCourses.filter(course => {
-    return (
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      course.topics.some(t => t.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
+const CATEGORIES = ['All', 'Development', 'Data Science', 'Design', 'Marketing', 'Business']
+
+export default function CoursesClient({ initialCourses }: { initialCourses: Course[] }) {
+  const [search,   setSearch]   = useState('')
+  const [category, setCategory] = useState('All')
+
+  const filtered = initialCourses.filter(c => {
+    const q = search.toLowerCase()
+    const matchSearch = !q ||
+      c.title.toLowerCase().includes(q) ||
+      c.topics.some(t => t.toLowerCase().includes(q)) ||
+      c.category.toLowerCase().includes(q)
+    const matchCat = category === 'All' || c.category === category
+    return matchSearch && matchCat
   })
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Search Bar - Matching Internship Page Filter Style */}
-      <div className="relative w-full max-w-2xl px-4 -mt-8 mb-16 z-20">
-        <div className="bg-white p-2 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-2">
-          <div className="flex-1 flex items-center px-4 gap-3">
-            <Search className="text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search courses by title or skill (e.g. Figma, React)..."
-              className="w-full py-3 outline-none text-gray-700 bg-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <Button className="hidden sm:flex bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-6">
-            Search
-          </Button>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+
+      {/* ── Filter bar ── */}
+      <div className="py-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        {/* Search */}
+        <div className="relative flex-1 max-w-md">
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by title or skill…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-gray-700 placeholder-gray-400"
+          />
+        </div>
+
+        {/* Category pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`text-xs font-semibold px-3.5 py-2 rounded-xl border transition-all whitespace-nowrap ${
+                category === cat
+                  ? 'bg-[#1a1063] text-white border-[#1a1063] shadow-sm'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Course Grid */}
-      <section className="pb-20 w-full max-w-7xl px-4">
-        {filteredCourses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center w-full">
+      {/* ── Course grid ── */}
+      {filtered.length > 0 ? (
+        <>
+          <p className="text-xs text-gray-400 mb-5">
+            {filtered.length} course{filtered.length !== 1 ? 's' : ''} found
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             <AnimatePresence mode="popLayout">
-              {filteredCourses.map((course) => (
-                <motion.div
-                  key={course.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
+              {filtered.map((course, i) => (
+                <motion.div key={course.id} layout
+                  initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full"
-                >
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}>
                   <CourseCard course={course} />
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="text-gray-300" size={32} />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800">No courses found</h3>
-            <p className="text-gray-500">Try a different keyword or browse categories.</p>
-            <Button variant="link" className="text-indigo-600 mt-2" onClick={() => setSearchTerm('')}>
-              Clear all filters
-            </Button>
+        </>
+      ) : (
+        <div className="text-center py-24">
+          <div className="w-16 h-16 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Search size={22} className="text-gray-300" />
           </div>
-        )}
-      </section>
+          <h3 className="text-base font-semibold text-gray-700 mb-1">No courses found</h3>
+          <p className="text-sm text-gray-400 mb-4">Try a different keyword or browse all categories.</p>
+          <button
+            onClick={() => { setSearch(''); setCategory('All') }}
+            className="text-sm text-indigo-600 font-medium hover:underline"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
 
-      {/* CTA Section - Matching Home Style */}
-      <section className="py-16 md:py-24 w-full px-4 max-w-7xl">
-        <div className="bg-indigo-600 rounded-3xl md:rounded-[3rem] p-8 md:p-16 text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 opacity-90" />
-          <div className="relative z-10 flex flex-col items-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Can't find your <span className="text-indigo-200">topic?</span>
-            </h2>
-            <p className="text-indigo-100 text-lg mb-8 max-w-2xl">
-              We release new masterclasses every week. Join the waitlist to be the first to know about new certifications.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button className="bg-white text-indigo-600 hover:bg-gray-100 px-10 py-6 rounded-xl font-bold shadow-lg flex items-center gap-2">
-                Join the Waitlist <ArrowRight size={18} />
+      {/* ── Bottom CTA ── */}
+      <div className="mt-20">
+        <div className="relative bg-[#1a1063] rounded-2xl overflow-hidden">
+          <div aria-hidden className="absolute inset-0 opacity-[0.055] pointer-events-none select-none">
+            <svg width="100%" height="100%">
+              <defs><pattern id="dp" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="white" /></pattern></defs>
+              <rect width="100%" height="100%" fill="url(#dp)" />
+            </svg>
+          </div>
+          <div aria-hidden className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-indigo-500/35 to-transparent pointer-events-none" />
+
+          <div className="relative flex flex-col sm:flex-row items-center sm:justify-between gap-6 px-8 sm:px-12 py-10 text-center sm:text-left">
+            <div>
+              <p className="text-indigo-300 text-xs font-semibold uppercase tracking-widest mb-2">Can't find your topic?</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-tight">New courses every week.</h2>
+              <p className="text-indigo-200 text-sm leading-relaxed max-w-md mx-auto sm:mx-0">
+                We release new masterclasses regularly. Join the waitlist to be first to know about new certifications.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <Button className="bg-white text-[#1a1063] hover:bg-indigo-50 font-semibold px-7 py-5 text-sm rounded-xl shadow-lg inline-flex items-center gap-2 transition-all">
+                Join the Waitlist <ArrowRight size={15} />
               </Button>
             </div>
-            <p className="text-indigo-200 text-sm mt-6">
-              Learn from the best, for free.
-            </p>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   )
 }
