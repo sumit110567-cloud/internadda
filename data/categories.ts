@@ -1,18 +1,54 @@
 // data/categories.ts
+
 export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  icon?: string; // optional icon name
+  id: string
+  name: string
+  slug: string
+  description: string
+  color: string
 }
 
 export const categories: Category[] = [
-  { id: 'internships', name: 'Internships', slug: 'internships', description: 'Latest internship opportunities and guides for Indian students.', icon: 'briefcase' },
-  { id: 'free-courses', name: 'Free Courses', slug: 'free-courses', description: 'Top free online courses with certificates to boost your resume.', icon: 'academy' },
-  { id: 'resume-career', name: 'Resume & Career', slug: 'resume-career', description: 'Resume tips, interview prep, and career advice.', icon: 'document' },
-  { id: 'interview-preparation', name: 'Interview Preparation', slug: 'interview-preparation', description: 'Ace your internship interviews with our guides.', icon: 'chat' },
-  { id: 'skill-development', name: 'Skill Development', slug: 'skill-development', description: 'Learn in-demand skills for internships and jobs.', icon: 'lightbulb' },
-  { id: 'government-internships', name: 'Government Internships', slug: 'government-internships', description: 'Paid internships in Indian government departments.', icon: 'government' },
-  { id: 'remote-work', name: 'Remote Work', slug: 'remote-work', description: 'Work-from-home internships and remote career tips.', icon: 'home' },
-];
+  {
+    id: 'career-advice',
+    name: 'Career Advice',
+    slug: 'career-advice',
+    description: 'Actionable tips to accelerate your career growth in India',
+    color: 'indigo',
+  },
+  {
+    id: 'internship-tips',
+    name: 'Internship Tips',
+    slug: 'internship-tips',
+    description: 'Everything you need to land and ace your internship',
+    color: 'violet',
+  },
+  {
+    id: 'resume-linkedin',
+    name: 'Resume & LinkedIn',
+    slug: 'resume-linkedin',
+    description: 'Craft a profile that gets noticed by recruiters',
+    color: 'blue',
+  },
+  {
+    id: 'tech-careers',
+    name: 'Tech Careers',
+    slug: 'tech-careers',
+    description: 'Breaking into product, engineering, and data roles',
+    color: 'emerald',
+  },
+  {
+    id: 'industry-trends',
+    name: 'Industry Trends',
+    slug: 'industry-trends',
+    description: 'What\'s shaping the Indian job market in 2025-26',
+    color: 'amber',
+  },
+  {
+    id: 'interview-prep',
+    name: 'Interview Prep',
+    slug: 'interview-prep',
+    description: 'Strategies and frameworks to crack any interview',
+    color: 'rose',
+  },
+]
