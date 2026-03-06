@@ -29,16 +29,23 @@ export default function InternshipAssessment() {
   const [submitting, setSubmitting] = useState(false)
   const [showSidebar, setShowSidebar] = useState(false)
 
-  // --- 1. Gatekeeper & Persistence ---
+  // --- 1. Gatekeeper with Retry Logic (Fixes Access Denied) ---
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 5; // Total 10 seconds of waiting time
+
     const verifyAccess = async () => {
       if (authLoading) return
-      if (!user) { setIsAuthorized(false); setVerifying(false); return }
+      if (!user) { 
+        setIsAuthorized(false)
+        setVerifying(false)
+        return 
+      }
 
       try {
         const { data: order, error } = await supabase
           .from('orders')
-          .select('status, created_at')
+          .select('status')
           .eq('user_id', user.id)
           .eq('test_id', id)
           .eq('status', 'PAID')
@@ -46,28 +53,35 @@ export default function InternshipAssessment() {
 
         if (order && !error) {
           setIsAuthorized(true)
+          setVerifying(false)
           // Recovery logic: Prevent refresh from resetting timer
           const savedTime = localStorage.getItem(`test_time_${id}`)
           if (savedTime) setTimeLeft(parseInt(savedTime))
+        } else if (retryCount < maxRetries) {
+          // Webhook might be slow, wait 2 seconds and retry
+          retryCount++;
+          setTimeout(verifyAccess, 2000);
         } else {
+          // No paid order found after all retries
           setIsAuthorized(false)
+          setVerifying(false)
         }
       } catch (e) {
         setIsAuthorized(false)
-      } finally {
         setVerifying(false)
       }
     }
+
     verifyAccess()
   }, [user, id, authLoading])
 
-  // --- 2. Advanced Anti-Cheat (Refresh & Tab & Fullscreen) ---
+  // --- 2. Advanced Anti-Cheat ---
   useEffect(() => {
     if (!isAuthorized || isFinished) return
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
-      e.returnValue = "Warning: Refreshing will NOT reset your timer and may cause data loss."
+      e.returnValue = "Warning: Refreshing will NOT reset your timer."
     }
 
     const handleVisibility = () => {
@@ -75,9 +89,9 @@ export default function InternshipAssessment() {
         setCheatingAttempts(prev => {
           const nextCount = prev + 1
           if (nextCount === 1) {
-            alert("⚠️ WARNING (1/2): Tab switching detected!\nThis incident has been logged. One more violation will terminate the test.")
+            alert("⚠️ WARNING (1/2): Tab switching detected!\nOne more violation will terminate the test.")
           } else {
-            finishTest(0) // Auto-fail on second attempt
+            finishTest(0) 
             router.push('/')
           }
           return nextCount
@@ -112,7 +126,6 @@ export default function InternshipAssessment() {
     if (submitting) return
     setSubmitting(true)
     
-    // Calculate final score
     const correctCount = Object.entries(answers).reduce((acc, [idx, ans]) => {
       return ans === testData.questions[parseInt(idx)].correct ? acc + 1 : acc
     }, 0)
@@ -132,7 +145,7 @@ export default function InternshipAssessment() {
       })
       localStorage.removeItem(`test_time_${id}`)
     } catch (e) {
-      console.error("Critical submission error", e)
+      console.error("Submission error", e)
     } finally {
       setIsFinished(true)
       setSubmitting(false)
@@ -151,7 +164,7 @@ export default function InternshipAssessment() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md">
           <Lock size={80} className="mx-auto mb-6 text-yellow-400 p-4 bg-yellow-400/10 rounded-full" />
           <h1 className="text-4xl font-black mb-4 tracking-tighter">Access Denied</h1>
-          <p className="opacity-70 mb-8">This assessment is restricted to verified candidates. Please complete your enrollment to continue.</p>
+          <p className="opacity-70 mb-8">This assessment is restricted to verified candidates. Please complete your enrollment or wait a moment for payment confirmation.</p>
           <Button onClick={() => router.push('/internships')} className="bg-yellow-500 hover:bg-yellow-600 text-[#0A2647] font-bold py-7 px-10 rounded-2xl w-full text-lg shadow-xl shadow-yellow-500/20">
             Back to Dashboard
           </Button>
@@ -187,7 +200,6 @@ export default function InternshipAssessment() {
 
   return (
     <div className="min-h-screen bg-[#F1F5F9] font-sans selection:bg-blue-100">
-      {/* Header Bar */}
       <header className="fixed top-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 z-40 px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="bg-[#0A2647] text-white p-3 rounded-2xl shadow-lg shadow-blue-900/20">
@@ -208,24 +220,15 @@ export default function InternshipAssessment() {
           <div className="hidden md:flex items-center gap-2 text-emerald-600 font-black text-[10px] uppercase tracking-widest bg-emerald-50 px-5 py-2.5 rounded-full border border-emerald-100">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" /> Proctored Live
           </div>
-          <button 
-            onClick={() => setShowSidebar(!showSidebar)}
-            className="p-3 bg-slate-100 rounded-2xl text-[#0A2647] hover:bg-slate-200 transition-colors"
-          >
+          <button onClick={() => setShowSidebar(!showSidebar)} className="p-3 bg-slate-100 rounded-2xl text-[#0A2647] hover:bg-slate-200 transition-colors">
             <LayoutGrid size={24} />
           </button>
         </div>
       </header>
 
       <div className="pt-32 pb-20 px-4 md:px-12 max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-10">
-        {/* Main Question Area */}
         <main>
-          <motion.div 
-            key={currentIdx}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white p-8 md:p-16 rounded-[3.5rem] shadow-sm border border-slate-100 relative overflow-hidden"
-          >
+          <motion.div key={currentIdx} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="bg-white p-8 md:p-16 rounded-[3.5rem] shadow-sm border border-slate-100 relative overflow-hidden">
             <div className="mb-12">
                <div className="flex justify-between items-end mb-4">
                   <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Question {currentIdx + 1} / {testData.questions.length}</h3>
@@ -264,26 +267,15 @@ export default function InternshipAssessment() {
             </div>
 
             <div className="mt-16 flex justify-between items-center">
-               <Button 
-                variant="ghost" 
-                disabled={currentIdx === 0}
-                onClick={() => setCurrentIdx(prev => prev - 1)}
-                className="rounded-2xl px-8 h-14 font-black text-slate-400 hover:text-[#0A2647]"
-               >
+               <Button variant="ghost" disabled={currentIdx === 0} onClick={() => setCurrentIdx(prev => prev - 1)} className="rounded-2xl px-8 h-14 font-black text-slate-400 hover:text-[#0A2647]">
                  Previous
                </Button>
                {currentIdx === testData.questions.length - 1 ? (
-                 <Button 
-                  onClick={() => finishTest()}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl px-12 h-16 font-black text-lg shadow-xl shadow-emerald-500/20"
-                 >
+                 <Button onClick={() => finishTest()} className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl px-12 h-16 font-black text-lg shadow-xl shadow-emerald-500/20">
                    Submit Final Test
                  </Button>
                ) : (
-                 <Button 
-                  onClick={() => setCurrentIdx(prev => prev + 1)}
-                  className="bg-[#0A2647] hover:bg-blue-900 text-white rounded-2xl px-12 h-16 font-black text-lg shadow-xl shadow-blue-900/20"
-                 >
+                 <Button onClick={() => setCurrentIdx(prev => prev + 1)} className="bg-[#0A2647] hover:bg-blue-900 text-white rounded-2xl px-12 h-16 font-black text-lg shadow-xl shadow-blue-900/20">
                    Next Question <ChevronRight className="ml-2" />
                  </Button>
                )}
@@ -291,7 +283,6 @@ export default function InternshipAssessment() {
           </motion.div>
         </main>
 
-        {/* Sidebar Navigation */}
         <aside className={cn(
           "fixed lg:relative inset-y-0 right-0 w-80 bg-white border-l lg:border-none border-slate-200 z-50 p-8 transform transition-transform lg:transform-none shadow-2xl lg:shadow-none",
           showSidebar ? "translate-x-0" : "translate-x-full lg:translate-x-0"
@@ -317,30 +308,22 @@ export default function InternshipAssessment() {
                 </button>
               ))}
             </div>
-
             <div className="mt-10 p-6 bg-yellow-50 rounded-[2rem] border border-yellow-100">
                <div className="flex items-center gap-3 text-yellow-700 mb-3">
                  <AlertCircle size={20} />
                  <span className="font-black text-xs uppercase tracking-wider">Integrity Notice</span>
                </div>
                <p className="text-[11px] text-yellow-700/70 font-bold leading-relaxed">
-                 Refreshing the page or exiting full-screen will be flagged. Ensure a stable connection.
+                 Ensure a stable connection. Refreshing may be flagged by proctoring systems.
                </p>
             </div>
           </div>
         </aside>
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {showSidebar && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }}
-            onClick={() => setShowSidebar(false)}
-            className="fixed inset-0 bg-[#0A2647]/40 backdrop-blur-sm z-40 lg:hidden"
-          />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSidebar(false)} className="fixed inset-0 bg-[#0A2647]/40 backdrop-blur-sm z-40 lg:hidden" />
         )}
       </AnimatePresence>
     </div>
