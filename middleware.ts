@@ -54,9 +54,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // 2. Protected Routes Logic
-  const isProtectedPage =
-    pathname.startsWith('/test') ||
-    pathname.startsWith('/apply')
+  // REMOVED: pathname.startsWith('/test') from here to allow public access
+  const isProtectedPage = pathname.startsWith('/apply')
 
   if (isProtectedPage && !user) {
     const redirectUrl = new URL('/auth/signin', request.url)
