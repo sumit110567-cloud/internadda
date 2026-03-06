@@ -34,44 +34,26 @@ export default function InternshipAssessment() {
     let retryCount = 0;
     const maxRetries = 5; // Total 10 seconds of waiting time
 
-    const verifyAccess = async () => {
-      if (authLoading) return
-      if (!user) { 
-        setIsAuthorized(false)
-        setVerifying(false)
-        return 
-      }
+const verifyAccess = async () => {
+  const { data: order, error } = await supabase
+    .from('orders')
+    .select('status')
+    .eq('user_id', user.id)
+    .eq('test_id', String(id)) // Force String comparison
+    .eq('status', 'PAID')
+    .maybeSingle()
 
-      try {
-        const { data: order, error } = await supabase
-          .from('orders')
-          .select('status')
-          .eq('user_id', user.id)
-          .eq('test_id', id)
-          .eq('status', 'PAID')
-          .maybeSingle()
-
-        if (order && !error) {
-          setIsAuthorized(true)
-          setVerifying(false)
-          // Recovery logic: Prevent refresh from resetting timer
-          const savedTime = localStorage.getItem(`test_time_${id}`)
-          if (savedTime) setTimeLeft(parseInt(savedTime))
-        } else if (retryCount < maxRetries) {
-          // Webhook might be slow, wait 2 seconds and retry
-          retryCount++;
-          setTimeout(verifyAccess, 2000);
-        } else {
-          // No paid order found after all retries
-          setIsAuthorized(false)
-          setVerifying(false)
-        }
-      } catch (e) {
-        setIsAuthorized(false)
-        setVerifying(false)
-      }
-    }
-
+  if (order) {
+    setIsAuthorized(true)
+    setVerifying(false)
+  } else if (retryCount < 5) {
+    retryCount++
+    setTimeout(verifyAccess, 1500) // Retry every 1.5 seconds
+  } else {
+    setIsAuthorized(false)
+    setVerifying(false)
+  }
+}
     verifyAccess()
   }, [user, id, authLoading])
 
