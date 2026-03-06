@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, RotateCcw, ChevronDown, Sparkles } from 'lucide-react'
+import { X, Send, RotateCcw } from 'lucide-react'
 import Image from 'next/image'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -430,63 +430,74 @@ export function InternaBot() {
         )}
       </AnimatePresence>
 
-      {/* ── Trigger button ── */}
-      <motion.button
-        onClick={() => setIsOpen(p => !p)}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        style={{
-          display: 'flex', alignItems: 'center', gap: '10px',
-          background: '#1a1063',
-          color: '#fff',
-          border: 'none', cursor: 'pointer',
-          borderRadius: '16px',
-          padding: '12px 18px',
-          boxShadow: '0 8px 24px rgba(26,16,99,0.3), 0 2px 8px rgba(26,16,99,0.2)',
-          fontFamily: 'inherit',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Shimmer */}
-        <motion.div
+      {/* ── Trigger button — circular avatar only ── */}
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <motion.button
+          onClick={() => setIsOpen(p => !p)}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
           style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%)',
+            width: '60px', height: '60px',
+            borderRadius: '50%',
+            border: 'none', cursor: 'pointer', padding: 0,
+            position: 'relative', overflow: 'hidden',
+            boxShadow: '0 4px 20px rgba(26,16,99,0.28), 0 1px 6px rgba(26,16,99,0.15)',
+            display: 'block',
+            background: '#1a1063',
           }}
-          animate={{ x: ['-100%', '200%'] }}
-          transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 2 }}
-        />
+          aria-label="Chat with Interna"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isOpen ? (
+              <motion.div
+                key="close-icon"
+                initial={{ opacity: 0, scale: 0.7, rotate: -45 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                exit={{ opacity: 0, scale: 0.7, rotate: 45 }}
+                transition={{ duration: 0.2 }}
+                style={{
+                  position: 'absolute', inset: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: '#1a1063',
+                }}
+              >
+                <X size={22} color="#fff" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="avatar"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                style={{ position: 'absolute', inset: 0 }}
+              >
+                <Image
+                  src="/interna.jpg"
+                  alt="Chat with Interna"
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
 
-        <AnimatePresence mode="wait" initial={false}>
-          {isOpen ? (
-            <motion.div key="close"
-              initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.18 }}>
-              <ChevronDown size={18} />
-            </motion.div>
-          ) : (
-            <motion.div key="open"
-              initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.18 }}>
-              <Sparkles size={18} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <span style={{ fontSize: '13.5px', fontWeight: 700, letterSpacing: '-0.01em', position: 'relative' }}>
-          {isOpen ? 'Close' : 'Chat with Interna'}
-        </span>
-
-        {/* Unread dot when closed and has been opened before */}
-        {!isOpen && !hasOpened && (
+        {/* Online dot */}
+        {!isOpen && (
           <motion.div
             initial={{ scale: 0 }} animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2"
-            style={{ borderColor: '#1a1063' }}
+            style={{
+              position: 'absolute', bottom: '2px', right: '2px',
+              width: '14px', height: '14px',
+              borderRadius: '50%',
+              background: '#34d399',
+              border: '2.5px solid #fff',
+              pointerEvents: 'none',
+            }}
           />
         )}
-      </motion.button>
+      </div>
     </div>
   )
 }
