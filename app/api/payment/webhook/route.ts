@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
-// Initialize Admin Client
+// Initialize Admin Client (Bypasses RLS for system updates)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const payload = JSON.parse(rawBody);
 
-    // DEBUG: Log incoming webhook
+    // DEBUG: Log incoming webhook for troubleshooting
     console.log('Webhook Received:', payload.type, 'Order ID:', payload.data?.order?.order_id);
 
     // 1. Verify Cashfree Signature
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
-    // 2. Handle Payment Event
+    // 2. Handle Payment Logic
     const eventType = payload.type;
     const orderData = payload.data.order;
     const paymentData = payload.data.payment;
@@ -50,7 +50,6 @@ export async function POST(req: Request) {
       const orderId = orderData.order_id;
 
       // 3. Update Database to PAID
-      // Ensure 'cf_order_id' is the column where you store Cashfree Order ID
       const { error, data } = await supabaseAdmin
         .from('orders')
         .update({ 
@@ -66,9 +65,9 @@ export async function POST(req: Request) {
       }
 
       if (!data || data.length === 0) {
-        console.warn(`No matching order found for ID: ${orderId}`);
+        console.warn(`Webhook received for order ${orderId}, but no matching record found.`);
       } else {
-        console.log(`Order ${orderId} updated to PAID.`);
+        console.log(`Order ${orderId} successfully updated to PAID.`);
       }
     }
 
