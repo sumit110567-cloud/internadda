@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
-// Initialize Admin Client (Bypasses RLS for system updates)
+// 1. Initialize Admin Client (Bypasses session checks)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -19,10 +19,10 @@ export async function POST(req: Request) {
     const rawBody = await req.text();
     const payload = JSON.parse(rawBody);
 
-    // DEBUG: Log incoming webhook for troubleshooting
+    // DEBUG: Log incoming webhook for troubleshooting on the new domain
     console.log('Webhook Received:', payload.type, 'Order ID:', payload.data?.order?.order_id);
 
-    // 1. Verify Cashfree Signature
+    // 2. Verify Cashfree Signature
     const ts = req.headers.get('x-webhook-timestamp');
     const signature = req.headers.get('x-webhook-signature');
     const secretKey = process.env.CASHFREE_SECRET_KEY!;
@@ -34,11 +34,11 @@ export async function POST(req: Request) {
       .digest('base64');
 
     if (signature !== expectedSignature) {
-      console.error('Webhook Signature Mismatch');
+      console.error('Webhook Signature Mismatch. Check CASHFREE_SECRET_KEY env variable.');
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
-    // 2. Handle Payment Logic
+    // 3. Handle Payment (Support both Success and Charges webhooks)
     const eventType = payload.type;
     const orderData = payload.data.order;
     const paymentData = payload.data.payment;
@@ -49,7 +49,8 @@ export async function POST(req: Request) {
     ) {
       const orderId = orderData.order_id;
 
-      // 3. Update Database to PAID
+      // 4. Update Database to PAID
+      // IMPORTANT: Ensure 'cf_order_id' is the correct column in your 'orders' table
       const { error, data } = await supabaseAdmin
         .from('orders')
         .update({ 
@@ -65,9 +66,9 @@ export async function POST(req: Request) {
       }
 
       if (!data || data.length === 0) {
-        console.warn(`Webhook received for order ${orderId}, but no matching record found.`);
+        console.warn(`Webhook received for order ${orderId}, but no matching record found in database.`);
       } else {
-        console.log(`Order ${orderId} successfully updated to PAID.`);
+        console.log(`Order ${orderId} successfully updated to PAID in database.`);
       }
     }
 
