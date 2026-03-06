@@ -1,37 +1,35 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase-server'
+import { createClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/ssr'
+
+// Admin client for database operations (Bypass RLS)
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function POST(req: Request) {
   try {
-    // 1. Initialize the Server Client (must be awaited because createClient is async)
-    const supabase = await createClient()
+    const cookieStore = await cookies()
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) { return cookieStore.get(name)?.value },
+        },
+      }
+    )
 
-    // 2. Get user from session cookies (Secure server-side verification)
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      console.error('Auth Error:', authError?.message)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser()
+    if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const body = await req.json()
     const { amount, testId, customerEmail, customerName } = body
 
-    if (!testId || !amount) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    // 3. Cashfree API Configuration
     const isProduction = process.env.NEXT_PUBLIC_CASHFREE_ENV === 'PRODUCTION'
-    const baseUrl = isProduction
-      ? 'https://api.cashfree.com/pg/orders'
-      : 'https://sandbox.cashfree.com/pg/orders'
+    const baseUrl = isProduction ? 'https://api.cashfree.com/pg/orders' : 'https://sandbox.cashfree.com/pg/orders'
 
     const cfResponse = await fetch(baseUrl, {
       method: 'POST',
@@ -46,9 +44,8 @@ export async function POST(req: Request) {
         order_currency: 'INR',
         customer_details: {
           customer_id: user.id,
-          customer_name:
-            customerName || user.user_metadata?.full_name || 'Student',
-          customer_email: customerEmail || user.email || 'no-email@internadda.com',
+          customer_name: customerName || user.user_metadata?.full_name || 'Student',
+          customer_email: customerEmail || user.email,
           customer_phone: '9999999999',
         },
         order_meta: {
@@ -58,16 +55,10 @@ export async function POST(req: Request) {
     })
 
     const data = await cfResponse.json()
+    if (!cfResponse.ok) throw new Error(data.message || 'Cashfree Failed')
 
-    if (!cfResponse.ok) {
-      return NextResponse.json(
-        { error: data.message || 'Cashfree Order Failed' },
-        { status: 400 }
-      )
-    }
-
-    // 4. Insert order into DB using the service role (bypassing RLS if necessary)
-    const { error: dbError } = await supabase.from('orders').insert({
+    // Insert using Admin Client to ensure success
+    const { error: dbError } = await supabaseAdmin.from('orders').insert({
       cf_order_id: data.order_id,
       user_id: user.id,
       test_id: String(testId),
@@ -76,19 +67,10 @@ export async function POST(req: Request) {
       status: 'PENDING',
     })
 
-    if (dbError) {
-      console.error('Database Error:', dbError.message)
-      return NextResponse.json({ error: dbError.message }, { status: 500 })
-    }
+    if (dbError) throw dbError
 
-    return NextResponse.json({
-      payment_session_id: data.payment_session_id,
-    })
-  } catch (error) {
-    console.error('Create Order Crash:', error)
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ payment_session_id: data.payment_session_id })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
