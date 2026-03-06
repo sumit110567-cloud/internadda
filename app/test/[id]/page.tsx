@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Timer, Lock, ChevronRight, LayoutGrid, AlertCircle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Timer, Lock, ChevronRight, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { DOMAIN_TESTS } from '@/lib/test-data'
@@ -14,31 +14,36 @@ import { cn } from '@/lib/utils'
 
 export default function InternshipAssessment() {
   const params = useParams()
-  const id = params?.id as string
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   
+  const [id, setId] = useState<string | null>(null)
+  const [testData, setTestData] = useState<any>(null)
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [verifying, setVerifying] = useState(true)
-
-  // FIX: Safe access to test data to prevent client-side crash
-  const testData = id ? (DOMAIN_TESTS[id] || DOMAIN_TESTS['1']) : null
-  
   const [currentIdx, setCurrentIdx] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [timeLeft, setTimeLeft] = useState(1800) 
   const [isFinished, setIsFinished] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(false)
 
-  // --- 1. Gatekeeper Fix (Matching Webhook/Verify Logic) ---
+  // 1. Sync Params and Test Data
+  useEffect(() => {
+    if (params?.id) {
+      const testId = params.id as string
+      setId(testId)
+      // Check if data exists in lib/test-data.ts
+      const data = DOMAIN_TESTS[testId] || DOMAIN_TESTS['1']
+      setTestData(data)
+    }
+  }, [params])
+
+  // 2. Access Verification
   useEffect(() => {
     const verifyAccess = async () => {
-      if (authLoading || !id) return
-      if (!user) { setIsAuthorized(false); setVerifying(false); return }
+      if (authLoading || !id || !user) return
 
       try {
-        // FIX: .limit(1) and String(id) for exact matching
         const { data: orders, error } = await supabase
           .from('orders')
           .select('status')
@@ -60,10 +65,15 @@ export default function InternshipAssessment() {
         setVerifying(false)
       }
     }
-    verifyAccess()
+
+    if (id && user) verifyAccess()
+    else if (id && !authLoading && !user) {
+      setVerifying(false)
+      setIsAuthorized(false)
+    }
   }, [user, id, authLoading])
 
-  // --- 2. Timer & Persistence ---
+  // 3. Timer Logic
   useEffect(() => {
     if (!isAuthorized || isFinished || !id) return
     if (timeLeft <= 0) { finishTest(); return }
@@ -79,7 +89,7 @@ export default function InternshipAssessment() {
   }, [timeLeft, isAuthorized, isFinished, id])
 
   const finishTest = async (overrideScore?: number) => {
-    if (submitting || !testData) return
+    if (submitting || !testData || !id || !user) return
     setSubmitting(true)
     
     const correctCount = Object.entries(answers).reduce((acc, [idx, ans]) => {
@@ -91,7 +101,7 @@ export default function InternshipAssessment() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: user?.id,
+          userId: user.id,
           testId: id,
           score: overrideScore ?? correctCount,
           total: testData.questions.length
@@ -104,88 +114,70 @@ export default function InternshipAssessment() {
     }
   }
 
-  const handleSelectAnswer = (optionIdx: number) => {
-    setAnswers(prev => ({ ...prev, [currentIdx]: optionIdx }))
-  }
-
-  // --- 3. Crash Prevention Guards ---
-  if (verifying || authLoading || !id) return <LoadingScreen />
+  if (authLoading || verifying || !id || !testData) return <LoadingScreen />
 
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-[#0A2647] flex items-center justify-center p-6 text-white text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md">
-          <Lock size={80} className="mx-auto mb-6 text-yellow-400 p-4 bg-yellow-400/10 rounded-full" />
+          <Lock size={80} className="mx-auto mb-6 text-yellow-400" />
           <h1 className="text-4xl font-black mb-4">Access Denied</h1>
-          <p className="opacity-70 mb-8">Payment not verified for this test. Please contact support if you already paid.</p>
-          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 hover:bg-yellow-600 text-[#0A2647] font-bold py-6 px-10 rounded-2xl w-full">
-            Back to Dashboard
+          <p className="opacity-70 mb-8">Payment verification failed. Please ensure you have paid for this specific assessment.</p>
+          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 text-[#0A2647] w-full font-bold py-6 rounded-xl">
+            Check Internships
           </Button>
         </motion.div>
       </div>
     )
   }
 
-  if (isFinished) {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6 text-center">
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white p-16 rounded-[4rem] shadow-2xl max-w-lg w-full">
-           <h1 className="text-4xl font-black text-[#0A2647] mb-8">Test Submitted</h1>
-           <p className="text-slate-500 mb-10">Your performance has been recorded successfully.</p>
-           <Button onClick={() => router.push('/')} className="w-full py-8 rounded-[2rem] font-black bg-[#0A2647] text-white">
-             Return to Home
-           </Button>
-        </motion.div>
-      </div>
-    )
-  }
-
-  // Final check to ensure testData exists before rendering UI
-  if (!testData) return <div className="p-10 text-center">Loading Assessment Data...</div>
+  if (isFinished) return <div className="min-h-screen flex flex-col items-center justify-center font-bold"><h1>Test Submitted Successfully!</h1><Button onClick={() => router.push('/dashboard')} className="mt-4">Go to Dashboard</Button></div>
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] font-sans">
-      <header className="fixed top-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-b z-40 px-6 md:px-12 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Timer size={24} className={timeLeft < 300 ? "text-red-500 animate-pulse" : "text-[#0A2647]"} />
-          <span className="text-2xl font-black font-mono">
-            {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
-          </span>
+    <div className="min-h-screen bg-[#F1F5F9]">
+      <header className="fixed top-0 w-full h-20 bg-white border-b z-40 px-6 flex items-center justify-between shadow-sm">
+        <div className="font-mono font-black text-xl text-[#0A2647]">
+          {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
         </div>
-        <Button onClick={() => setShowSidebar(!showSidebar)} variant="outline" className="lg:hidden"><LayoutGrid /></Button>
+        <div className="text-sm font-bold text-slate-400 bg-slate-50 px-4 py-2 rounded-full border">Secure Exam Mode</div>
       </header>
 
-      <div className="pt-32 pb-20 px-4 md:px-12 max-w-7xl mx-auto grid lg:grid-cols-[1fr_350px] gap-10">
-        <main>
-          <motion.div key={currentIdx} className="bg-white p-8 md:p-16 rounded-[3.5rem] shadow-sm border border-slate-100">
-            <h2 className="text-2xl md:text-3xl font-black text-[#0A2647] mb-12">
-              {testData.questions[currentIdx]?.q}
-            </h2>
-            <div className="grid gap-4">
-              {testData.questions[currentIdx]?.options.map((option, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSelectAnswer(i)}
-                  className={cn(
-                    "w-full text-left p-6 rounded-3xl border-2 font-bold transition-all",
-                    answers[currentIdx] === i ? "border-[#0A2647] bg-blue-50" : "border-slate-100 bg-white"
-                  )}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-            <div className="mt-16 flex justify-between">
-              <Button disabled={currentIdx === 0} onClick={() => setCurrentIdx(prev => prev - 1)}>Previous</Button>
-              {currentIdx === testData.questions.length - 1 ? (
-                <Button onClick={() => finishTest()} className="bg-emerald-500 text-white">Submit Test</Button>
-              ) : (
-                <Button onClick={() => setCurrentIdx(prev => prev + 1)} className="bg-[#0A2647] text-white">Next Question</Button>
-              )}
-            </div>
-          </motion.div>
-        </main>
-      </div>
+      <main className="pt-32 px-4 max-w-4xl mx-auto pb-20">
+        <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+          <div className="mb-8">
+            <p className="text-xs font-black text-blue-600 uppercase mb-2">Question {currentIdx + 1} of {testData.questions.length}</p>
+            <Progress value={((currentIdx + 1) / testData.questions.length) * 100} className="h-2" />
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-black text-[#0A2647] mb-10 leading-tight">
+            {testData.questions[currentIdx]?.q}
+          </h2>
+
+          <div className="grid gap-4">
+            {testData.questions[currentIdx]?.options.map((opt: string, i: number) => (
+              <button 
+                key={i} 
+                onClick={() => setAnswers(prev => ({...prev, [currentIdx]: i}))}
+                className={cn(
+                  "w-full text-left p-6 rounded-2xl border-2 transition-all font-bold",
+                  answers[currentIdx] === i ? "border-[#0A2647] bg-blue-50 text-[#0A2647]" : "border-slate-100 text-slate-600 hover:border-slate-200"
+                )}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-12 flex justify-between">
+            <Button variant="ghost" disabled={currentIdx === 0} onClick={() => setCurrentIdx(prev => prev - 1)} className="font-bold">Previous</Button>
+            {currentIdx === testData.questions.length - 1 ? (
+              <Button onClick={() => finishTest()} className="bg-emerald-600 text-white px-10 h-14 rounded-xl font-black">Submit Test</Button>
+            ) : (
+              <Button onClick={() => setCurrentIdx(prev => prev + 1)} className="bg-[#0A2647] text-white px-10 h-14 rounded-xl font-black">Next <ChevronRight className="ml-2" size={18} /></Button>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
