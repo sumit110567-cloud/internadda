@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           status: 'PAID',
           updated_at: new Date().toISOString()
         })
-        .eq('cf_order_id', cashfreeOrderId)
+        .eq('cf_order_id', orderId)
         .select();
 
       if (error) {
