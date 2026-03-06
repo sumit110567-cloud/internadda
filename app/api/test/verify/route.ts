@@ -14,15 +14,16 @@ export async function POST(req: Request) {
     }
 
     // 2. Check the database for a successful 'PAID' order
-    const { data: order, error } = await supabase
+    // Fix: Using .limit(1) and checking length instead of .single() to avoid 406 errors
+    const { data: orders, error } = await supabase
       .from('orders')
       .select('status')
       .eq('user_id', user.id)
       .eq('test_id', String(testId))
       .eq('status', 'PAID')
-      .single()
+      .limit(1)
 
-    if (error || !order) {
+    if (error || !orders || orders.length === 0) {
       return NextResponse.json({ authorized: false, message: "Payment not verified" }, { status: 403 })
     }
 
