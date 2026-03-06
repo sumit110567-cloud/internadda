@@ -1,5 +1,6 @@
-import Image from 'next/image'
 'use client'
+
+import Image from 'next/image'
 // app/test/[code]/page.tsx — Student Assessment
 // NO login required. Fetches test data from Supabase using the code in the URL.
 
