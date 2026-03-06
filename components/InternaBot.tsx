@@ -2,6 +2,7 @@
 // components/InternaBot.tsx
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { usePathname } from 'next/navigation' // Added for page restriction
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Send, RotateCcw } from 'lucide-react'
 import Image from 'next/image'
@@ -15,7 +16,6 @@ interface Message {
 }
 
 // ── Prompt formatting: raw text → React nodes ─────────────────────────────────
-// Handles: **bold**, numbered lists, bullet lists, newlines
 function FormattedMessage({ text }: { text: string }) {
   const lines = text.split('\n')
 
@@ -118,11 +118,18 @@ const QUICK_PROMPTS = [
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function InternaBot() {
+  const pathname = usePathname() // Hooks must be at the top
   const [isOpen, setIsOpen]     = useState(false)
   const [input, setInput]       = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const [msgId, setMsgId]       = useState(100)
+
+  // Restriction logic: check if the current page should hide the bot
+  const isRestrictedPage = 
+    pathname.startsWith('/test') || 
+    pathname.startsWith('/courses') || 
+    pathname.startsWith('/apply')
 
   const nextId = () => { setMsgId(p => p + 1); return msgId }
 
@@ -188,6 +195,9 @@ export function InternaBot() {
       send(lastUser.content)
     }
   }
+
+  // If we are on a restricted page, do not render anything
+  if (isRestrictedPage) return null
 
   const showQuick = messages.length === 1 && !isLoading
 
