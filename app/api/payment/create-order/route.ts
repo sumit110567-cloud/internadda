@@ -52,7 +52,7 @@ export async function POST(req: Request) {
           customer_phone: '9999999999',
         },
         order_meta: {
-          return_url: `${req.headers.get('origin')}/exam/${testId}`,
+          return_url: `${req.headers.get('origin')}/test/${testId}`,
         },
       }),
     })
