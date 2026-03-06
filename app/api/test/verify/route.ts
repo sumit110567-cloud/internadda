@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Check the database for a successful 'PAID' order
-    // Fix: Using .limit(1) and checking length instead of .single() to avoid 406 errors
+    // Fix: Using .limit(1) and checking length instead of .single() to avoid 406/Multiple-Rows errors
     const { data: orders, error } = await supabase
       .from('orders')
       .select('status')
