@@ -1,5 +1,6 @@
-import Image from 'next/image'
 'use client'
+
+import Image from 'next/image'
 // app/test/page.tsx — Admin Panel
 // Admin: password only (Intern@2122), no Supabase auth
 // Student: opens /test/CODE — no login at all
