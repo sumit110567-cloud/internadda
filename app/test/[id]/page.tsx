@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Timer, Lock, ChevronRight, LayoutGrid, AlertCircle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Timer, Lock, ChevronRight, LayoutGrid } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { DOMAIN_TESTS } from '@/lib/test-data'
@@ -14,10 +14,14 @@ import { cn } from '@/lib/utils'
 
 export default function InternshipAssessment() {
   const params = useParams()
-  const id = params?.id as string // Safe access for params
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   
+  // 1. Safe ID and Data Fetching
+  const id = params?.id as string
+  // Fallback to first test if ID is not found in DOMAIN_TESTS to prevent "Test not found"
+  const testData = DOMAIN_TESTS[id] || Object.values(DOMAIN_TESTS)[0]
+
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [verifying, setVerifying] = useState(true)
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -25,26 +29,17 @@ export default function InternshipAssessment() {
   const [timeLeft, setTimeLeft] = useState(1800) 
   const [isFinished, setIsFinished] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(false)
-
-  // 1. Safe Test Data Fetching
-  const testData = id ? DOMAIN_TESTS[id] : null
 
   // 2. Access Verification
   useEffect(() => {
     const verifyAccess = async () => {
-      if (authLoading) return
-      if (!user || !id) { 
-        setIsAuthorized(false)
-        setVerifying(false)
-        return 
-      }
+      if (authLoading || !id) return
 
       try {
         const { data: orders, error } = await supabase
           .from('orders')
           .select('status')
-          .eq('user_id', user.id)
+          .eq('user_id', user?.id)
           .eq('test_id', String(id))
           .eq('status', 'PAID')
           .limit(1)
@@ -62,7 +57,12 @@ export default function InternshipAssessment() {
         setVerifying(false)
       }
     }
-    verifyAccess()
+    
+    if (user) verifyAccess()
+    else if (!authLoading) {
+      setVerifying(false)
+      setIsAuthorized(false)
+    }
   }, [user, id, authLoading])
 
   // 3. Timer Logic
@@ -81,11 +81,11 @@ export default function InternshipAssessment() {
   }, [timeLeft, isAuthorized, isFinished, id])
 
   const finishTest = async (overrideScore?: number) => {
-    if (submitting || !testData) return
+    if (submitting || !testData || !user) return
     setSubmitting(true)
     
     const correctCount = Object.entries(answers).reduce((acc, [idx, ans]) => {
-      return ans === testData.questions[parseInt(idx)].correct ? acc + 1 : acc
+      return ans === testData.questions[parseInt(idx)]?.correct ? acc + 1 : acc
     }, 0)
 
     try {
@@ -93,7 +93,7 @@ export default function InternshipAssessment() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: user?.id,
+          userId: user.id,
           testId: id,
           score: overrideScore ?? correctCount,
           total: testData.questions.length
@@ -106,54 +106,81 @@ export default function InternshipAssessment() {
     }
   }
 
-  // Error Handling for Missing Test Data
-  if (!testData && !verifying) {
-    return <div className="p-10 text-center">Test not found. Please contact support.</div>
-  }
-
-  if (verifying || authLoading) return <LoadingScreen />
+  if (authLoading || verifying) return <LoadingScreen />
 
   if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-[#0A2647] flex items-center justify-center p-6 text-white text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md">
-          <Lock size={80} className="mx-auto mb-6 text-yellow-400 p-4 bg-yellow-400/10 rounded-full" />
-          <h1 className="text-4xl font-black mb-4 tracking-tighter">Access Denied</h1>
-          <p className="opacity-70 mb-8">This assessment is restricted. Please complete your enrollment.</p>
-          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 hover:bg-yellow-600 text-[#0A2647] font-bold py-7 px-10 rounded-2xl w-full">
-            Back to Dashboard
+          <Lock size={80} className="mx-auto mb-6 text-yellow-400" />
+          <h1 className="text-4xl font-black mb-4">Access Denied</h1>
+          <p className="opacity-70 mb-8">Payment verification failed or session expired.</p>
+          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 text-[#0A2647] w-full font-bold py-6 rounded-xl">
+            Go to Internships
           </Button>
         </motion.div>
       </div>
     )
   }
 
-  // --- UI Logic (Ensure testData exists before accessing questions) ---
-  if (isFinished) return <div className="text-center p-20"><h1>Test Finished!</h1><Button onClick={() => router.push('/')}>Home</Button></div>
+  if (isFinished) return <div className="min-h-screen flex items-center justify-center font-bold text-2xl">Submission Successful! Redirecting... {setTimeout(() => router.push('/dashboard'), 2000)}</div>
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9]">
-      <header className="fixed top-0 w-full h-20 bg-white border-b z-40 px-6 flex items-center justify-between">
-        <span className="font-black text-[#0A2647]">Time: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</span>
+    <div className="min-h-screen bg-[#F1F5F9] pb-20">
+      <header className="fixed top-0 w-full h-20 bg-white border-b z-40 px-6 flex items-center justify-between shadow-sm">
+        <div className="font-mono font-black text-xl text-[#0A2647]">
+          TIME: {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
+        </div>
+        <div className="text-sm font-bold text-slate-400">Proctored Session</div>
       </header>
 
-      <main className="pt-32 px-4 max-w-5xl mx-auto">
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-          <h2 className="text-2xl font-black mb-8">{testData.questions[currentIdx]?.q}</h2>
+      <main className="pt-32 px-4 max-w-4xl mx-auto">
+        <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+          <div className="mb-8">
+            <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-2">Question {currentIdx + 1} of {testData.questions.length}</p>
+            <Progress value={((currentIdx + 1) / testData.questions.length) * 100} className="h-2" />
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-black text-[#0A2647] mb-10 leading-tight">
+            {testData.questions[currentIdx]?.q}
+          </h2>
+
           <div className="grid gap-4">
             {testData.questions[currentIdx]?.options.map((opt, i) => (
-              <button key={i} onClick={() => setAnswers(prev => ({...prev, [currentIdx]: i}))}
-                className={cn("w-full text-left p-6 rounded-2xl border-2", answers[currentIdx] === i ? "border-blue-600 bg-blue-50" : "border-slate-100")}>
+              <button 
+                key={i} 
+                onClick={() => setAnswers(prev => ({...prev, [currentIdx]: i}))}
+                className={cn(
+                  "w-full text-left p-6 rounded-2xl border-2 transition-all font-bold",
+                  answers[currentIdx] === i 
+                    ? "border-[#0A2647] bg-blue-50 text-[#0A2647]" 
+                    : "border-slate-100 hover:border-slate-200 text-slate-600"
+                )}
+              >
                 {opt}
               </button>
             ))}
           </div>
-          <div className="mt-10 flex justify-between">
-            <Button disabled={currentIdx === 0} onClick={() => setCurrentIdx(prev => prev - 1)}>Prev</Button>
-            {currentIdx === testData.questions.length - 1 
-              ? <Button onClick={() => finishTest()} className="bg-emerald-500 text-white">Submit</Button>
-              : <Button onClick={() => setCurrentIdx(prev => prev + 1)}>Next</Button>
-            }
+
+          <div className="mt-12 flex justify-between items-center">
+            <Button 
+              variant="ghost" 
+              disabled={currentIdx === 0} 
+              onClick={() => setCurrentIdx(prev => prev - 1)}
+              className="font-bold"
+            >
+              Previous
+            </Button>
+            
+            {currentIdx === testData.questions.length - 1 ? (
+              <Button onClick={() => finishTest()} className="bg-emerald-600 hover:bg-emerald-700 text-white px-10 h-14 rounded-xl font-black shadow-lg shadow-emerald-200">
+                Submit Test
+              </Button>
+            ) : (
+              <Button onClick={() => setCurrentIdx(prev => prev + 1)} className="bg-[#0A2647] hover:bg-blue-900 text-white px-10 h-14 rounded-xl font-black">
+                Next <ChevronRight className="ml-2" size={18} />
+              </Button>
+            )}
           </div>
         </div>
       </main>
