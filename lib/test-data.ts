@@ -145,3 +145,6 @@ export function getGrade(pct: number): { grade: string; label: string; color: st
   if (pct >= 40) return { grade: 'C',  label: 'Average',     color: '#d97706' }
   return              { grade: 'D',  label: 'Needs Work',   color: '#e11d48' }
 }
+
+// Backward-compatibility alias — used by any legacy imports
+export const DOMAIN_TESTS = QUESTION_BANK
