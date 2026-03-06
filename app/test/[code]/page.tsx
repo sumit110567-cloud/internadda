@@ -15,13 +15,18 @@ import { getQuestions, getGrade } from '@/lib/test-data'
 import type { Question } from '@/lib/test-data'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Initialize Supabase Client directly for public access
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
 interface TestMeta {
-  code: string; name: string; university: string; sector: string; duration: number
+  code: string; 
+  name: string; 
+  university: string; 
+  sector: string; 
+  duration: number
 }
 
 type Phase = 'loading' | 'notfound' | 'lobby' | 'active' | 'result'
@@ -54,7 +59,6 @@ function Lobby({ meta, onStart }: { meta: TestMeta; onStart: () => void }) {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-md"
         >
-          {/* Dark header */}
           <div className="bg-[#1a1063] rounded-t-2xl px-6 py-7 text-center relative overflow-hidden">
             <div aria-hidden className="absolute inset-0 opacity-[0.04]">
               <svg width="100%" height="100%"><defs>
@@ -76,16 +80,13 @@ function Lobby({ meta, onStart }: { meta: TestMeta; onStart: () => void }) {
             </div>
           </div>
 
-          {/* White body */}
           <div className="bg-white border border-slate-200 border-t-0 rounded-b-2xl p-6">
-            {/* Sector pill */}
             <div className="flex justify-center mb-5">
               <span className="text-[10.5px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 uppercase tracking-widest">
                 {meta.sector}
               </span>
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-2.5 mb-4">
               {[['10', 'Questions'], [`${meta.duration}m`, 'Duration'], ['40', 'Max Marks']].map(([v, l]) => (
                 <div key={l} className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-center">
@@ -95,7 +96,6 @@ function Lobby({ meta, onStart }: { meta: TestMeta; onStart: () => void }) {
               ))}
             </div>
 
-            {/* Marking */}
             <div className="flex gap-2 mb-5">
               <div className="flex-1 bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-center">
                 <p className="text-[12.5px] font-bold text-emerald-700">+4 per correct</p>
@@ -105,7 +105,6 @@ function Lobby({ meta, onStart }: { meta: TestMeta; onStart: () => void }) {
               </div>
             </div>
 
-            {/* Rules */}
             <ul className="space-y-1.5 mb-6">
               {[
                 'One correct answer per question.',
@@ -174,7 +173,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Topbar */}
       <header className="bg-white border-b border-slate-100 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 min-w-0">
@@ -186,7 +184,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
             <span className="font-mono font-bold text-[13px] tabular-nums">{m}:{s.toString().padStart(2, '0')}</span>
           </div>
         </div>
-        {/* Progress bar */}
         <div className="h-[2px] bg-slate-100">
           <div className="h-full bg-gradient-to-r from-[#1a1063] to-indigo-500 transition-all duration-500"
             style={{ width: `${((currentQ + 1) / 10) * 100}%` }} />
@@ -194,7 +191,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
       </header>
 
       <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 pb-16">
-        {/* Question dots */}
         <div className="flex flex-wrap gap-1.5 mb-6">
           {questions.map((_, i) => (
             <button key={i} onClick={() => goTo(i, i > currentQ ? 1 : -1)}
@@ -209,7 +205,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
           ))}
         </div>
 
-        {/* Question */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div key={currentQ}
             initial={{ opacity: 0, x: dir * 24 }}
@@ -248,7 +243,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation */}
         <div className="flex items-center gap-2.5">
           {currentQ > 0 && (
             <button onClick={() => goTo(currentQ - 1, -1)}
@@ -269,7 +263,6 @@ function ActiveTest({ meta, questions, onSubmit }: {
           )}
         </div>
 
-        {/* Unanswered warning */}
         {currentQ === 9 && answers.some(a => a === null) && (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="mt-3 text-[12px] text-amber-600 font-semibold flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
@@ -303,8 +296,6 @@ function Result({ meta, questions, answers, timeUsed }: {
     <div className="min-h-screen bg-slate-50">
       <Nav />
       <div className="max-w-2xl mx-auto px-4 py-8 pb-16">
-
-        {/* Score card */}
         <motion.div
           initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -341,8 +332,8 @@ function Result({ meta, questions, answers, timeUsed }: {
 
             <div className="flex flex-wrap justify-center gap-2">
               {[
-                { l: `✓ ${correct} Correct`,  c: 'rgba(5,150,105,0.2)',   b: 'rgba(5,150,105,0.3)',   t: '#6ee7b7' },
-                { l: `✗ ${wrong} Wrong`,       c: 'rgba(225,29,72,0.18)',  b: 'rgba(225,29,72,0.3)',   t: '#fca5a5' },
+                { l: `✓ ${correct} Correct`,  c: 'rgba(5,150,105,0.2)',  b: 'rgba(5,150,105,0.3)',   t: '#6ee7b7' },
+                { l: `✗ ${wrong} Wrong`,      c: 'rgba(225,29,72,0.18)', b: 'rgba(225,29,72,0.3)',   t: '#fca5a5' },
                 { l: `⊘ ${skipped} Skipped`,  c: 'rgba(217,119,6,0.18)', b: 'rgba(217,119,6,0.3)',   t: '#fcd34d' },
                 { l: `⏱ ${mU}m ${sU}s`,        c: 'rgba(255,255,255,0.06)',b: 'rgba(255,255,255,0.12)',t: 'rgba(255,255,255,0.6)' },
               ].map(c => (
@@ -355,7 +346,6 @@ function Result({ meta, questions, answers, timeUsed }: {
           </div>
         </motion.div>
 
-        {/* Actions */}
         <div className="flex gap-2.5 mb-4 no-print">
           <button onClick={() => window.print()}
             className="flex-1 h-11 flex items-center justify-center gap-2 text-[13px] font-bold text-white bg-[#1a1063] hover:bg-indigo-900 rounded-xl shadow-sm transition-all active:scale-[0.98]">
@@ -367,7 +357,6 @@ function Result({ meta, questions, answers, timeUsed }: {
           </Link>
         </div>
 
-        {/* Answer breakdown */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden mb-4">
           <div className="px-5 py-3.5 border-b border-slate-100">
             <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest">Answer Breakdown</p>
@@ -409,7 +398,6 @@ function Result({ meta, questions, answers, timeUsed }: {
           })}
         </div>
 
-        {/* Internship CTA — clean */}
         <div className="bg-[#1a1063] rounded-2xl px-6 py-7 text-center relative overflow-hidden no-print">
           <div aria-hidden className="absolute inset-0 opacity-[0.04]">
             <svg width="100%" height="100%"><defs>
@@ -433,7 +421,6 @@ function Result({ meta, questions, answers, timeUsed }: {
             </Link>
           </div>
         </div>
-
       </div>
       <style>{`
         @media print {
@@ -457,8 +444,7 @@ function NotFound() {
         </div>
         <h2 className="text-[1.2rem] font-extrabold text-slate-900 mb-2">Test not found</h2>
         <p className="text-slate-500 text-[13px] max-w-xs mb-6">
-          This code doesn't exist or was deleted. Ask your admin to generate a new link from{' '}
-          <span className="font-semibold text-indigo-600">internadda.com/test</span>.
+          This code doesn't exist or was deleted. Ask your admin to generate a new link.
         </p>
         <Link href="/"
           className="inline-flex items-center gap-2 bg-[#1a1063] text-white font-bold text-[13px] px-5 py-2.5 rounded-xl">
@@ -469,7 +455,7 @@ function NotFound() {
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function TestPage() {
   const params = useParams<{ code: string }>()
   const [phase, setPhase]       = useState<Phase>('loading')
@@ -479,30 +465,37 @@ export default function TestPage() {
   const [finalTime, setFinalTime] = useState(0)
 
   useEffect(() => {
+    // Standardize code from URL params
     const code = (Array.isArray(params?.code) ? params.code[0] : params?.code)?.toUpperCase()
     if (!code) { setPhase('notfound'); return }
 
-    // Fetch from Supabase — works on any device, any browser, no login
+    // Direct Supabase fetch - Publicly accessible
     supabase
       .from('ia_tests')
       .select('*')
       .eq('code', code)
       .single()
       .then(({ data, error }) => {
-        if (error || !data) { setPhase('notfound'); return }
-        setMeta(data as TestMeta)
-        setPhase('lobby')
+        if (error || !data) { 
+          setPhase('notfound')
+        } else {
+          setMeta(data as TestMeta)
+          setPhase('lobby')
+        }
       })
   }, [params])
 
   const handleStart = () => {
     if (!meta) return
+    // Fetch relevant questions based on the sector defined in metadata
     setQuestions(getQuestions(meta.sector as any))
     setPhase('active')
   }
 
   const handleSubmit = (answers: (number | null)[], t: number) => {
-    setFinalAns(answers); setFinalTime(t); setPhase('result')
+    setFinalAns(answers)
+    setFinalTime(t)
+    setPhase('result')
   }
 
   if (phase === 'loading') return (
