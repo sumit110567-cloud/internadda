@@ -128,7 +128,7 @@ export function InternaBot() {
   // Restriction logic: check if the current page should hide the bot
   const isRestrictedPage = 
     pathname.startsWith('/test') || 
-    pathname.startsWith('/courses') || 
+    pathname.startsWith('/courses/') || 
     pathname.startsWith('/apply')
 
   const nextId = () => { setMsgId(p => p + 1); return msgId }
