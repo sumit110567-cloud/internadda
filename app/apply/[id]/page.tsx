@@ -186,7 +186,7 @@ export default function ApplyPage() {
           education,
           phone,
           couponCode: appliedCoupon?.code || null,
-          returnUrl: `${window.location.origin}/exam/${id}`,
+          returnUrl: `${window.location.origin}/test/${id}`,
         }),
       })
 
