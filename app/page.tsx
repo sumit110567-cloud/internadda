@@ -188,7 +188,7 @@ const METRICS = [
   { icon: Award,        label: 'Established',        value: '2020',  color: '#d97706' },
 ]
 
-const PARTNERS = ['Delhi University', 'LAREX', 'Tracxn', 'Arjuna AI']
+const PARTNERS = ['Delhi University', 'Tracxn', 'UpForge']
 
 const WHY = [
   { icon: Shield,        title: '100% Verified Employers',  body: 'Every company is vetted for legitimacy before listing. No fake roles, no misleading offers.',                         accent: '#4f46e5', bg: '#eef2ff' },
