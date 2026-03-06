@@ -1,3 +1,4 @@
+import Image from 'next/image'
 'use client'
 // app/test/page.tsx — Admin Panel
 // Admin: password only (Intern@2122), no Supabase auth
@@ -77,7 +78,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
       <nav className="border-b border-slate-100 h-14 flex items-center px-6 justify-between relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#1a1063] flex items-center justify-center text-white text-[11px] font-black">I</div>
+          <div className="relative w-7 h-7 rounded-lg overflow-hidden flex-shrink-0"><Image src="/logo.jpg" alt="Internadda" fill className="object-cover" /></div>
           <span className="font-black text-[15px] text-slate-900">Intern<span className="text-indigo-600">adda</span></span>
         </div>
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Admin Portal</span>
@@ -203,7 +204,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       {/* Header */}
       <header className="bg-white border-b border-slate-100 h-14 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#1a1063] flex items-center justify-center text-white text-[11px] font-black">I</div>
+          <div className="relative w-7 h-7 rounded-lg overflow-hidden flex-shrink-0"><Image src="/logo.jpg" alt="Internadda" fill className="object-cover" /></div>
           <span className="font-black text-[15px] text-slate-900">Intern<span className="text-indigo-600">adda</span></span>
           <span className="hidden sm:inline text-[9px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full px-2 py-0.5 uppercase tracking-widest ml-1">
             Admin
