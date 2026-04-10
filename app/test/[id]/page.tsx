@@ -31,42 +31,42 @@ export default function InternshipAssessment() {
 
   // --- 1. Gatekeeper with Retry Logic (Fixes Access Denied) ---
   useEffect(() => {
-  if (authLoading || !user) return;
+    if (authLoading || !user) return;
 
-  let retryCount = 0;
-  const maxRetries = 5;
+    let retryCount = 0;
+    const maxRetries = 5;
 
-  const verifyAccess = async () => {
-    try {
-      const res = await fetch('/api/test/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ testId: id })
-      });
-      
-      const data = await res.json();
+    const verifyAccess = async () => {
+      try {
+        const res = await fetch('/api/test/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ testId: id })
+        });
+        
+        const data = await res.json();
 
-      if (data.authorized) {
-        setIsAuthorized(true);
-        setVerifying(false);
-      } else if (retryCount < maxRetries) {
-        retryCount++;
-        setTimeout(verifyAccess, 2000); // Wait 2 seconds and try again
-      } else {
-        setIsAuthorized(false);
-        setVerifying(false);
+        if (data.authorized) {
+          setIsAuthorized(true);
+          setVerifying(false);
+        } else if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(verifyAccess, 2000); // Wait 2 seconds and try again
+        } else {
+          setIsAuthorized(false);
+          setVerifying(false);
+        }
+      } catch (err) {
+        console.error("Verification failed", err);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(verifyAccess, 2000);
+        }
       }
-    } catch (err) {
-      console.error("Verification failed", err);
-      if (retryCount < maxRetries) {
-        retryCount++;
-        setTimeout(verifyAccess, 2000);
-      }
-    }
-  };
+    };
 
-  verifyAccess();
-}, [user, id, authLoading]);
+    verifyAccess();
+  }, [user, id, authLoading]);
 
   // --- 2. Advanced Anti-Cheat ---
   useEffect(() => {
