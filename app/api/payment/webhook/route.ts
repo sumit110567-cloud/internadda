@@ -1,90 +1,66 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import crypto from 'crypto';
+import { Cashfree } from 'cashfree-pg';
 
-// 1. Initialize Admin Client (Bypasses RLS to ensure status updates work)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  }
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+Cashfree.XClientId = process.env.CASHFREE_APP_ID!;
+Cashfree.XClientSecret = process.env.CASHFREE_SECRET_KEY!;
+Cashfree.XEnvironment = Cashfree.Environment.PRODUCTION;
 
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
-    const payload = JSON.parse(rawBody);
-
-    // DEBUG: Log incoming webhook type and IDs for troubleshooting
-    console.log('--- Webhook Processing Started ---');
-    console.log('Event Type:', payload.type);
-    console.log('Cashfree Order ID:', payload.data?.order?.order_id);
-
-    // 2. Verify Cashfree Signature
-    const ts = req.headers.get('x-webhook-timestamp');
     const signature = req.headers.get('x-webhook-signature');
-    const secretKey = process.env.CASHFREE_SECRET_KEY!;
 
-    const signatureData = ts + rawBody;
-    const expectedSignature = crypto
-      .createHmac('sha256', secretKey)
-      .update(signatureData)
-      .digest('base64');
-
-    if (signature !== expectedSignature) {
-      console.error('CRITICAL: Webhook Signature Mismatch.');
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+    if (!signature) {
+      return NextResponse.json({ error: 'No signature' }, { status: 400 });
     }
 
-    // 3. Handle Successful Payment
-    const eventType = payload.type;
-    const orderData = payload.data.order;
-    const paymentData = payload.data.payment;
+    const verifyResponse = Cashfree.PGWebhookVerify(rawBody, req.headers.get('x-webhook-timestamp')!, signature);
 
-    // Check for both direct success and charges success events
-    const isSuccess = (
-      (eventType === 'PAYMENT_SUCCESS_WEBHOOK' || eventType === 'PAYMENT_CHARGES_WEBHOOK') &&
-      paymentData.payment_status === 'SUCCESS'
-    );
+    if (!verifyResponse) {
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+    }
 
-    if (isSuccess) {
+    const payload = JSON.parse(rawBody);
+    const { data: orderData } = payload;
+
+    if (orderData.order_status === 'PAID') {
       const cashfreeOrderId = orderData.order_id;
 
-      // 4. Update Database to PAID
-      // This matches the 'cf_order_id' column in your orders table
-      const { error, data } = await supabaseAdmin
+      const { data: order, error: fetchError } = await supabaseAdmin
+        .from('orders')
+        .select('*')
+        .eq('cf_order_id', cashfreeOrderId)
+        .single();
+
+      if (fetchError || !order) {
+        console.error('Order not found:', cashfreeOrderId);
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      }
+
+      const { error: updateError } = await supabaseAdmin
         .from('orders')
         .update({ 
           status: 'PAID',
           updated_at: new Date().toISOString()
         })
-        .eq('cf_order_id', orderId)
-        .select();
+        .eq('cf_order_id', cashfreeOrderId);
 
-      if (error) {
-        console.error('DATABASE ERROR:', error.message);
-        return NextResponse.json({ error: 'DB Update Failed' }, { status: 500 });
+      if (updateError) {
+        throw updateError;
       }
 
-      if (!data || data.length === 0) {
-        // This warning usually means the 'cf_order_id' in Supabase doesn't match the one from Cashfree
-        console.warn(`WARNING: No matching order found in DB for cf_order_id: ${cashfreeOrderId}`);
-      } else {
-        console.log(`SUCCESS: Order ${cashfreeOrderId} updated to PAID for User: ${data[0].user_id}`);
-      }
-    } else {
-      console.log(`INFO: Event ${eventType} received, but payment status was: ${paymentData?.payment_status}`);
+      return NextResponse.json({ status: 'success' });
     }
 
-    console.log('--- Webhook Processing Finished ---');
-    return NextResponse.json({ status: 'ok' }, { status: 200 });
-
-  } catch (error) {
-    console.error('WEBHOOK CRASH:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ status: 'ignored' });
+  } catch (error: any) {
+    console.error('Webhook error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
