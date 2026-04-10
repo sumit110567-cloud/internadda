@@ -17,7 +17,7 @@ const footerLinks = {
     { label: 'Internships',       href: '/internships' },
     { label: 'Skill Courses',     href: '/courses' },
     { label: 'Hiring Partners',   href: '/hiring-partners' },
-    { label: 'Verify Certificate', href: 'https://upforge.org/verify' },
+    { label: 'Verify Certificate', href: 'https://upforge.org/registry' },
   ],
   Support: [
     { label: 'Help Center',   href: '/help-center' },
@@ -35,10 +35,10 @@ const footerLinks = {
 
 // ─── NEW: Upforge partner section links ──────────────────────────────────────
 const UPFORGE_LINKS = [
-  { label: 'Create Verified Profile', href: 'https://upforge.org/signup', description: 'Build your portfolio identity' },
-  { label: 'Skill Credibility Score', href: 'https://upforge.org/score', description: 'Measure your readiness' },
+  { label: 'Create Verified Profile', href: 'https://upforge.org/registry', description: 'Build your portfolio identity' },
+  { label: 'Skill Credibility Score', href: 'https://upforge.org', description: 'Measure your readiness' },
   { label: 'Verify Your Certificate', href: 'https://upforge.org/verify', description: 'Blockchain-backed credentials' },
-  { label: 'Student Success Stories', href: 'https://upforge.org/stories', description: 'Real student journeys' },
+  { label: 'Student Success Stories', href: 'https://upforge.org/blog', description: 'Real student journeys' },
 ]
 
 const SOCIALS = [
@@ -102,7 +102,7 @@ export function Footer() {
                     Browse Internships <ArrowUpRight size={14} />
                   </button>
                 </Link>
-                <Link href="https://upforge.org/signup" target="_blank" className="flex-shrink-0">
+                <Link href="https://upforge.org/registry" target="_blank" className="flex-shrink-0">
                   <button className="inline-flex items-center gap-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-white font-bold text-[13px] px-6 py-2.5 rounded-xl transition-all whitespace-nowrap border border-indigo-400/30">
                     <Verified size={14} /> Create Verified Profile
                   </button>
