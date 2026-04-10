@@ -31,31 +31,42 @@ export default function InternshipAssessment() {
 
   // --- 1. Gatekeeper with Retry Logic (Fixes Access Denied) ---
   useEffect(() => {
-    let retryCount = 0;
-    const maxRetries = 5; // Total 10 seconds of waiting time
+  if (authLoading || !user) return;
 
-const verifyAccess = async () => {
-  const { data: order, error } = await supabase
-    .from('orders')
-    .select('status')
-    .eq('user_id', user.id)
-    .eq('test_id', String(id)) // Force String comparison
-    .eq('status', 'PAID')
-    .maybeSingle()
+  let retryCount = 0;
+  const maxRetries = 5;
 
-  if (order) {
-    setIsAuthorized(true)
-    setVerifying(false)
-  } else if (retryCount < 5) {
-    retryCount++
-    setTimeout(verifyAccess, 1500) // Retry every 1.5 seconds
-  } else {
-    setIsAuthorized(false)
-    setVerifying(false)
-  }
-}
-    verifyAccess()
-  }, [user, id, authLoading])
+  const verifyAccess = async () => {
+    try {
+      const res = await fetch('/api/test/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ testId: id })
+      });
+      
+      const data = await res.json();
+
+      if (data.authorized) {
+        setIsAuthorized(true);
+        setVerifying(false);
+      } else if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(verifyAccess, 2000); // Wait 2 seconds and try again
+      } else {
+        setIsAuthorized(false);
+        setVerifying(false);
+      }
+    } catch (err) {
+      console.error("Verification failed", err);
+      if (retryCount < maxRetries) {
+        retryCount++;
+        setTimeout(verifyAccess, 2000);
+      }
+    }
+  };
+
+  verifyAccess();
+}, [user, id, authLoading]);
 
   // --- 2. Advanced Anti-Cheat ---
   useEffect(() => {
