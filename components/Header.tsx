@@ -21,13 +21,13 @@ import {
 
 // ── Announcement ticker data (UPGRADED with Upforge mentions) ─────────────────
 const ANNOUNCEMENTS = [
-  { icon: "✨", text: "Get verified on Upforge — 3x more interview calls", cta: "Verify Now", href: "https://upforge.org/registry", external: true },
+  { icon: "✨", text: "Get verified on Upforge — 3x more interview calls", cta: "Verify Now", href: "https://upforge.org/signup", external: true },
   { icon: "⚡", text: "15,000+ students placed globally this year",            cta: "Browse",    href: "/internships", external: false },
   { icon: "🚀", text: "New: Remote internships from 40+ countries",           cta: "View Now",  href: "/internships", external: false },
-  { icon: "🏆", text: "Upforge verified candidates get priority shortlisting", cta: "Get Verified", href: "https://upforge.org/registry", external: true },
+  { icon: "🏆", text: "Upforge verified candidates get priority shortlisting", cta: "Get Verified", href: "https://upforge.org/signup", external: true },
 ];
 
-// ── Nav links (UPGRADED: Added Upforge) ──────────────────────────────────────
+// ── Nav links ──────────────────────────────────────────────────────────────
 const NAV_LINKS = [
   { name: "Home",        href: "/" },
   { name: "Internships", href: "/internships" },
@@ -35,6 +35,9 @@ const NAV_LINKS = [
   { name: "Journal",     href: "/blog" },
   { name: "About",       href: "/about" },
 ];
+
+// ─── NEW: Upforge nav link (MUST BE DECLARED) ───────────────────────────────
+const UPFORGE_NAV = { name: "Verify Profile", href: "https://upforge.org/signup", external: true };
 
 export function Header() {
   const [isOpen,       setIsOpen]       = useState(false);
@@ -126,7 +129,7 @@ export function Header() {
       >
         <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-6">
 
-          {/* ── Logo (UPGRADED: tagline reflects global scope) ───────────────── */}
+          {/* ── Logo ─────────────────────────────────────────────────────── */}
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
             <div className="relative w-7 h-7 rounded-lg overflow-hidden flex-shrink-0 border border-indigo-100">
               <Image src="/logo.jpg" alt="InternAdda" fill className="object-cover" priority sizes="28px" />
@@ -135,10 +138,13 @@ export function Header() {
               <span className="text-[16px] font-black tracking-tight text-gray-900">
                 Intern<span className="text-indigo-600">adda</span>
               </span>
+              <span className="text-[8px] text-gray-400 tracking-[0.16em] uppercase hidden sm:block font-semibold">
+                Global Internship Hub
+              </span>
             </div>
           </Link>
 
-          {/* ── Desktop nav (UPGRADED: added Upforge link) ───────────────────── */}
+          {/* ── Desktop nav ──────────────────────────────────────────────── */}
           <nav className="hidden md:flex items-center gap-0 flex-1 justify-center" aria-label="Main navigation">
             {NAV_LINKS.map((link) => {
               const active = isActive(link.href);
@@ -157,7 +163,7 @@ export function Header() {
               );
             })}
             
-            {/* ─── NEW: Upforge nav link (highlighted) ──────────────────────── */}
+            {/* ─── Upforge nav link (highlighted) ──────────────────────── */}
             <a
               href={UPFORGE_NAV.href}
               target="_blank"
@@ -174,10 +180,10 @@ export function Header() {
             </a>
           </nav>
 
-          {/* ── Right side (UPGRADED: added Upforge badge + global badge) ───── */}
+          {/* ── Right side ───────────────────────────────────────────────── */}
           <div className="hidden md:flex items-center gap-3 flex-shrink-0">
 
-            {/* NEW: Global reach badge */}
+            {/* Global reach badge */}
             <div className="hidden xl:flex items-center gap-1.5 border border-cyan-200 bg-cyan-50 px-2.5 py-1 rounded-full">
               <Globe size={11} className="text-cyan-600" />
               <span className="text-[9.5px] font-bold text-cyan-700 uppercase tracking-[0.12em] whitespace-nowrap">
@@ -193,7 +199,7 @@ export function Header() {
               </span>
             </div>
 
-            {/* NEW: Upforge quick badge (desktop right side) */}
+            {/* Upforge quick badge */}
             <a
               href="https://upforge.org"
               target="_blank"
@@ -247,7 +253,7 @@ export function Header() {
                       <CreditCard size={13} className="text-gray-400 flex-shrink-0" />
                       <span className="text-[12.5px] font-medium text-gray-700">Orders</span>
                     </DropdownMenuItem>
-                    {/* NEW: Upforge link in user menu */}
+                    {/* Upforge link in user menu */}
                     <DropdownMenuItem onClick={() => window.open("https://upforge.org", "_blank")} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-purple-50">
                       <Verified size={13} className="text-purple-400 flex-shrink-0" />
                       <span className="text-[12.5px] font-medium text-purple-700">Verify on Upforge</span>
@@ -277,16 +283,6 @@ export function Header() {
                   <Zap size={11} className="fill-amber-400 text-amber-400" />
                   Get Started
                 </Link>
-                {/* NEW: Upforge CTA for non-logged in users */}
-                <a
-                  href="https://upforge.org/registry"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-300 text-purple-700 text-[11px] font-bold rounded-lg hover:bg-purple-50 transition-colors"
-                >
-                  <Verified size={10} />
-                  verify companies
-                </a>
               </>
             )}
           </div>
@@ -306,7 +302,7 @@ export function Header() {
       {/* ── Spacer so page content sits below fixed header ───────────────── */}
       <div className={showAnn ? "h-[92px]" : "h-14"} />
 
-      {/* ── Mobile drawer (UPGRADED: added Upforge link) ────────────────────── */}
+      {/* ── Mobile drawer ────────────────────────────────────────────────── */}
       <div
         className={`fixed inset-0 z-[99] md:hidden transition-all duration-200 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -345,7 +341,7 @@ export function Header() {
               );
             })}
             
-            {/* ─── NEW: Upforge mobile link ────────────────────────────────── */}
+            {/* Upforge mobile link */}
             <a
               href={UPFORGE_NAV.href}
               target="_blank"
@@ -361,7 +357,7 @@ export function Header() {
             </a>
           </div>
 
-          {/* Bottom bar (UPGRADED: added Upforge badge) */}
+          {/* Bottom bar */}
           <div className="px-5 py-4 flex flex-col gap-3 border-t border-gray-100 bg-gray-50/40">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
@@ -376,7 +372,7 @@ export function Header() {
               </div>
             </div>
             
-            {/* NEW: Upforge mobile badge */}
+            {/* Upforge mobile badge */}
             <a
               href="https://upforge.org"
               target="_blank"
