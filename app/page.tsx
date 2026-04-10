@@ -545,4 +545,169 @@ export default function Home() {
 
             <FadeUp className="mt-7 flex justify-center lg:hidden">
               <Link href="/internships"
-                className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-indigo-
+                className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-indigo-600 border border-indigo-200 px-5 py-2.5 rounded-lg bg-indigo-50">
+                View all internships <ArrowRight size={13} />
+              </Link>
+            </FadeUp>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            GLOBAL CITIES SECTION
+        ════════════════════════════════════════ */}
+        <section className="py-8 bg-slate-50/40 border-y border-slate-100">
+          <div className={CONTAINER}>
+            <FadeUp>
+              <GlobalCitiesWidget />
+            </FadeUp>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            WHY INTERNADDA (UPGRADED with Upforge card)
+        ════════════════════════════════════════ */}
+        <section className="py-12 sm:py-14 lg:py-16 bg-slate-50 border-y border-slate-100">
+          <div className={CONTAINER}>
+            <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16 xl:gap-20">
+
+              {/* Left — centered on mobile */}
+              <FadeUp className="text-center lg:text-left lg:w-64 xl:w-72 flex-shrink-0 mb-8 lg:mb-0 lg:sticky lg:top-24">
+                <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-2">Why InternAdda + Upforge</p>
+                <h2 className="text-[1.6rem] sm:text-[1.85rem] font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
+                  Built for students,<br />backed by verification.
+                </h2>
+                <p className="text-slate-500 text-[13.5px] leading-relaxed mb-5 max-w-sm mx-auto lg:mx-0">
+                  We verify every employer. Upforge verifies every candidate. The perfect match for your career.
+                </p>
+                <div className="flex justify-center lg:justify-start">
+                  <Link href="/about">
+                    <button className="inline-flex items-center gap-1.5 border border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:text-indigo-700 text-[12.5px] font-bold rounded-xl px-4 py-2.5 transition-all">
+                      About InternAdda <ArrowRight size={13} />
+                    </button>
+                  </Link>
+                </div>
+              </FadeUp>
+
+              {/* Cards */}
+              <div className="flex-1 grid sm:grid-cols-2 gap-3.5">
+                {WHY.map((w, i) => (
+                  <FadeUp key={w.title} delay={i * 0.06}>
+                    <motion.div
+                      whileHover={{ y: -3 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white border border-slate-200 rounded-2xl p-5 h-full hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/40 transition-all duration-300"
+                    >
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center mb-3.5"
+                        style={{ background: w.bg, border: `1px solid ${w.accent}22` }}>
+                        <w.icon size={16} style={{ color: w.accent }} />
+                      </div>
+                      <h3 className="text-[13.5px] font-bold text-slate-900 mb-1.5 leading-snug">{w.title}</h3>
+                      <p className="text-[12.5px] text-slate-500 leading-relaxed">{w.body}</p>
+                    </motion.div>
+                  </FadeUp>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            TESTIMONIALS
+        ════════════════════════════════════════ */}
+        <section className="py-12 sm:py-14 lg:py-16 bg-white">
+          <div className={CONTAINER}>
+
+            <FadeUp className="text-center lg:text-left mb-9">
+              <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-1.5">Student Stories</p>
+              <h2 className="text-[1.6rem] sm:text-[1.85rem] xl:text-[2rem] font-extrabold text-slate-900 tracking-tight">What our students say</h2>
+              <p className="text-slate-500 text-[13.5px] mt-1.5 max-w-sm mx-auto lg:mx-0">Real students, real results — no paid reviews.</p>
+            </FadeUp>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+              {TESTIMONIALS.map((t, i) => (
+                <FadeUp key={t.name} delay={i * 0.07}>
+                  <motion.figure
+                    whileHover={{ y: -3 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white border border-slate-200 rounded-2xl p-5 h-full flex flex-col hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/30 transition-all duration-300"
+                  >
+                    <div className="flex gap-0.5 mb-3.5">
+                      {[...Array(5)].map((_, j) => <Star key={j} size={12} className="fill-amber-400 text-amber-400" />)}
+                    </div>
+                    <blockquote className="text-[13px] text-slate-600 leading-relaxed flex-1 mb-4">"{t.quote}"</blockquote>
+                    <figcaption className="flex items-center gap-2.5 pt-3.5 border-t border-slate-100">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0 shadow-sm"
+                        style={{ background: t.color }}>{t.av}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12.5px] font-bold text-slate-900 leading-none mb-0.5">{t.name}</p>
+                        <p className="text-[10.5px] text-slate-400 truncate font-medium">{t.role}</p>
+                      </div>
+                      <CheckCircle size={14} className="text-emerald-500 flex-shrink-0" />
+                    </figcaption>
+                  </motion.figure>
+                </FadeUp>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            CTA BANNER (UPGRADED with Upforge integration)
+        ════════════════════════════════════════ */}
+        <section className="pb-12 sm:pb-14 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1520px] mx-auto">
+            <FadeUp>
+              <div className="relative rounded-2xl overflow-hidden" style={{ background: '#1a1063' }}>
+                <div aria-hidden className="absolute inset-0 opacity-[0.04] pointer-events-none">
+                  <svg width="100%" height="100%">
+                    <defs><pattern id="dp2" width="24" height="24" patternUnits="userSpaceOnUse">
+                      <circle cx="1.5" cy="1.5" r="1" fill="white" />
+                    </pattern></defs>
+                    <rect width="100%" height="100%" fill="url(#dp2)" />
+                  </svg>
+                </div>
+                <div aria-hidden className="absolute inset-y-0 right-0 w-1/2 pointer-events-none"
+                  style={{ background: 'linear-gradient(to left, rgba(99,102,241,0.28), transparent)' }} />
+
+                <div className="relative flex flex-col items-center text-center lg:flex-row lg:items-center lg:justify-between lg:text-left gap-7 px-6 sm:px-10 xl:px-14 py-10">
+                  <div className="max-w-lg">
+                    <p className="text-indigo-300 text-[10.5px] font-bold uppercase tracking-[0.16em] mb-2">Ready to begin?</p>
+                    <h2 className="text-[1.55rem] sm:text-[1.85rem] xl:text-[2.1rem] font-extrabold text-white leading-tight tracking-tight mb-2.5">
+                      Launch your career<br />with InternAdda + Upforge.
+                    </h2>
+                    <p className="text-indigo-200/80 text-[13.5px] leading-relaxed max-w-md mx-auto lg:mx-0">
+                      Discover internships globally. Get verified on Upforge. Stand out to recruiters worldwide.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 flex-shrink-0 w-full sm:w-auto">
+                    <Link href="/internships" className="w-full sm:w-auto">
+                      <button className="w-full inline-flex items-center justify-center gap-2 bg-white text-[#1a1063] hover:bg-slate-50 font-bold px-6 py-3 text-[13.5px] rounded-xl shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]">
+                        Browse Internships <ArrowRight size={14} />
+                      </button>
+                    </Link>
+                    <Link href="https://upforge.org/signup" target="_blank" className="w-full sm:w-auto">
+                      <button className="w-full inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-6 py-3 text-[13.5px] rounded-xl transition-all">
+                        <Verified size={13} /> Create Verified Profile
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="relative border-t border-white/10 px-6 sm:px-10 xl:px-14 py-3.5 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-1.5">
+                  {['Free to register', 'MSME · Govt. of India', '500+ verified companies', '40+ countries', 'Upforge verified'].map(item => (
+                    <span key={item} className="flex items-center gap-1.5 text-indigo-300/70 text-[11px] font-medium">
+                      <CheckCircle size={9} className="text-indigo-400/60 flex-shrink-0" />{item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </FadeUp>
+          </div>
+        </section>
+
+      </main>
+      <Footer />
+    </>
+  )
+}
