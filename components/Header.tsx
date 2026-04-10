@@ -36,9 +36,6 @@ const NAV_LINKS = [
   { name: "About",       href: "/about" },
 ];
 
-// ─── NEW: Upforge nav link (separate, highlighted) ───────────────────────────
-const UPFORGE_NAV = { name: "verify companies", href: "https://upforge.org/registry", external: true };
-
 export function Header() {
   const [isOpen,       setIsOpen]       = useState(false);
   const [scrolled,     setScrolled]     = useState(false);
