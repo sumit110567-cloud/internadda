@@ -21,10 +21,10 @@ import {
 
 // ── Announcement ticker data (UPGRADED with Upforge mentions) ─────────────────
 const ANNOUNCEMENTS = [
-  { icon: "✨", text: "Get verified on Upforge — 3x more interview calls", cta: "Verify Now", href: "https://upforge.org/signup", external: true },
+  { icon: "✨", text: "Get verified on Upforge — 3x more interview calls", cta: "Verify Now", href: "https://upforge.org/registry", external: true },
   { icon: "⚡", text: "15,000+ students placed globally this year",            cta: "Browse",    href: "/internships", external: false },
   { icon: "🚀", text: "New: Remote internships from 40+ countries",           cta: "View Now",  href: "/internships", external: false },
-  { icon: "🏆", text: "Upforge verified candidates get priority shortlisting", cta: "Get Verified", href: "https://upforge.org/signup", external: true },
+  { icon: "🏆", text: "Upforge verified candidates get priority shortlisting", cta: "Get Verified", href: "https://upforge.org/registry", external: true },
 ];
 
 // ── Nav links (UPGRADED: Added Upforge) ──────────────────────────────────────
@@ -37,7 +37,7 @@ const NAV_LINKS = [
 ];
 
 // ─── NEW: Upforge nav link (separate, highlighted) ───────────────────────────
-const UPFORGE_NAV = { name: "Verify Profile", href: "https://upforge.org/signup", external: true };
+const UPFORGE_NAV = { name: "verify companies", href: "https://upforge.org/registry", external: true };
 
 export function Header() {
   const [isOpen,       setIsOpen]       = useState(false);
@@ -137,9 +137,6 @@ export function Header() {
             <div className="flex items-baseline gap-2">
               <span className="text-[16px] font-black tracking-tight text-gray-900">
                 Intern<span className="text-indigo-600">adda</span>
-              </span>
-              <span className="text-[8px] text-gray-400 tracking-[0.16em] uppercase hidden sm:block font-semibold">
-                Global Internship Hub
               </span>
             </div>
           </Link>
@@ -285,13 +282,13 @@ export function Header() {
                 </Link>
                 {/* NEW: Upforge CTA for non-logged in users */}
                 <a
-                  href="https://upforge.org/signup"
+                  href="https://upforge.org/registry"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-300 text-purple-700 text-[11px] font-bold rounded-lg hover:bg-purple-50 transition-colors"
                 >
                   <Verified size={10} />
-                  Verify Profile
+                  verify companies
                 </a>
               </>
             )}
