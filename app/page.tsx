@@ -143,30 +143,57 @@ function Counter({ raw }: { raw: string }) {
   return <span ref={ref}>{n.toLocaleString('en-IN')}{hasSuffix ? '+' : ''}{suffix}</span>
 }
 
-// ─── NEW: Upforge CTA component for reuse ────────────────────────────────────
+// ─── UPDATED: Upforge Discovery CTA ────────────────────────────────────
 function UpforgeBadge({ variant = 'inline', className = '' }: { variant?: 'inline' | 'card'; className?: string }) {
+  
   if (variant === 'inline') {
     return (
-      <Link href="https://upforge.org" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full px-3 py-1 transition-all group ${className}`}>
+      <Link 
+        href="https://upforge.org" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className={`inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full px-3 py-1 transition-all group ${className}`}
+      >
         <Verified size={12} className="text-indigo-600" />
-        <span className="text-[10px] font-semibold text-indigo-700">Get Verified on Upforge</span>
+        <span className="text-[10px] font-semibold text-indigo-700">
+          Explore Student Startups on Upforge
+        </span>
         <ArrowRight size={10} className="text-indigo-500 group-hover:translate-x-0.5 transition-transform" />
       </Link>
     )
   }
+
   return (
-    <div className={`bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-4 ${className}`}>
+    <div className={`bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-4 hover:shadow-sm transition-all ${className}`}>
       <div className="flex items-start gap-3">
+        
         <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
           <Verified size={20} className="text-indigo-600" />
         </div>
+
         <div className="flex-1">
-          <h4 className="text-[13px] font-bold text-slate-800 mb-0.5">Build Your Verified Profile</h4>
-          <p className="text-[11px] text-slate-500 mb-2">Students with verified Upforge profiles receive 3x more interview calls</p>
-          <Link href="https://upforge.org/registry" target="_blank" className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800">
-            Create Free Profile → 
+          <h4 className="text-[13px] font-bold text-slate-800 mb-0.5">
+            Discover What Students Are Building
+          </h4>
+
+          <p className="text-[11px] text-slate-500 mb-2 leading-relaxed">
+            Explore real student startups, innovative ideas, and get inspired by what your peers are building. 
+            Learn, discover trends, and start your own journey.
+          </p>
+
+          <Link 
+            href="https://upforge.org" 
+            target="_blank" 
+            className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800"
+          >
+            Explore Upforge → 
           </Link>
+
+          <div className="mt-2 text-[10px] text-slate-400">
+            Free • No signup needed
+          </div>
         </div>
+
       </div>
     </div>
   )
