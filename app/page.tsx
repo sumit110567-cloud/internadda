@@ -5,17 +5,17 @@ import { Footer } from '@/components/Footer'
 import {
   ArrowRight, Users, Shield, Clock, Award,
   Zap, Star, MapPin, CheckCircle, TrendingUp,
-  GraduationCap, BookOpen, Globe, Verified,
+  GraduationCap, BookOpen, Globe, Verified, X,
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import { GlobeHero } from '@/components/globe-hero'  // ← CHANGED: replaced HeroVisual
+import { GlobeHero } from '@/components/globe-hero'
 import { useState, useEffect, useRef } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 
-// ─── SEO structured data (UPGRADED with Upforge & global scope) ──────────────
+// ─── SEO structured data ──────────────────────────────
 
 const featuredInternships = [
   {
@@ -41,7 +41,6 @@ const featuredInternships = [
   },
 ]
 
-// UPGRADED: Enhanced JSON-LD with global scope & Upforge partnership
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -51,7 +50,7 @@ const jsonLd = {
     '@type': 'ListItem', position: i + 1,
     item: {
       '@type': 'JobPosting', title: job.title,
-      description: `${job.title} at ${job.company}. Skills: ${job.skills.join(', ')}. Stipend: ${job.stipend}. Get your profile verified on Upforge for priority applications.`,
+      description: `${job.title} at ${job.company}. Skills: ${job.skills.join(', ')}. Stipend: ${job.stipend}.`,
       hiringOrganization: { '@type': 'Organization', name: job.company, sameAs: 'https://www.internadda.com' },
       jobLocationType: 'TELECOMMUTE',
       applicantLocationRequirements: { '@type': 'Country', name: 'Worldwide' },
@@ -60,24 +59,18 @@ const jsonLd = {
   })),
 }
 
-// UPGRADED: Organization schema with Upforge sameAs reference
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'InternAdda',
   url: 'https://www.internadda.com',
   logo: 'https://www.internadda.com/logo.jpg',
-  description: "Global internship discovery platform. Partnered with Upforge for verified student profiles and portfolio identity.",
+  description: "Global internship discovery platform. Partnered with Upforge for verified student profiles.",
   foundingDate: '2020',
-  sameAs: [
-    'https://upforge.org',
-    'https://twitter.com/internadda',
-    'https://linkedin.com/company/internadda',
-  ],
+  sameAs: ['https://upforge.org', 'https://twitter.com/internadda', 'https://linkedin.com/company/internadda'],
   address: { '@type': 'PostalAddress', addressLocality: 'New Delhi', addressCountry: 'IN' },
 }
 
-// NEW: Upforge partnership schema
 const upforgeSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -87,7 +80,7 @@ const upforgeSchema = {
   parentOrganization: { '@type': 'Organization', name: 'InternAdda', url: 'https://www.internadda.com' },
 }
 
-// ─── NEW: Global cities data for authority signals ───────────────────────────
+// ─── Global cities data ───────────────────────────────
 const GLOBAL_CITIES = [
   { name: 'Mumbai', country: 'India', flag: '🇮🇳', internships: 2340 },
   { name: 'Bangalore', country: 'India', flag: '🇮🇳', internships: 1890 },
@@ -99,17 +92,15 @@ const GLOBAL_CITIES = [
   { name: 'Toronto', country: 'Canada', flag: '🇨🇦', internships: 490 },
 ]
 
-// ─── NEW: Upforge trust badges data ──────────────────────────────────────────
 const TRUST_BADGES = [
   { label: 'Verified Student Ecosystem', platform: 'Upforge', color: '#4f46e5', icon: Verified },
   { label: 'Global Internship Network', platform: 'InternAdda', color: '#1a1063', icon: Globe },
   { label: 'Portfolio Credibility Engine', platform: 'Upforge', color: '#059669', icon: Shield },
 ]
 
-// ─── Shared container — mirrors Header's max-w-[1520px] ──────────────────────
 const CONTAINER = "max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8"
 
-// ─── Primitives ───────────────────────────────────────────────────────────────
+// ─── Primitives ───────────────────────────────────────
 
 function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef(null)
@@ -130,7 +121,6 @@ function Counter({ raw }: { raw: string }) {
   const inView = useInView(ref, { once: true })
   const num = parseInt(raw.replace(/\D/g, ''))
   const hasSuffix = raw.includes('+')
-  const suffix = raw.replace(/[\d,]/g, '').replace('+', '')
   const [n, setN] = useState(0)
   useEffect(() => {
     if (!inView || isNaN(num)) return
@@ -140,39 +130,10 @@ function Counter({ raw }: { raw: string }) {
     return () => clearInterval(t)
   }, [inView, num])
   if (isNaN(num)) return <span ref={ref}>{raw}</span>
-  return <span ref={ref}>{n.toLocaleString('en-IN')}{hasSuffix ? '+' : ''}{suffix}</span>
+  return <span ref={ref}>{n.toLocaleString('en-IN')}{hasSuffix ? '+' : ''}</span>
 }
 
-// ─── NEW: Upforge CTA component for reuse ────────────────────────────────────
-function UpforgeBadge({ variant = 'inline', className = '' }: { variant?: 'inline' | 'card'; className?: string }) {
-  if (variant === 'inline') {
-    return (
-      <Link href="https://upforge.org" target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full px-3 py-1 transition-all group ${className}`}>
-        <Verified size={12} className="text-indigo-600" />
-        <span className="text-[10px] font-semibold text-indigo-700">Get Verified on Upforge</span>
-        <ArrowRight size={10} className="text-indigo-500 group-hover:translate-x-0.5 transition-transform" />
-      </Link>
-    )
-  }
-  return (
-    <div className={`bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-4 ${className}`}>
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-          <Verified size={20} className="text-indigo-600" />
-        </div>
-        <div className="flex-1">
-          <h4 className="text-[13px] font-bold text-slate-800 mb-0.5">Build Your Verified Profile</h4>
-          <p className="text-[11px] text-slate-500 mb-2">Students with verified Upforge profiles receive 3x more interview calls</p>
-          <Link href="https://upforge.org/signup" target="_blank" className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800">
-            Create Free Profile → 
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Internship Card (UPGRADED with Upforge verification badge) ──────────────
+// ─── Internship Card ──────────────────────────────────
 
 function InternshipCard({ id, title, company, stipend, location, skills, applicants, otherCompaniesCount, image, companyLogos, tag }: any) {
   const { user } = useAuth()
@@ -187,7 +148,6 @@ function InternshipCard({ id, title, company, stipend, location, skills, applica
       transition={{ duration: 0.2, ease: 'easeOut' }}
       className="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden flex flex-col hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/50 transition-all duration-300 relative"
     >
-      {/* NEW: Upforge preferred badge */}
       <div className="absolute top-3 right-3 z-10">
         <Link href="https://upforge.org" target="_blank" className="bg-white/95 backdrop-blur-sm text-[9px] font-bold px-2 py-1 rounded-md shadow-sm flex items-center gap-1 text-indigo-700 border border-indigo-200">
           <Verified size={10} /> Upforge Preferred
@@ -237,7 +197,6 @@ function InternshipCard({ id, title, company, stipend, location, skills, applica
           ))}
         </div>
         
-        {/* NEW: Upforge verification note before apply button */}
         <p className="text-[9px] text-slate-400 text-center">
           <Link href="https://upforge.org" target="_blank" className="text-indigo-500 hover:underline">Verified on Upforge</Link> candidates get priority
         </p>
@@ -251,7 +210,7 @@ function InternshipCard({ id, title, company, stipend, location, skills, applica
   )
 }
 
-// ─── Constants (UPGRADED with global scope) ──────────────────────────────────
+// ─── Constants ────────────────────────────────────────
 
 const AVATARS = ['/student1.jpg', '/student2.jpg', '/student3.jpg', '/student4.jpg']
 
@@ -262,31 +221,72 @@ const TICKER = [
   'Sneha R. landed a Data Science internship · 12 min ago',
 ]
 
-// UPGRADED: Metrics with global reach
 const METRICS = [
-  { icon: Shield,       label: 'Verified Companies', value: '500+',  color: '#4f46e5' },
-  { icon: Users,        label: 'Students Placed',    value: '15000+', color: '#7c3aed' },
-  { icon: Globe,        label: 'Countries',          value: '40+',   color: '#059669' },
-  { icon: Award,        label: 'Trust Score',        value: '4.9',   color: '#d97706' },
+  { icon: Shield, label: 'Verified Companies', value: '500+', color: '#4f46e5' },
+  { icon: Users, label: 'Students Placed', value: '15000+', color: '#7c3aed' },
+  { icon: Globe, label: 'Countries', value: '40+', color: '#059669' },
+  { icon: Award, label: 'Trust Score', value: '4.9', color: '#d97706' },
 ]
 
-// UPGRADED: Partners including Upforge as primary
 const PARTNERS = ['Delhi University', 'IIT Bombay', 'Upforge', 'Google Career Certificates', 'Microsoft Learn']
 
 const WHY = [
-  { icon: Shield,        title: '100% Verified Employers',  body: 'Every company is vetted for legitimacy before listing. No fake roles, no misleading offers.',                         accent: '#4f46e5', bg: '#eef2ff' },
-  { icon: Verified,      title: 'Upforge Verified Profiles', body: 'Build your portfolio identity and get verified. Recruiters trust Upforge-verified candidates 3x more.',               accent: '#7c3aed', bg: '#f5f3ff' },
-  { icon: GraduationCap, title: 'Global Opportunities',     body: 'Remote internships from 40+ countries. Work with international teams without leaving home.',                    accent: '#059669', bg: '#ecfdf5' },
-  { icon: TrendingUp,    title: 'Career Progress Tracking', body: 'Monitor every application, collect structured feedback, and build a verified professional profile.',                 accent: '#d97706', bg: '#fffbeb' },
+  { icon: Shield, title: '100% Verified Employers', body: 'Every company is vetted for legitimacy before listing. No fake roles, no misleading offers.', accent: '#4f46e5', bg: '#eef2ff' },
+  { icon: Verified, title: 'Upforge Verified Profiles', body: 'Build your portfolio identity and get verified. Recruiters trust Upforge-verified candidates for faster hiring.', accent: '#7c3aed', bg: '#f5f3ff' },
+  { icon: GraduationCap, title: 'Global Opportunities', body: 'Remote internships from 40+ countries. Work with international teams without leaving home.', accent: '#059669', bg: '#ecfdf5' },
+  { icon: TrendingUp, title: 'Career Progress Tracking', body: 'Monitor every application, collect structured feedback, and build a verified professional profile.', accent: '#d97706', bg: '#fffbeb' },
 ]
 
 const TESTIMONIALS = [
-  { name: 'Priya Sharma', role: 'Data Science Intern · Larex Systems', av: 'PS', color: '#4f46e5', quote: 'Applied on Monday, offer letter by Wednesday. The company was exactly as described — completely professional. The smoothest hiring process I have experienced.' },
-  { name: 'Aryan Kumar',  role: 'Web Dev Intern · Arjuna AI',          av: 'AK', color: '#7c3aed', quote: 'As a second-year student I was sceptical. InternAdda placed me with a real product team where I write production code and learn every single day.' },
-  { name: 'Sneha Rathi',  role: 'UI/UX Intern · Delhi Startup',        av: 'SR', color: '#059669', quote: 'Completed the UI/UX course, built my portfolio, and landed an internship all through InternAdda — in under a month. Best platform for students.' },
+  { name: 'Priya Sharma', role: 'Data Science Intern · Larex Systems', av: 'PS', color: '#4f46e5', quote: 'Applied on Monday, offer letter by Wednesday. The company was exactly as described — completely professional.' },
+  { name: 'Aryan Kumar', role: 'Web Dev Intern · Arjuna AI', av: 'AK', color: '#7c3aed', quote: 'As a second-year student I was sceptical. InternAdda placed me with a real product team where I write production code daily.' },
+  { name: 'Sneha Rathi', role: 'UI/UX Intern · Delhi Startup', av: 'SR', color: '#059669', quote: 'Completed the UI/UX course, built my portfolio, and landed an internship through InternAdda — in under a month.' },
 ]
 
-// ─── NEW: Global Cities Widget ────────────────────────────────────────────────
+// ─── Google Form Review Modal ─────────────────────────
+
+function ReviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 p-1 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+        >
+          <X size={18} className="text-slate-500" />
+        </button>
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLSe5kcuI-RHmKB1ZF4ik2hFK5Qq4iQEC2fBP4kAjR3taTATp6g/viewform?embedded=true"
+          className="w-full h-[550px]"
+          style={{ border: 0 }}
+          title="Submit Your Review"
+        >
+          Loading…
+        </iframe>
+      </motion.div>
+    </div>
+  )
+}
+
+// ─── Global Cities Widget (NO "View all countries" link) ──
+
 function GlobalCitiesWidget() {
   return (
     <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
@@ -308,17 +308,16 @@ function GlobalCitiesWidget() {
           </Link>
         ))}
       </div>
-      <Link href="/locations" className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-600 mt-3 hover:underline">
-        View all countries <ArrowRight size={10} />
-      </Link>
     </div>
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────
 
 export default function Home() {
   const [tick, setTick] = useState(0)
+  const [isReviewOpen, setIsReviewOpen] = useState(false)
+
   useEffect(() => {
     const t = setInterval(() => setTick(i => (i + 1) % TICKER.length), 3600)
     return () => clearInterval(t)
@@ -334,30 +333,23 @@ export default function Home() {
       <main className="w-full overflow-x-hidden">
 
         {/* ════════════════════════════════════════
-            HERO WITH GLOBE (REPLACED HeroVisual)
+            HERO SECTION - EXPANDED WITH MORE SPACE
         ════════════════════════════════════════ */}
         <section className="relative bg-white overflow-hidden">
 
-          {/* Background accents */}
           <div aria-hidden className="pointer-events-none select-none absolute inset-0 overflow-hidden">
             <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full"
               style={{ background: 'radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 68%)' }} />
             <div className="absolute top-0 right-0 w-[45%] h-full"
               style={{ background: 'linear-gradient(135deg, transparent 45%, rgba(238,242,255,0.4) 100%)' }} />
-            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.02 }}>
-              <defs><pattern id="hg" width="32" height="32" patternUnits="userSpaceOnUse">
-                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#4f46e5" strokeWidth="0.6" />
-              </pattern></defs>
-              <rect width="100%" height="100%" fill="url(#hg)" />
-            </svg>
           </div>
 
           <div className={`relative ${CONTAINER}`}>
-            <div className="flex flex-col items-center text-center lg:flex-row lg:items-center lg:text-left lg:gap-12 xl:gap-16 pt-10 pb-0 lg:pt-14">
+            <div className="flex flex-col items-center text-center lg:flex-row lg:items-center lg:text-left lg:gap-12 xl:gap-16 pt-12 pb-8 lg:pt-16 lg:pb-12">
 
-              {/* Copy - Global messaging */}
+              {/* Left Copy - Professional Tone, No ✨ emoji, Clear Upforge Message */}
               <motion.div
-                className="flex-1 max-w-[580px] w-full pb-10 lg:pb-16"
+                className="flex-1 max-w-[680px] w-full pb-8 lg:pb-0"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -367,17 +359,31 @@ export default function Home() {
                   <span className="text-[10.5px] font-bold text-indigo-700 uppercase tracking-[0.13em]">Global Platform · 40+ Countries</span>
                 </div>
 
-                <h1 className="text-[2.1rem] sm:text-[2.6rem] xl:text-[3rem] 2xl:text-[3.4rem] font-extrabold text-slate-900 leading-[1.07] tracking-tight mb-4">
+                <h1 className="text-[2.2rem] sm:text-[2.8rem] xl:text-[3.3rem] 2xl:text-[3.6rem] font-extrabold text-slate-900 leading-[1.07] tracking-tight mb-5">
                   Discover Internships<br />
-                  <span style={{ color: '#1a1063' }}>Globally.</span><br />
-                  <span className="text-slate-400 font-semibold text-[1.3rem] sm:text-[1.55rem] xl:text-[1.8rem]">Get Verified on Upforge.</span>
+                  <span className="text-indigo-700">Globally.</span><br />
+                  <span className="text-slate-500 text-[1.3rem] sm:text-[1.6rem] xl:text-[1.9rem] font-semibold">Get Verified on Upforge.</span>
                 </h1>
 
-                <p className="text-slate-500 text-[14px] sm:text-[15px] leading-[1.75] mb-7 max-w-[460px] mx-auto lg:mx-0">
-                  Find 10,000+ verified internships across 40+ countries. Build your portfolio identity on <strong className="text-indigo-700">Upforge</strong> and get noticed by top global employers.
+                <p className="text-slate-600 text-[15px] sm:text-[16px] leading-relaxed mb-6 max-w-lg mx-auto lg:mx-0">
+                  Find 10,000+ verified internships across 40+ countries. 
+                  <strong className="font-semibold text-indigo-800"> Build your portfolio identity on Upforge</strong> and get noticed by top global employers.
                 </p>
 
-                {/* CTAs - Upgraded with Upforge CTA */}
+                {/* Upforge Explanation Box - Professional, No Emojis */}
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-7 max-w-md mx-auto lg:mx-0">
+                  <p className="text-[12px] font-bold text-slate-800 mb-2 flex items-center gap-1.5">
+                    <Verified size={14} className="text-indigo-600" />
+                    Why every student must visit Upforge:
+                  </p>
+                  <p className="text-[12px] text-slate-500 leading-relaxed">
+                    Upforge provides students with a tamper-proof digital identity that authenticates academic credentials, 
+                    project portfolios, and technical skills. Recruiters trust Upforge-verified candidates, leading to 
+                    faster hiring decisions and higher success rates. Your verified profile becomes your professional passport.
+                  </p>
+                </div>
+
+                {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-8">
                   <Link href="/internships" className="w-full sm:w-auto">
                     <button className="w-full inline-flex items-center justify-center gap-2 bg-[#1a1063] hover:bg-indigo-900 text-white px-6 py-3 text-[13.5px] font-bold rounded-xl shadow-lg shadow-indigo-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
@@ -386,12 +392,12 @@ export default function Home() {
                   </Link>
                   <Link href="https://upforge.org/signup" target="_blank" className="w-full sm:w-auto">
                     <button className="w-full inline-flex items-center justify-center gap-2 border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 px-6 py-3 text-[13.5px] font-bold rounded-xl transition-all bg-white">
-                      <Verified size={14} /> Create Verified Profile
+                      <Verified size={14} /> Create Verified Profile on Upforge
                     </button>
                   </Link>
                 </div>
 
-                {/* Social proof */}
+                {/* Social Proof */}
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                   <div className="flex items-center gap-3">
                     <div className="flex -space-x-2">
@@ -410,7 +416,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Live ticker */}
                   <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-3.5 py-2 shadow-sm max-w-xs overflow-hidden">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse flex-shrink-0" />
                     <AnimatePresence mode="wait">
@@ -426,7 +431,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Trust badges row */}
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 mt-6">
                   {TRUST_BADGES.map((badge) => (
                     <div key={badge.label} className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 rounded-full px-2.5 py-1">
@@ -437,7 +441,7 @@ export default function Home() {
                 </div>
               </motion.div>
 
-              {/* ─── GLOBE HERO ───────────────────────────────────────────── */}
+              {/* Globe Visual */}
               <motion.div
                 className="flex-1 w-full max-w-lg mx-auto lg:max-w-none"
                 initial={{ opacity: 0, x: 20 }}
@@ -449,7 +453,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Metrics strip — 4 global metrics */}
+          {/* Metrics Strip */}
           <div className="border-t border-slate-100 bg-slate-50/60">
             <div className={CONTAINER}>
               <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-slate-100">
@@ -473,7 +477,7 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════
-            PARTNERS (UPGRADED with Upforge highlighted)
+            PARTNERS SECTION
         ════════════════════════════════════════ */}
         <section className="border-b border-slate-100 bg-white">
           <div className={CONTAINER}>
@@ -485,7 +489,7 @@ export default function Home() {
                     <Verified size={10} /> {n}
                   </Link>
                 ) : (
-                  <span key={n} className="text-[12px] font-semibold text-slate-400 hover:text-slate-700 transition-colors cursor-default">{n}</span>
+                  <span key={n} className="text-[12px] font-semibold text-slate-500 hover:text-slate-700 transition-colors cursor-default">{n}</span>
                 )
               ))}
               <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 rounded-full px-3 py-1">
@@ -497,7 +501,64 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════
-            INTERNSHIPS + UPFORGE BANNER
+            GOOGLE CAREER CERTIFICATES & MICROSOFT LEARN SECTION
+        ════════════════════════════════════════ */}
+        <section className="py-12 bg-gradient-to-r from-blue-50 via-white to-indigo-50 border-y border-slate-100">
+          <div className={CONTAINER}>
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="order-2 md:order-1">
+                <FadeUp>
+                  <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-2">Industry Recognized Certifications</p>
+                  <h2 className="text-[1.6rem] sm:text-[1.9rem] font-extrabold text-slate-900 tracking-tight mb-4">
+                    Power Your Profile with<br />Google & Microsoft Credentials
+                  </h2>
+                  <p className="text-slate-600 text-[14px] leading-relaxed mb-5">
+                    Complement your verified Upforge identity with globally recognized certifications from Google Career Certificates 
+                    and Microsoft Learn. These credentials demonstrate real-world skills that employers actively seek.
+                  </p>
+                  <ul className="space-y-2 mb-6">
+                    <li className="flex items-center gap-2 text-[13px] text-slate-700"><CheckCircle size={14} className="text-emerald-500 flex-shrink-0" /> Google IT Support, Data Analytics, UX Design, and more</li>
+                    <li className="flex items-center gap-2 text-[13px] text-slate-700"><CheckCircle size={14} className="text-emerald-500 flex-shrink-0" /> Microsoft Azure, Power Platform, Security, and AI fundamentals</li>
+                    <li className="flex items-center gap-2 text-[13px] text-slate-700"><CheckCircle size={14} className="text-emerald-500 flex-shrink-0" /> Showcase certifications on your Upforge verified profile</li>
+                  </ul>
+                  <div className="flex flex-wrap gap-3">
+                    <Link href="https://grow.google/certificates/" target="_blank" className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-blue-300 text-slate-700 text-[12px] font-semibold px-4 py-2 rounded-lg transition-all">
+                      Explore Google Certificates <ArrowRight size={12} />
+                    </Link>
+                    <Link href="https://learn.microsoft.com/en-us/training/" target="_blank" className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-300 text-slate-700 text-[12px] font-semibold px-4 py-2 rounded-lg transition-all">
+                      Explore Microsoft Learn <ArrowRight size={12} />
+                    </Link>
+                  </div>
+                </FadeUp>
+              </div>
+              <div className="order-1 md:order-2 flex justify-center">
+                <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100 max-w-sm">
+                  <div className="flex items-center justify-center gap-6 mb-4">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="#4285F4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+                      </div>
+                      <p className="text-[11px] font-semibold text-slate-600">Google</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="#00A4EF"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+                      </div>
+                      <p className="text-[11px] font-semibold text-slate-600">Microsoft</p>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-[13px] font-semibold text-slate-800 mb-2">Claim Your Career Advantage</p>
+                    <p className="text-[11px] text-slate-500">Add certification badges to your Upforge portfolio and increase interview calls.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            FEATURED INTERNSHIPS
         ════════════════════════════════════════ */}
         <section className="py-12 sm:py-14 lg:py-16 bg-white">
           <div className={CONTAINER}>
@@ -514,27 +575,26 @@ export default function Home() {
               </Link>
             </FadeUp>
 
-            {/* Upforge banner above internships */}
+            {/* Upforge Banner - Professional Tone, No Emojis */}
             <FadeUp delay={0.05}>
-              <div className="mb-6 bg-gradient-to-r from-indigo-50 via-white to-indigo-50 border border-indigo-100 rounded-xl p-4">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                      <Verified size={20} className="text-indigo-600" />
+              <div className="mb-6 bg-gradient-to-r from-indigo-50 via-white to-indigo-50 border border-indigo-100 rounded-xl p-5">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                      <Verified size={22} className="text-indigo-600" />
                     </div>
                     <div>
-                      <p className="text-[12px] font-bold text-slate-800">✨ Students with verified Upforge profiles receive <strong className="text-indigo-700">3x more interview calls</strong></p>
-                      <p className="text-[10px] text-slate-500">Build your portfolio identity — free and verified</p>
+                      <p className="text-[13px] font-bold text-slate-800">Before applying, establish your professional identity on <span className="text-indigo-700">Upforge</span></p>
+                      <p className="text-[11px] text-slate-500 max-w-md">Upforge verifies academic credentials, project portfolios, and technical skills — building trust with recruiters before the first interview.</p>
                     </div>
                   </div>
-                  <Link href="https://upforge.org/signup" target="_blank" className="whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-lg transition-all">
-                    Verify for Free →
+                  <Link href="https://upforge.org/signup" target="_blank" className="whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white text-[12px] font-semibold px-5 py-2.5 rounded-lg shadow-sm transition-all">
+                    Create Free Verified Profile →
                   </Link>
                 </div>
               </div>
             </FadeUp>
 
-            {/* 1 col → 2 col sm → 3 col xl */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
               {featuredInternships.map((item, i) => (
                 <FadeUp key={item.id} delay={i * 0.07}>
@@ -553,7 +613,7 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════
-            GLOBAL CITIES SECTION
+            GLOBAL CITIES - NO "VIEW ALL COUNTRIES" LINK
         ════════════════════════════════════════ */}
         <section className="py-8 bg-slate-50/40 border-y border-slate-100">
           <div className={CONTAINER}>
@@ -564,20 +624,19 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════
-            WHY INTERNADDA (UPGRADED with Upforge card)
+            WHY INTERNADDA + UPFORGE
         ════════════════════════════════════════ */}
         <section className="py-12 sm:py-14 lg:py-16 bg-slate-50 border-y border-slate-100">
           <div className={CONTAINER}>
             <div className="flex flex-col lg:flex-row lg:items-start lg:gap-16 xl:gap-20">
 
-              {/* Left — centered on mobile */}
               <FadeUp className="text-center lg:text-left lg:w-64 xl:w-72 flex-shrink-0 mb-8 lg:mb-0 lg:sticky lg:top-24">
                 <p className="text-[10.5px] font-bold text-indigo-600 uppercase tracking-widest mb-2">Why InternAdda + Upforge</p>
                 <h2 className="text-[1.6rem] sm:text-[1.85rem] font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
                   Built for students,<br />backed by verification.
                 </h2>
                 <p className="text-slate-500 text-[13.5px] leading-relaxed mb-5 max-w-sm mx-auto lg:mx-0">
-                  We verify every employer. Upforge verifies every candidate. The perfect match for your career.
+                  Every employer is vetted. Every candidate gets verified credentials. The result: faster, more reliable placements.
                 </p>
                 <div className="flex justify-center lg:justify-start">
                   <Link href="/about">
@@ -588,7 +647,6 @@ export default function Home() {
                 </div>
               </FadeUp>
 
-              {/* Cards */}
               <div className="flex-1 grid sm:grid-cols-2 gap-3.5">
                 {WHY.map((w, i) => (
                   <FadeUp key={w.title} delay={i * 0.06}>
@@ -612,7 +670,7 @@ export default function Home() {
         </section>
 
         {/* ════════════════════════════════════════
-            TESTIMONIALS
+            TESTIMONIALS WITH REVIEW BUTTON
         ════════════════════════════════════════ */}
         <section className="py-12 sm:py-14 lg:py-16 bg-white">
           <div className={CONTAINER}>
@@ -648,11 +706,21 @@ export default function Home() {
                 </FadeUp>
               ))}
             </div>
+
+            {/* Submit Review Button - Opens Google Form Popup */}
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => setIsReviewOpen(true)}
+                className="inline-flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-all"
+              >
+                Share Your Experience → <ArrowRight size={13} />
+              </button>
+            </div>
           </div>
         </section>
 
         {/* ════════════════════════════════════════
-            CTA BANNER (UPGRADED with Upforge integration)
+            FINAL CTA BANNER
         ════════════════════════════════════════ */}
         <section className="pb-12 sm:pb-14 px-4 sm:px-6 lg:px-8">
           <div className="max-w-[1520px] mx-auto">
@@ -708,6 +776,9 @@ export default function Home() {
 
       </main>
       <Footer />
+
+      {/* Google Form Review Popup Modal */}
+      <ReviewModal isOpen={isReviewOpen} onClose={() => setIsReviewOpen(false)} />
     </>
   )
 }
