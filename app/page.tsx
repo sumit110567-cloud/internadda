@@ -42,6 +42,13 @@ const featuredInternships = [
 ]
 
 // ─── SEO: JobPosting structured data ─────────────────────────────────────────
+// NOTE: datePosted / validThrough are static strings — avoids Turbopack
+// minifying `new Date()` into an undefined variable during prerendering.
+// Update these strings on each deploy or generate them server-side in a
+// separate Server Component / generateMetadata if you need dynamic dates.
+const SCHEMA_DATE_POSTED = '2025-04-01'
+const SCHEMA_DATE_VALID   = '2025-05-01'
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -78,8 +85,8 @@ const jsonLd = {
         currency: 'INR',
         value: { '@type': 'QuantitativeValue', minValue: 2000, maxValue: 8000, unitText: 'MONTH' },
       },
-      datePosted: new Date().toISOString().split('T')[0],
-      validThrough: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+      datePosted:   SCHEMA_DATE_POSTED,
+      validThrough: SCHEMA_DATE_VALID,
       skills: job.skills.join(', '),
     },
   })),
@@ -1294,4 +1301,4 @@ export default function Home() {
       <ReviewModal isOpen={isReviewOpen} onClose={() => setIsReviewOpen(false)} />
     </>
   )
-}s
+}
