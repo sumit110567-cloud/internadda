@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Timer, Lock, ChevronRight, LayoutGrid, AlertCircle } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Timer, Lock, AlertCircle, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { DOMAIN_TESTS } from '@/lib/test-data'
-import { useAuth } from '@/lib/auth-context'
-import LoadingScreen from '@/components/LoadingScreen'
-import { cn } from '@/lib/utils'
+import { DOMAIN_TESTS, Sector } from '@/lib/test-data' //
+import { useAuth } from '@/lib/auth-context' //
+import LoadingScreen from '@/components/LoadingScreen' //
+import { cn } from '@/lib/utils' //
 
 export default function InternshipAssessment() {
   const { id } = useParams()
@@ -18,22 +18,17 @@ export default function InternshipAssessment() {
   
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [verifying, setVerifying] = useState(true)
-
-  // FIX 1: Safety check for testData to prevent client-side crash
-  const testData = DOMAIN_TESTS[id as string]
+  const [testSector, setTestSector] = useState<Sector | null>(null)
   
   const [currentIdx, setCurrentIdx] = useState(0)
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [timeLeft, setTimeLeft] = useState(1800) 
   const [isFinished, setIsFinished] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(false)
 
+  // Fetch the authorized sector for this specific order/test ID
   useEffect(() => {
     if (authLoading || !user) return;
-
-    let retryCount = 0;
-    const maxRetries = 5;
 
     const verifyAccess = async () => {
       try {
@@ -45,35 +40,33 @@ export default function InternshipAssessment() {
         
         const data = await res.json();
 
-        if (data.authorized) {
+        if (data.authorized && data.sector) {
+          // Mapping the database sector to the test data keys
+          setTestSector(data.sector as Sector);
           setIsAuthorized(true);
-          setVerifying(false);
-        } else if (retryCount < maxRetries) {
-          retryCount++;
-          setTimeout(verifyAccess, 2000);
         } else {
           setIsAuthorized(false);
-          setVerifying(false);
         }
       } catch (err) {
-        if (retryCount < maxRetries) {
-          retryCount++;
-          setTimeout(verifyAccess, 2000);
-        } else {
-          setVerifying(false);
-        }
+        console.error("Verification failed", err);
+        setIsAuthorized(false);
+      } finally {
+        setVerifying(false);
       }
     };
 
     verifyAccess();
   }, [user, id, authLoading]);
 
+  // Dynamic data lookup based on the verified sector
+  const testData = testSector ? DOMAIN_TESTS[testSector] : null; //
+
   const finishTest = async (overrideScore?: number) => {
-    if (submitting || !testData) return // Safety check
+    if (submitting || !testData) return 
     setSubmitting(true)
     
     const correctCount = Object.entries(answers).reduce((acc, [idx, ans]) => {
-      return ans === testData.questions[parseInt(idx)].correct ? acc + 1 : acc
+      return ans === testData[parseInt(idx)].a ? acc + 1 : acc //
     }, 0)
 
     try {
@@ -84,9 +77,10 @@ export default function InternshipAssessment() {
           userId: user?.id,
           testId: id,
           score: overrideScore ?? correctCount,
-          total: testData.questions.length
+          total: testData.length
         })
       })
+      router.push('/dashboard')
     } catch (e) {
       console.error("Submission error", e)
     } finally {
@@ -95,35 +89,26 @@ export default function InternshipAssessment() {
     }
   }
 
-  const handleSelectAnswer = (optionIdx: number) => {
-    setAnswers(prev => ({ ...prev, [currentIdx]: optionIdx }))
-  }
-
   if (verifying || authLoading) return <LoadingScreen />
 
-  // FIX 2: Handle case where test ID is invalid to prevent crash
-  if (!testData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A2647] text-white">
-        <div className="text-center">
-          <AlertCircle size={64} className="mx-auto mb-4 text-red-400" />
-          <h1 className="text-2xl font-bold">Test Not Found</h1>
-          <Button onClick={() => router.push('/internships')} className="mt-4 bg-yellow-500 text-black">
-            Return to Dashboard
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  if (!isAuthorized) {
+  if (!isAuthorized || !testData) {
     return (
       <div className="min-h-screen bg-[#0A2647] flex items-center justify-center p-6 text-white text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md">
-          <Lock size={80} className="mx-auto mb-6 text-yellow-400 p-4 bg-yellow-400/10 rounded-full" />
-          <h1 className="text-4xl font-black mb-4 tracking-tighter">Access Denied</h1>
-          <p className="opacity-70 mb-8">This assessment is restricted to verified candidates. Please wait a moment for payment confirmation.</p>
-          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 hover:bg-yellow-600 text-[#0A2647] font-bold py-7 px-10 rounded-2xl w-full text-lg shadow-xl shadow-yellow-500/20">
+          {!isAuthorized ? (
+            <>
+              <Lock size={80} className="mx-auto mb-6 text-yellow-400 p-4 bg-yellow-400/10 rounded-full" />
+              <h1 className="text-4xl font-black mb-4 tracking-tighter">Access Denied</h1>
+              <p className="opacity-70 mb-8">This assessment is restricted. Please ensure your payment was successful.</p>
+            </>
+          ) : (
+            <>
+              <AlertCircle size={80} className="mx-auto mb-6 text-red-400 p-4 bg-red-400/10 rounded-full" />
+              <h1 className="text-4xl font-black mb-4 tracking-tighter">Test Not Found</h1>
+              <p className="opacity-70 mb-8">We couldn't load the questions for this sector. Please contact support.</p>
+            </>
+          )}
+          <Button onClick={() => router.push('/internships')} className="bg-yellow-500 hover:bg-yellow-600 text-[#0A2647] font-bold py-7 px-10 rounded-2xl w-full text-lg">
             Back to Dashboard
           </Button>
         </motion.div>
@@ -131,7 +116,6 @@ export default function InternshipAssessment() {
     )
   }
 
-  // ... (Rest of your UI code remains exactly the same)
   return (
     <div className="min-h-screen bg-[#F1F5F9]">
       <header className="fixed top-0 left-0 right-0 h-20 bg-white/80 backdrop-blur-xl border-b z-40 px-6 flex items-center justify-between">
@@ -140,33 +124,55 @@ export default function InternshipAssessment() {
               {Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}
            </span>
          </div>
+         <Progress value={(currentIdx / testData.length) * 100} className="w-1/3" />
       </header>
       
-      <main className="pt-32 px-4 max-w-4xl mx-auto">
+      <main className="pt-32 px-4 max-w-4xl mx-auto pb-20">
         <div className="bg-white p-8 rounded-[2rem] shadow-sm border">
+          <div className="mb-4 text-sm font-bold text-blue-600 uppercase tracking-widest">
+            Question {currentIdx + 1} of {testData.length}
+          </div>
           <h2 className="text-2xl font-black text-[#0A2647] mb-8">
-            {testData.questions[currentIdx]?.q}
+            {testData[currentIdx]?.q}
           </h2>
           <div className="grid gap-4">
-            {testData.questions[currentIdx]?.options.map((option, i) => (
+            {testData[currentIdx]?.o.map((option, i) => ( //
               <button 
                 key={i} 
-                onClick={() => handleSelectAnswer(i)}
+                onClick={() => setAnswers(prev => ({ ...prev, [currentIdx]: i }))}
                 className={cn(
                   "w-full text-left p-6 rounded-2xl border-2 font-bold transition-all",
-                  answers[currentIdx] === i ? "border-[#0A2647] bg-blue-50" : "border-slate-100"
+                  answers[currentIdx] === i ? "border-[#0A2647] bg-blue-50" : "border-slate-100 hover:border-slate-300"
                 )}
               >
                 {option}
               </button>
             ))}
           </div>
-          <div className="mt-8 flex justify-between">
-             <Button disabled={currentIdx === 0} onClick={() => setCurrentIdx(prev => prev - 1)}>Previous</Button>
-             {currentIdx === testData.questions.length - 1 ? (
-               <Button onClick={() => finishTest()} className="bg-emerald-500">Finish</Button>
+          <div className="mt-8 flex justify-between items-center">
+             <Button 
+                variant="ghost" 
+                disabled={currentIdx === 0} 
+                onClick={() => setCurrentIdx(prev => prev - 1)}
+             >
+               Previous
+             </Button>
+             
+             {currentIdx === testData.length - 1 ? (
+               <Button 
+                 onClick={() => finishTest()} 
+                 className="bg-emerald-500 hover:bg-emerald-600 text-white px-8"
+                 disabled={submitting}
+               >
+                 {submitting ? 'Submitting...' : 'Finish Assessment'}
+               </Button>
              ) : (
-               <Button onClick={() => setCurrentIdx(prev => prev + 1)}>Next</Button>
+               <Button 
+                 onClick={() => setCurrentIdx(prev => prev + 1)}
+                 className="bg-[#0A2647] text-white px-8"
+               >
+                 Next Question <ChevronRight className="ml-2 w-4 h-4" />
+               </Button>
              )}
           </div>
         </div>
