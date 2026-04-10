@@ -1,10 +1,12 @@
 "use client"
-// components/globe-hero.tsx — GLOBAL AUTHORITY v4
-// Precision orthographic globe with real continent outlines (simplified GeoJSON paths)
+// components/globe-hero.tsx — GLOBAL INTERNSHIP AUTHORITY v2
+// Precision orthographic globe with real continent outlines
 // Fully responsive, maroon/cream editorial palette
-// Explore Registry → /registry
+// Adapted for InternAdda internship discovery platform
 
 import { useEffect, useRef, useState, useCallback } from "react"
+import Link from "next/link"
+import { Verified, Globe, ArrowRight } from "lucide-react"
 
 // Simplified continent polygons (lat/lng pairs) for real landmass rendering
 const CONTINENTS: { name: string; color: string; paths: [number, number][][] }[] = [
@@ -63,35 +65,45 @@ const CONTINENTS: { name: string; color: string; paths: [number, number][][] }[]
   }
 ]
 
+// ─── UPGRADED: Cities focused on internship hubs globally ────────────────────
 const CITIES = [
-  { name: "Bangalore", lat: 12.97, lng: 77.59, region: "India", type: "hub" },
-  { name: "Mumbai", lat: 19.07, lng: 72.87, region: "India", type: "hub" },
-  { name: "Delhi", lat: 28.61, lng: 77.2, region: "India", type: "hub" },
-  { name: "Hyderabad", lat: 17.38, lng: 78.48, region: "India", type: "city" },
-  { name: "Pune", lat: 18.52, lng: 73.85, region: "India", type: "city" },
-  { name: "San Francisco", lat: 37.77, lng: -122.41, region: "USA", type: "hub" },
-  { name: "New York", lat: 40.71, lng: -74.0, region: "USA", type: "hub" },
-  { name: "Austin", lat: 30.27, lng: -97.74, region: "USA", type: "city" },
-  { name: "Seattle", lat: 47.61, lng: -122.33, region: "USA", type: "city" },
-  { name: "London", lat: 51.5, lng: -0.12, region: "Europe", type: "hub" },
-  { name: "Berlin", lat: 52.52, lng: 13.4, region: "Europe", type: "hub" },
-  { name: "Paris", lat: 48.85, lng: 2.35, region: "Europe", type: "city" },
-  { name: "Amsterdam", lat: 52.36, lng: 4.9, region: "Europe", type: "city" },
-  { name: "Stockholm", lat: 59.33, lng: 18.06, region: "Europe", type: "city" },
-  { name: "Singapore", lat: 1.35, lng: 103.82, region: "SEA", type: "hub" },
-  { name: "Jakarta", lat: -6.2, lng: 106.8, region: "SEA", type: "city" },
-  { name: "Bangkok", lat: 13.75, lng: 100.5, region: "SEA", type: "city" },
-  { name: "Dubai", lat: 25.2, lng: 55.27, region: "Middle East", type: "hub" },
-  { name: "Tel Aviv", lat: 32.08, lng: 34.78, region: "Middle East", type: "city" },
-  { name: "Tokyo", lat: 35.68, lng: 139.69, region: "East Asia", type: "hub" },
-  { name: "Seoul", lat: 37.56, lng: 126.97, region: "East Asia", type: "hub" },
-  { name: "Beijing", lat: 39.9, lng: 116.4, region: "East Asia", type: "hub" },
-  { name: "Sydney", lat: -33.86, lng: 151.2, region: "Pacific", type: "hub" },
-  { name: "Nairobi", lat: -1.29, lng: 36.82, region: "Africa", type: "hub" },
-  { name: "Lagos", lat: 6.52, lng: 3.37, region: "Africa", type: "hub" },
-  { name: "São Paulo", lat: -23.55, lng: -46.63, region: "LatAm", type: "hub" },
-  { name: "Mexico City", lat: 19.43, lng: -99.13, region: "LatAm", type: "city" },
-  { name: "Cape Town", lat: -33.92, lng: 18.42, region: "Africa", type: "city" },
+  // India hubs
+  { name: "Bangalore", lat: 12.97, lng: 77.59, region: "India", type: "hub", internships: "2.5k+" },
+  { name: "Mumbai", lat: 19.07, lng: 72.87, region: "India", type: "hub", internships: "2.1k+" },
+  { name: "Delhi", lat: 28.61, lng: 77.2, region: "India", type: "hub", internships: "1.8k+" },
+  { name: "Hyderabad", lat: 17.38, lng: 78.48, region: "India", type: "city", internships: "1.2k+" },
+  { name: "Pune", lat: 18.52, lng: 73.85, region: "India", type: "city", internships: "980+" },
+  
+  // USA hubs
+  { name: "San Francisco", lat: 37.77, lng: -122.41, region: "USA", type: "hub", internships: "3.2k+" },
+  { name: "New York", lat: 40.71, lng: -74.0, region: "USA", type: "hub", internships: "2.8k+" },
+  { name: "Austin", lat: 30.27, lng: -97.74, region: "USA", type: "city", internships: "1.1k+" },
+  { name: "Seattle", lat: 47.61, lng: -122.33, region: "USA", type: "city", internships: "950+" },
+  
+  // Europe hubs
+  { name: "London", lat: 51.5, lng: -0.12, region: "Europe", type: "hub", internships: "2.2k+" },
+  { name: "Berlin", lat: 52.52, lng: 13.4, region: "Europe", type: "hub", internships: "1.5k+" },
+  { name: "Paris", lat: 48.85, lng: 2.35, region: "Europe", type: "city", internships: "1.3k+" },
+  { name: "Amsterdam", lat: 52.36, lng: 4.9, region: "Europe", type: "city", internships: "890+" },
+  { name: "Stockholm", lat: 59.33, lng: 18.06, region: "Europe", type: "city", internships: "720+" },
+  
+  // Asia hubs
+  { name: "Singapore", lat: 1.35, lng: 103.82, region: "SEA", type: "hub", internships: "1.9k+" },
+  { name: "Tokyo", lat: 35.68, lng: 139.69, region: "East Asia", type: "hub", internships: "1.6k+" },
+  { name: "Seoul", lat: 37.56, lng: 126.97, region: "East Asia", type: "hub", internships: "1.4k+" },
+  { name: "Beijing", lat: 39.9, lng: 116.4, region: "East Asia", type: "hub", internships: "1.2k+" },
+  
+  // Middle East & Africa
+  { name: "Dubai", lat: 25.2, lng: 55.27, region: "Middle East", type: "hub", internships: "1.1k+" },
+  { name: "Nairobi", lat: -1.29, lng: 36.82, region: "Africa", type: "hub", internships: "580+" },
+  { name: "Cape Town", lat: -33.92, lng: 18.42, region: "Africa", type: "city", internships: "450+" },
+  
+  // Australia
+  { name: "Sydney", lat: -33.86, lng: 151.2, region: "Pacific", type: "hub", internships: "980+" },
+  
+  // Canada
+  { name: "Toronto", lat: 43.65, lng: -79.38, region: "Canada", type: "hub", internships: "1.3k+" },
+  { name: "Vancouver", lat: 49.28, lng: -123.12, region: "Canada", type: "city", internships: "890+" },
 ]
 
 const CX = 200, CY = 200, R = 168
@@ -115,7 +127,6 @@ function polygonToPath(coords: [number, number][], rotDeg: number): string | nul
   const pts = coords.map(([lng, lat]) => project(lat, lng, rotDeg))
   const visiblePts = pts.filter(p => p.visible)
   if (visiblePts.length < 3) return null
-  // Use all points but clip to visible
   let d = ""
   let first = true
   for (const p of pts) {
@@ -156,7 +167,7 @@ function buildGrid(rotDeg: number) {
   return { meridians, parallels }
 }
 
-export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
+export function GlobeHero() {
   const [rotation, setRotation] = useState(30)
   const [activeCityIdx, setActiveCityIdx] = useState(0)
   const [mounted, setMounted] = useState(false)
@@ -221,203 +232,60 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
 
   return (
     <section
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "linear-gradient(150deg, #faf7f2 0%, #f5f0e8 50%, #ede8de 100%)" }}
+      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-2xl"
+      style={{ background: "linear-gradient(150deg, #faf7f2 0%, #f5f0e8 50%, #ede8de 100%)", minHeight: "500px" }}
     >
       {/* Top rule */}
-      <div className="absolute top-0 left-0 right-0 h-1" style={{ background: "#8b1a1a" }} />
+      <div className="absolute top-0 left-0 right-0 h-0.5" style={{ background: "#8b1a1a" }} />
 
       {/* Grid texture */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(rgba(139,26,26,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,26,26,0.04) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(139,26,26,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(139,26,26,0.03) 1px, transparent 1px)",
           backgroundSize: "72px 72px",
         }}
       />
 
       {/* Decorative pull-quote marks */}
       <div
-        className="absolute top-28 left-6 text-[140px] leading-none select-none pointer-events-none"
+        className="absolute top-6 left-4 text-[80px] leading-none select-none pointer-events-none hidden lg:block"
         style={{ fontFamily: "Georgia, serif", color: "#8b1a1a", opacity: 0.05 }}
       >"</div>
       <div
-        className="absolute bottom-20 right-6 text-[140px] leading-none select-none pointer-events-none"
+        className="absolute bottom-6 right-4 text-[80px] leading-none select-none pointer-events-none hidden lg:block"
         style={{ fontFamily: "Georgia, serif", color: "#8b1a1a", opacity: 0.05 }}
       >"</div>
 
-      {/* Dateline */}
-      <div
-        className="absolute left-0 right-0 flex items-center justify-center gap-6"
-        style={{ top: 88 }}
-      >
-        <div className="h-px w-12" style={{ background: "#c9b99a" }} />
-        <span
-          className="text-[9px] tracking-[0.28em] uppercase"
-          style={{ fontFamily: "'Times New Roman', serif", color: "#8b6a6a" }}
-        >
-          {today}
-        </span>
-        <div className="h-px w-12" style={{ background: "#c9b99a" }} />
-      </div>
-
-      {/* Main two-column layout */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-6 pt-16 pb-20">
-
-        {/* ── LEFT: Editorial text ───────────────────────────────────────── */}
-        <div className="flex-1 text-center lg:text-left max-w-[640px]">
-
-          {/* Section kicker */}
-          <div className="flex items-center gap-3 justify-center lg:justify-start mb-5">
-            <div className="h-px w-10" style={{ background: "#8b1a1a" }} />
-            <span
-              className="text-[9px] tracking-[0.3em] uppercase font-bold"
-              style={{ fontFamily: "'Times New Roman', serif", color: "#8b1a1a" }}
-            >
-              {isOrg ? "Est. 2024 · Global Registry" : "The Founder Chronicle · 2026"}
-            </span>
-            <div className="h-px w-10" style={{ background: "#8b1a1a" }} />
+      {/* Main globe container */}
+      <div className="relative z-10 w-full flex flex-col items-center justify-center py-6 px-4">
+        
+        {/* Globe header text */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm mb-3">
+            <Globe size={12} className="text-indigo-600" />
+            <span className="text-[9px] font-bold text-indigo-700 uppercase tracking-wider">40+ Countries · 10,000+ Internships</span>
           </div>
-
-          {/* Main headline */}
-          <h1
-            className="leading-[0.95] tracking-tight mb-7"
-            style={{
-              fontFamily: "'Times New Roman', Georgia, 'Palatino Linotype', serif",
-              fontSize: "clamp(44px, 6.5vw, 86px)",
-              color: "#1a0a0a",
-              fontWeight: 700,
-            }}
-          >
-            {isOrg ? (
-              <>
-                Where Startups<br />
-                <span style={{ color: "#8b1a1a", fontStyle: "italic" }}>Prove They Exist.</span>
-              </>
-            ) : (
-              <>
-                Stories That<br />
-                <span style={{ color: "#8b1a1a", fontStyle: "italic" }}>Shape Founders.</span>
-              </>
-            )}
-          </h1>
-
-          {/* Ornamental divider */}
-          <div className="flex items-center gap-4 justify-center lg:justify-start mb-7">
-            <div className="h-px w-12" style={{ background: "#8b1a1a" }} />
-            <div className="w-2 h-2 rotate-45" style={{ background: "#8b1a1a" }} />
-            <div className="h-px w-12" style={{ background: "#8b1a1a" }} />
-          </div>
-
-          {/* Standfirst */}
-          <p
-            className="text-[17px] leading-[1.75] mb-9 max-w-[520px] mx-auto lg:mx-0"
-            style={{ fontFamily: "'Times New Roman', Georgia, serif", color: "#3d2b2b" }}
-          >
-            {isOrg
-              ? "The world's first independent startup registry. Every company is manually verified and assigned a permanent UpForge Registry Number — the global standard for startup identity and credibility."
-              : "Deep research, verified data, and real lessons from the founders building India's next generation of unicorn companies. No PR. No fluff. Updated weekly."}
+          <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
+            Interactive globe showing active internship locations worldwide
           </p>
-
-          {/* Stats table — editorial style */}
-          <div
-            className="grid grid-cols-3 mb-9 border-t border-b"
-            style={{ borderColor: "#c9b99a" }}
-          >
-            {[
-              { n: "5,000+", l: "Verified Startups" },
-              { n: "50+", l: "Countries" },
-              { n: "UFRN™", l: "Global Standard" },
-            ].map((s, i) => (
-              <div
-                key={s.l}
-                className="py-5 text-center"
-                style={{ borderRight: i < 2 ? "1px solid #c9b99a" : "none" }}
-              >
-                <div
-                  className="text-[28px] font-bold leading-none mb-1"
-                  style={{ fontFamily: "'Times New Roman', Georgia, serif", color: "#8b1a1a" }}
-                >
-                  {s.n}
-                </div>
-                <div
-                  className="text-[9px] tracking-[0.16em] uppercase"
-                  style={{ fontFamily: "'Times New Roman', serif", color: "#8b6a6a" }}
-                >
-                  {s.l}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-            <a
-              href="/registry"
-              className="inline-flex items-center gap-2 px-8 py-4 text-[12px] font-bold tracking-wider uppercase transition-all hover:opacity-90 hover:-translate-y-px"
-              style={{
-                background: "#8b1a1a",
-                color: "#faf7f2",
-                fontFamily: "'Times New Roman', serif",
-                letterSpacing: "0.07em",
-                boxShadow: "0 4px 20px rgba(139,26,26,0.25)",
-              }}
-            >
-              Explore Registry
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-            <a
-              href="/submit"
-              className="inline-flex items-center gap-2 px-8 py-4 text-[12px] font-bold tracking-wider uppercase transition-all hover:bg-[#8b1a1a] hover:text-[#faf7f2]"
-              style={{
-                background: "transparent",
-                color: "#8b1a1a",
-                fontFamily: "'Times New Roman', serif",
-                border: "2px solid #8b1a1a",
-                letterSpacing: "0.07em",
-              }}
-            >
-              List Your Startup
-            </a>
-          </div>
-
-          {/* Trust badges */}
-          <div className="flex items-center gap-5 mt-8 justify-center lg:justify-start flex-wrap">
-            {["Harvard Business School", "IIM Ahmedabad", "Y Combinator Alumni", "Blume Ventures"].map(org => (
-              <span
-                key={org}
-                className="text-[9px] font-semibold opacity-40 uppercase tracking-wider"
-                style={{ fontFamily: "'Times New Roman', Georgia, serif", color: "#1a0a0a" }}
-              >
-                {org}
-              </span>
-            ))}
-          </div>
-          <div
-            className="text-[8px] tracking-widest uppercase mt-2 text-center lg:text-left opacity-50"
-            style={{ fontFamily: "'Times New Roman', serif", color: "#8b6a6a" }}
-          >
-            Cited by researchers worldwide
-          </div>
         </div>
 
-        {/* ── RIGHT: Precision Globe ─────────────────────────────────────── */}
-        <div className="flex-1 flex items-center justify-center relative select-none">
+        {/* Globe SVG */}
+        <div className="flex items-center justify-center relative select-none">
 
           {/* City label */}
           {mounted && activeCityProj.visible && (
             <div
               className="absolute z-20 pointer-events-none"
               style={{
-                left: `calc(50% + ${(activeCityProj.x - 200) * 1.1}px + 16px)`,
-                top: `calc(50% + ${(activeCityProj.y - 200) * 1.1}px - 14px)`,
+                left: `calc(50% + ${(activeCityProj.x - 200) * 0.9}px + 16px)`,
+                top: `calc(50% + ${(activeCityProj.y - 200) * 0.9}px - 14px)`,
                 transition: "left 0.7s ease, top 0.7s ease",
               }}
             >
               <div
-                className="text-[11px] font-semibold px-3 py-1.5 whitespace-nowrap"
+                className="text-[10px] font-semibold px-2.5 py-1.5 whitespace-nowrap"
                 style={{
                   background: "#faf7f2",
                   color: "#8b1a1a",
@@ -427,14 +295,10 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
                 }}
               >
                 {activeCity.name}
-                <span
-                  className="ml-2 font-normal"
-                  style={{ color: "#8b6a6a" }}
-                >
-                  · {activeCity.region}
+                <span className="ml-1.5 text-[9px] font-normal" style={{ color: "#8b6a6a" }}>
+                  · {activeCity.internships}
                 </span>
               </div>
-              {/* Connector dot */}
               <div
                 className="w-1.5 h-1.5 rounded-full mx-auto -mt-0.5"
                 style={{ background: "#8b1a1a" }}
@@ -445,22 +309,22 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
           {/* Drag hint */}
           {mounted && (
             <div
-              className="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] tracking-widest uppercase opacity-40 pointer-events-none"
+              className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] tracking-widest uppercase opacity-40 pointer-events-none whitespace-nowrap"
               style={{ fontFamily: "'Times New Roman', serif", color: "#8b6a6a" }}
             >
-              Drag to rotate
+              Drag to rotate globe
             </div>
           )}
 
           <svg
             viewBox="0 0 400 400"
-            className="w-[280px] h-[280px] sm:w-[360px] sm:h-[360px] md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px]"
+            className="w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px]"
             style={{ cursor: isDragging ? "grabbing" : "grab" }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            aria-label="Interactive globe showing startup locations"
+            aria-label="Interactive globe showing internship locations worldwide"
           >
             <defs>
               <radialGradient id="globeBase" cx="36%" cy="30%" r="68%">
@@ -484,12 +348,12 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
                 <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
               </filter>
               <filter id="globeShadow">
-                <feDropShadow dx="14" dy="18" stdDeviation="24" floodColor="#3d1515" floodOpacity="0.18" />
+                <feDropShadow dx="8" dy="12" stdDeviation="16" floodColor="#3d1515" floodOpacity="0.12" />
               </filter>
             </defs>
 
             {/* Drop shadow ellipse */}
-            <ellipse cx="216" cy="378" rx="140" ry="10" fill="#3d1515" opacity="0.07" />
+            <ellipse cx="216" cy="378" rx="120" ry="8" fill="#3d1515" opacity="0.06" />
 
             {/* Ocean base */}
             <circle cx={CX} cy={CY} r={R} fill="url(#globeOcean)" filter="url(#globeShadow)" />
@@ -523,7 +387,7 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
 
               {/* Equator */}
               {(() => {
-                const p = parallels[parallels.length - 1] // equator approx
+                const p = parallels[parallels.length - 1]
                 return p ? <path d={p} stroke="#8b1a1a" strokeWidth="0.6" fill="none" opacity="0.2" strokeDasharray="3,3" /> : null
               })()}
             </g>
@@ -572,23 +436,30 @@ export function GlobeHero({ isOrg }: { isOrg?: boolean }) {
             <ellipse cx="145" cy="130" rx="22" ry="10" fill="white" opacity="0.15" transform="rotate(-38 145 130)" />
           </svg>
         </div>
-      </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span
-          className="text-[8px] tracking-[0.28em] uppercase"
-          style={{ fontFamily: "'Times New Roman', serif", color: "#8b6a6a" }}
+        {/* Bottom stats bar */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-8 pt-2">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#b04a2a]" />
+            <span className="text-[9px] text-slate-500">Major Hubs</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#c9836e]" />
+            <span className="text-[9px] text-slate-500">Active Cities</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Verified size={10} className="text-purple-500" />
+            <span className="text-[9px] text-slate-500">Upforge Verified Regions</span>
+          </div>
+        </div>
+
+        {/* Small CTA */}
+        <Link 
+          href="/internships" 
+          className="inline-flex items-center gap-1.5 mt-4 text-[10px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
         >
-          Scroll
-        </span>
-        <div
-          className="w-px h-10"
-          style={{
-            background: "linear-gradient(to bottom, #8b1a1a, transparent)",
-            animation: "scrollPulse 2.2s ease-in-out infinite",
-          }}
-        />
+          Explore internships in these locations <ArrowRight size={10} />
+        </Link>
       </div>
 
       <style jsx>{`
