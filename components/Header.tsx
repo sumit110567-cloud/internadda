@@ -1,13 +1,13 @@
 "use client";
 
 // components/Header.tsx
-// Pattern mirrors the sample Navbar — fixed, max-w-[1520px], clean mobile drawer
+// UPGRADED: Added Upforge navigation + trust badges + global authority signals
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, ChevronRight, LogOut, User, CreditCard, ChevronDown, Zap, ShieldCheck } from "lucide-react";
+import { Menu, X, ChevronRight, LogOut, User, CreditCard, ChevronDown, Zap, ShieldCheck, Verified, Globe } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import {
   DropdownMenu,
@@ -19,14 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// ── Announcement ticker data ──────────────────────────────────────────────────
+// ── Announcement ticker data (UPGRADED with Upforge mentions) ─────────────────
 const ANNOUNCEMENTS = [
-  { icon: "✨", text: "DREAMSTART — Extra 10% off on skill assessment fees", cta: "Claim Now", href: "/courses" },
-  { icon: "⚡", text: "131 students applied to internships today",            cta: "Browse",    href: "/internships" },
-  { icon: "🚀", text: "New: Python Developer roles just went live",           cta: "View Now",  href: "/internships" },
+  { icon: "✨", text: "Get verified on Upforge — 3x more interview calls", cta: "Verify Now", href: "https://upforge.org/signup", external: true },
+  { icon: "⚡", text: "15,000+ students placed globally this year",            cta: "Browse",    href: "/internships", external: false },
+  { icon: "🚀", text: "New: Remote internships from 40+ countries",           cta: "View Now",  href: "/internships", external: false },
+  { icon: "🏆", text: "Upforge verified candidates get priority shortlisting", cta: "Get Verified", href: "https://upforge.org/signup", external: true },
 ];
 
-// ── Nav links ─────────────────────────────────────────────────────────────────
+// ── Nav links (UPGRADED: Added Upforge) ──────────────────────────────────────
 const NAV_LINKS = [
   { name: "Home",        href: "/" },
   { name: "Internships", href: "/internships" },
@@ -34,6 +35,9 @@ const NAV_LINKS = [
   { name: "Journal",     href: "/blog" },
   { name: "About",       href: "/about" },
 ];
+
+// ─── NEW: Upforge nav link (separate, highlighted) ───────────────────────────
+const UPFORGE_NAV = { name: "Verify Profile", href: "https://upforge.org/signup", external: true };
 
 export function Header() {
   const [isOpen,       setIsOpen]       = useState(false);
@@ -72,9 +76,9 @@ export function Header() {
 
   return (
     <>
-      {/* ── Announcement bar ─────────────────────────────────────────────── */}
+      {/* ── Announcement bar (UPGRADED: supports external links) ─────────────── */}
       {showAnn && (
-        <div className="fixed top-0 left-0 right-0 z-[101] bg-[#1a1063] h-9 flex items-center">
+        <div className="fixed top-0 left-0 right-0 z-[101] bg-gradient-to-r from-[#1a1063] to-[#2d1b8a] h-9 flex items-center">
           <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-center relative">
             <div className="flex items-center gap-2">
               <span className="text-sm leading-none">{ann.icon}</span>
@@ -84,12 +88,23 @@ export function Header() {
               <span className="text-white/75 text-[11px] font-medium sm:hidden">
                 {ann.text.length > 36 ? ann.text.slice(0, 36) + "…" : ann.text}
               </span>
-              <Link
-                href={ann.href}
-                className="text-[11.5px] font-bold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-0.5 whitespace-nowrap"
-              >
-                {ann.cta} <ChevronRight size={10} />
-              </Link>
+              {ann.external ? (
+                <a
+                  href={ann.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11.5px] font-bold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-0.5 whitespace-nowrap"
+                >
+                  {ann.cta} <ChevronRight size={10} />
+                </a>
+              ) : (
+                <Link
+                  href={ann.href}
+                  className="text-[11.5px] font-bold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-0.5 whitespace-nowrap"
+                >
+                  {ann.cta} <ChevronRight size={10} />
+                </Link>
+              )}
             </div>
             <button
               onClick={() => setShowAnn(false)}
@@ -114,7 +129,7 @@ export function Header() {
       >
         <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-6">
 
-          {/* ── Logo ─────────────────────────────────────────────────────── */}
+          {/* ── Logo (UPGRADED: tagline reflects global scope) ───────────────── */}
           <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
             <div className="relative w-7 h-7 rounded-lg overflow-hidden flex-shrink-0 border border-indigo-100">
               <Image src="/logo.jpg" alt="InternAdda" fill className="object-cover" priority sizes="28px" />
@@ -124,12 +139,12 @@ export function Header() {
                 Intern<span className="text-indigo-600">adda</span>
               </span>
               <span className="text-[8px] text-gray-400 tracking-[0.16em] uppercase hidden sm:block font-semibold">
-                India's Internship Hub
+                Global Internship Hub
               </span>
             </div>
           </Link>
 
-          {/* ── Desktop nav ──────────────────────────────────────────────── */}
+          {/* ── Desktop nav (UPGRADED: added Upforge link) ───────────────────── */}
           <nav className="hidden md:flex items-center gap-0 flex-1 justify-center" aria-label="Main navigation">
             {NAV_LINKS.map((link) => {
               const active = isActive(link.href);
@@ -147,10 +162,34 @@ export function Header() {
                 </Link>
               );
             })}
+            
+            {/* ─── NEW: Upforge nav link (highlighted) ──────────────────────── */}
+            <a
+              href={UPFORGE_NAV.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative ml-2 px-4 py-1.5 text-[12px] font-bold tracking-wide rounded-full flex items-center gap-1.5 transition-all hover:scale-[1.02]"
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
+                color: "white",
+                boxShadow: "0 2px 8px rgba(139,92,246,0.25)"
+              }}
+            >
+              <Verified size={11} />
+              {UPFORGE_NAV.name}
+            </a>
           </nav>
 
-          {/* ── Right side ───────────────────────────────────────────────── */}
+          {/* ── Right side (UPGRADED: added Upforge badge + global badge) ───── */}
           <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+
+            {/* NEW: Global reach badge */}
+            <div className="hidden xl:flex items-center gap-1.5 border border-cyan-200 bg-cyan-50 px-2.5 py-1 rounded-full">
+              <Globe size={11} className="text-cyan-600" />
+              <span className="text-[9.5px] font-bold text-cyan-700 uppercase tracking-[0.12em] whitespace-nowrap">
+                40+ Countries
+              </span>
+            </div>
 
             {/* MSME badge */}
             <div className="hidden xl:flex items-center gap-1.5 border border-emerald-200 bg-emerald-50 px-2.5 py-1 rounded-full">
@@ -159,6 +198,19 @@ export function Header() {
                 MSME Verified
               </span>
             </div>
+
+            {/* NEW: Upforge quick badge (desktop right side) */}
+            <a
+              href="https://upforge.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-1.5 border border-purple-200 bg-purple-50 px-2.5 py-1 rounded-full hover:bg-purple-100 transition-colors"
+            >
+              <Verified size={10} className="text-purple-600" />
+              <span className="text-[9.5px] font-bold text-purple-700 uppercase tracking-[0.12em] whitespace-nowrap">
+                Powered by Upforge
+              </span>
+            </a>
 
             {/* Auth */}
             {user ? (
@@ -201,6 +253,11 @@ export function Header() {
                       <CreditCard size={13} className="text-gray-400 flex-shrink-0" />
                       <span className="text-[12.5px] font-medium text-gray-700">Orders</span>
                     </DropdownMenuItem>
+                    {/* NEW: Upforge link in user menu */}
+                    <DropdownMenuItem onClick={() => window.open("https://upforge.org", "_blank")} className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer hover:bg-purple-50">
+                      <Verified size={13} className="text-purple-400 flex-shrink-0" />
+                      <span className="text-[12.5px] font-medium text-purple-700">Verify on Upforge</span>
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
 
                   <DropdownMenuSeparator className="bg-gray-100 mx-1" />
@@ -226,6 +283,16 @@ export function Header() {
                   <Zap size={11} className="fill-amber-400 text-amber-400" />
                   Get Started
                 </Link>
+                {/* NEW: Upforge CTA for non-logged in users */}
+                <a
+                  href="https://upforge.org/signup"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-300 text-purple-700 text-[11px] font-bold rounded-lg hover:bg-purple-50 transition-colors"
+                >
+                  <Verified size={10} />
+                  Verify Profile
+                </a>
               </>
             )}
           </div>
@@ -245,7 +312,7 @@ export function Header() {
       {/* ── Spacer so page content sits below fixed header ───────────────── */}
       <div className={showAnn ? "h-[92px]" : "h-14"} />
 
-      {/* ── Mobile drawer ────────────────────────────────────────────────── */}
+      {/* ── Mobile drawer (UPGRADED: added Upforge link) ────────────────────── */}
       <div
         className={`fixed inset-0 z-[99] md:hidden transition-all duration-200 ${
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -283,16 +350,48 @@ export function Header() {
                 </Link>
               );
             })}
+            
+            {/* ─── NEW: Upforge mobile link ────────────────────────────────── */}
+            <a
+              href={UPFORGE_NAV.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center justify-between px-5 py-4 text-[13.5px] font-bold tracking-wide bg-gradient-to-r from-purple-50 to-indigo-50 text-purple-700"
+            >
+              <div className="flex items-center gap-2">
+                <Verified size={14} className="text-purple-600" />
+                {UPFORGE_NAV.name}
+              </div>
+              <span className="text-[10px] text-purple-500">Get Verified →</span>
+            </a>
           </div>
 
-          {/* Bottom bar */}
-          <div className="px-5 py-4 flex items-center justify-between gap-3 border-t border-gray-100 bg-gray-50/40">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck size={12} className="text-emerald-600 flex-shrink-0" />
-              <span className="text-[10px] text-emerald-700 font-semibold uppercase tracking-[0.12em]">
-                MSME · Govt. of India
-              </span>
+          {/* Bottom bar (UPGRADED: added Upforge badge) */}
+          <div className="px-5 py-4 flex flex-col gap-3 border-t border-gray-100 bg-gray-50/40">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={12} className="text-emerald-600 flex-shrink-0" />
+                <span className="text-[10px] text-emerald-700 font-semibold uppercase tracking-[0.12em]">
+                  MSME · Govt. of India
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Globe size={10} className="text-cyan-600" />
+                <span className="text-[9px] text-cyan-700 font-semibold">40+ Countries</span>
+              </div>
             </div>
+            
+            {/* NEW: Upforge mobile badge */}
+            <a
+              href="https://upforge.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-purple-50 border border-purple-200"
+            >
+              <Verified size={10} className="text-purple-600" />
+              <span className="text-[9px] font-bold text-purple-700">Verified Student Ecosystem by Upforge</span>
+            </a>
 
             {user ? (
               <div className="flex gap-2">
