@@ -163,7 +163,7 @@ function UpforgeBadge({ variant = 'inline', className = '' }: { variant?: 'inlin
         <div className="flex-1">
           <h4 className="text-[13px] font-bold text-slate-800 mb-0.5">Build Your Verified Profile</h4>
           <p className="text-[11px] text-slate-500 mb-2">Students with verified Upforge profiles receive 3x more interview calls</p>
-          <Link href="https://upforge.org/signup" target="_blank" className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800">
+          <Link href="https://upforge.org/registry" target="_blank" className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800">
             Create Free Profile → 
           </Link>
         </div>
@@ -267,11 +267,11 @@ const METRICS = [
   { icon: Shield,       label: 'Verified Companies', value: '500+',  color: '#4f46e5' },
   { icon: Users,        label: 'Students Placed',    value: '15000+', color: '#7c3aed' },
   { icon: Globe,        label: 'Countries',          value: '40+',   color: '#059669' },
-  { icon: Award,        label: 'Trust Score',        value: '4.9',   color: '#d97706' },
+  { icon: Award,        label: 'Trust Score',        value: '99+',   color: '#d97706' },
 ]
 
 // UPGRADED: Partners including Upforge as primary
-const PARTNERS = ['Delhi University', 'IIT Bombay', 'Upforge', 'Google Career Certificates', 'Microsoft Learn']
+const PARTNERS = ['Delhi University', 'IIT Bombay', 'Upforge']
 
 const WHY = [
   { icon: Shield,        title: '100% Verified Employers',  body: 'Every company is vetted for legitimacy before listing. No fake roles, no misleading offers.',                         accent: '#4f46e5', bg: '#eef2ff' },
@@ -384,7 +384,7 @@ export default function Home() {
                       Browse Internships <ArrowRight size={14} />
                     </button>
                   </Link>
-                  <Link href="https://upforge.org/signup" target="_blank" className="w-full sm:w-auto">
+                  <Link href="https://upforge.org/registry" target="_blank" className="w-full sm:w-auto">
                     <button className="w-full inline-flex items-center justify-center gap-2 border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 px-6 py-3 text-[13.5px] font-bold rounded-xl transition-all bg-white">
                       <Verified size={14} /> Create Verified Profile
                     </button>
@@ -527,7 +527,7 @@ export default function Home() {
                       <p className="text-[10px] text-slate-500">Build your portfolio identity — free and verified</p>
                     </div>
                   </div>
-                  <Link href="https://upforge.org/signup" target="_blank" className="whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-lg transition-all">
+                  <Link href="https://upforge.org/registry" target="_blank" className="whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-4 py-2 rounded-lg transition-all">
                     Verify for Free →
                   </Link>
                 </div>
@@ -686,7 +686,7 @@ export default function Home() {
                         Browse Internships <ArrowRight size={14} />
                       </button>
                     </Link>
-                    <Link href="https://upforge.org/signup" target="_blank" className="w-full sm:w-auto">
+                    <Link href="https://upforge.org/registry" target="_blank" className="w-full sm:w-auto">
                       <button className="w-full inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-6 py-3 text-[13.5px] rounded-xl transition-all">
                         <Verified size={13} /> Create Verified Profile
                       </button>
