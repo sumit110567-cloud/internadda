@@ -335,9 +335,6 @@ function GlobalCitiesWidget() {
           </Link>
         ))}
       </div>
-      <Link href="/locations" className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-600 mt-3 hover:underline">
-        View all countries <ArrowRight size={10} />
-      </Link>
     </div>
   )
 }
